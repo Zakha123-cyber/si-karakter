@@ -53,3 +53,32 @@ test('admin can create user from user management page', function () {
         'is_active' => true,
     ]);
 });
+
+test('admin can update user from user management page', function () {
+    $admin = User::factory()->admin()->create();
+    $user = User::factory()->student()->create([
+        'name' => 'Nama Lama',
+        'username' => 'nama-lama',
+        'email' => null,
+        'pin_enabled' => true,
+    ]);
+
+    $response = $this->actingAs($admin)->put("/admin/users/{$user->id}", [
+        'name' => 'Nama Baru',
+        'username' => 'nama-baru',
+        'email' => 'baru@example.com',
+        'role' => 'teacher',
+        'pin_enabled' => '0',
+    ]);
+
+    $response->assertRedirect();
+
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+        'name' => 'Nama Baru',
+        'username' => 'nama-baru',
+        'email' => 'baru@example.com',
+        'role' => 'teacher',
+        'pin_enabled' => false,
+    ]);
+});

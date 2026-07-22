@@ -74,6 +74,24 @@ class UserManagementController extends Controller
         return back()->with('status', 'User berhasil dibuat.');
     }
 
+    public function update(Request $request, User $user): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            'role' => ['required', Rule::in(UserRole::values())],
+            'pin_enabled' => ['sometimes', 'boolean'],
+        ]);
+
+        $user->forceFill([
+            ...$data,
+            'pin_enabled' => $request->boolean('pin_enabled'),
+        ])->save();
+
+        return back()->with('status', 'User berhasil diperbarui.');
+    }
+
     public function updateStatus(Request $request, User $user): RedirectResponse
     {
         $data = $request->validate([

@@ -1,7 +1,17 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { KeyRound, Plus, Search, ShieldCheck, UserCog } from 'lucide-react';
+import {
+    ChevronLeft,
+    ChevronRight,
+    KeyRound,
+    Pencil,
+    Plus,
+    Search,
+    ShieldCheck,
+    UserCog,
+} from 'lucide-react';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import { toast } from 'sonner';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,6 +25,13 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+} from '@/components/ui/sheet';
 import { dashboard } from '@/routes';
 import type { User } from '@/types';
 
@@ -57,6 +74,7 @@ export default function AdminUsersIndex({ users, filters, roles }: Props) {
     const { props } = usePage<{ flash?: { status?: string } }>();
     const [search, setSearch] = useState(filters.search);
     const [role, setRole] = useState(filters.role);
+    const [editingUser, setEditingUser] = useState<UserRow | null>(null);
     const [resetUser, setResetUser] = useState<UserRow | null>(null);
     const [resetType, setResetType] = useState<'password' | 'pin'>('password');
     const [resetValue, setResetValue] = useState('');
@@ -72,6 +90,14 @@ export default function AdminUsersIndex({ users, filters, roles }: Props) {
         pin: '',
     });
 
+    const editForm = useForm({
+        name: '',
+        username: '',
+        email: '',
+        role: 'student' as User['role'],
+        pin_enabled: false,
+    });
+
     const submitFilters = (event: FormEvent) => {
         event.preventDefault();
 
@@ -84,21 +110,107 @@ export default function AdminUsersIndex({ users, filters, roles }: Props) {
 
     const submitCreate = (event: FormEvent) => {
         event.preventDefault();
+        const toastId = toast.loading('Menyimpan user baru...');
 
         createForm.post('/admin/users', {
             preserveScroll: true,
             onSuccess: () => {
+                toast.success('User berhasil dibuat.', { id: toastId });
                 createForm.reset();
+            },
+            onError: () => {
+                toast.error('User belum bisa dibuat. Periksa kembali form.', {
+                    id: toastId,
+                });
             },
         });
     };
 
     const toggleStatus = (user: UserRow) => {
+        if (user.is_active) {
+            toast.warning(`Nonaktifkan akun ${user.name}?`, {
+                description:
+                    'User tidak dapat masuk sebelum akun diaktifkan kembali.',
+                action: {
+                    label: 'Nonaktifkan',
+                    onClick: () => updateStatus(user, false),
+                },
+                cancel: {
+                    label: 'Batal',
+                    onClick: () => undefined,
+                },
+                duration: 10000,
+            });
+
+            return;
+        }
+
+        updateStatus(user, true);
+    };
+
+    const updateStatus = (user: UserRow, isActive: boolean) => {
         router.patch(
             `/admin/users/${user.id}/status`,
-            { is_active: !user.is_active },
-            { preserveScroll: true },
+            { is_active: isActive },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    toast.success(
+                        isActive
+                            ? 'User berhasil diaktifkan.'
+                            : 'User berhasil dinonaktifkan.',
+                    );
+                },
+                onError: () => {
+                    toast.error('Status user belum bisa diperbarui.');
+                },
+            },
         );
+    };
+
+    const startEdit = (user: UserRow) => {
+        setResetUser(null);
+        setEditingUser(user);
+        editForm.setData({
+            name: user.name,
+            username: user.username,
+            email: user.email ?? '',
+            role: user.role,
+            pin_enabled: user.pin_enabled,
+        });
+        editForm.clearErrors();
+    };
+
+    const cancelEdit = () => {
+        setEditingUser(null);
+        editForm.reset();
+        editForm.clearErrors();
+    };
+
+    const submitEdit = (event: FormEvent) => {
+        event.preventDefault();
+
+        if (!editingUser) {
+            return;
+        }
+
+        const toastId = toast.loading('Menyimpan perubahan user...');
+
+        editForm.put(`/admin/users/${editingUser.id}`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success('User berhasil diperbarui.', { id: toastId });
+                cancelEdit();
+            },
+            onError: () => {
+                toast.error(
+                    'User belum bisa diperbarui. Periksa kembali form.',
+                    {
+                        id: toastId,
+                    },
+                );
+            },
+        });
     };
 
     const submitReset = (event: FormEvent) => {
@@ -445,6 +557,19 @@ export default function AdminUsersIndex({ users, filters, roles }: Props) {
                                                                 size="sm"
                                                                 variant="outline"
                                                                 onClick={() =>
+                                                                    startEdit(
+                                                                        user,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Pencil className="size-4" />
+                                                                Edit
+                                                            </Button>
+                                                            <Button
+                                                                type="button"
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() =>
                                                                     toggleStatus(
                                                                         user,
                                                                     )
@@ -495,86 +620,232 @@ export default function AdminUsersIndex({ users, filters, roles }: Props) {
                                                     });
                                                 }
                                             }}
-                                            dangerouslySetInnerHTML={{
-                                                __html: link.label,
-                                            }}
-                                        />
+                                        >
+                                            <PaginationLabel
+                                                label={link.label}
+                                            />
+                                        </Button>
                                     ))}
                                 </div>
                             </CardContent>
                         </Card>
-
-                        {resetUser && (
-                            <Card className="rounded-lg">
-                                <CardHeader>
-                                    <div className="flex items-center gap-2">
-                                        <UserCog className="size-5 text-muted-foreground" />
-                                        <CardTitle className="text-base">
-                                            Reset Kredensial
-                                        </CardTitle>
-                                    </div>
-                                    <CardDescription>
-                                        {resetUser.name} (@{resetUser.username})
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <form
-                                        onSubmit={submitReset}
-                                        className="grid gap-3 md:grid-cols-[180px_minmax(0,1fr)_auto_auto]"
-                                    >
-                                        <select
-                                            className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                                            value={resetType}
-                                            onChange={(event) =>
-                                                setResetType(
-                                                    event.target
-                                                        .value as typeof resetType,
-                                                )
-                                            }
-                                        >
-                                            <option value="password">
-                                                Password
-                                            </option>
-                                            <option value="pin">PIN</option>
-                                        </select>
-                                        <Input
-                                            value={resetValue}
-                                            onChange={(event) =>
-                                                setResetValue(
-                                                    event.target.value,
-                                                )
-                                            }
-                                            type={
-                                                resetType === 'password'
-                                                    ? 'password'
-                                                    : 'text'
-                                            }
-                                            inputMode={
-                                                resetType === 'pin'
-                                                    ? 'numeric'
-                                                    : 'text'
-                                            }
-                                            placeholder={
-                                                resetType === 'pin'
-                                                    ? 'PIN baru'
-                                                    : 'Password baru'
-                                            }
-                                        />
-                                        <Button type="submit">Reset</Button>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            onClick={() => setResetUser(null)}
-                                        >
-                                            Batal
-                                        </Button>
-                                    </form>
-                                </CardContent>
-                            </Card>
-                        )}
                     </div>
                 </div>
             </div>
+
+            <Sheet
+                open={editingUser !== null}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        cancelEdit();
+                    }
+                }}
+            >
+                <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
+                    <SheetHeader>
+                        <div className="flex items-center gap-2 pr-8">
+                            <Pencil className="size-5 text-muted-foreground" />
+                            <SheetTitle>Edit User</SheetTitle>
+                        </div>
+                        <SheetDescription>
+                            {editingUser
+                                ? `${editingUser.name} (@${editingUser.username})`
+                                : 'Perbarui data user.'}
+                        </SheetDescription>
+                    </SheetHeader>
+
+                    <form
+                        onSubmit={submitEdit}
+                        className="grid gap-4 px-4 pb-4"
+                    >
+                        <div className="grid gap-2">
+                            <Label htmlFor="edit_name">Nama</Label>
+                            <Input
+                                id="edit_name"
+                                value={editForm.data.name}
+                                onChange={(event) =>
+                                    editForm.setData('name', event.target.value)
+                                }
+                            />
+                            <InputError message={editForm.errors.name} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="edit_username">Username</Label>
+                            <Input
+                                id="edit_username"
+                                value={editForm.data.username}
+                                onChange={(event) =>
+                                    editForm.setData(
+                                        'username',
+                                        event.target.value,
+                                    )
+                                }
+                            />
+                            <InputError message={editForm.errors.username} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="edit_email">Email</Label>
+                            <Input
+                                id="edit_email"
+                                type="email"
+                                value={editForm.data.email}
+                                onChange={(event) =>
+                                    editForm.setData(
+                                        'email',
+                                        event.target.value,
+                                    )
+                                }
+                                placeholder="Opsional untuk santri"
+                            />
+                            <InputError message={editForm.errors.email} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="edit_role">Role</Label>
+                            <select
+                                id="edit_role"
+                                className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                value={editForm.data.role}
+                                onChange={(event) =>
+                                    editForm.setData(
+                                        'role',
+                                        event.target.value as User['role'],
+                                    )
+                                }
+                            >
+                                {roles.map((role) => (
+                                    <option key={role} value={role}>
+                                        {roleLabel(role)}
+                                    </option>
+                                ))}
+                            </select>
+                            <InputError message={editForm.errors.role} />
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            <Checkbox
+                                id="edit_pin_enabled"
+                                checked={editForm.data.pin_enabled}
+                                onCheckedChange={(checked) =>
+                                    editForm.setData(
+                                        'pin_enabled',
+                                        checked === true,
+                                    )
+                                }
+                            />
+                            <Label htmlFor="edit_pin_enabled">PIN aktif</Label>
+                        </div>
+
+                        <div className="flex gap-2 pt-2">
+                            <Button
+                                type="submit"
+                                disabled={editForm.processing}
+                            >
+                                Simpan Perubahan
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={cancelEdit}
+                            >
+                                Batal
+                            </Button>
+                        </div>
+                    </form>
+                </SheetContent>
+            </Sheet>
+
+            <Sheet
+                open={resetUser !== null}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setResetUser(null);
+                        setResetValue('');
+                        setResetType('password');
+                    }
+                }}
+            >
+                <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
+                    <SheetHeader>
+                        <div className="flex items-center gap-2 pr-8">
+                            <UserCog className="size-5 text-muted-foreground" />
+                            <SheetTitle>Reset Kredensial</SheetTitle>
+                        </div>
+                        <SheetDescription>
+                            {resetUser
+                                ? `${resetUser.name} (@${resetUser.username})`
+                                : 'Reset password atau PIN user.'}
+                        </SheetDescription>
+                    </SheetHeader>
+
+                    <form
+                        onSubmit={submitReset}
+                        className="grid gap-4 px-4 pb-4"
+                    >
+                        <div className="grid gap-2">
+                            <Label htmlFor="reset_type">Jenis Kredensial</Label>
+                            <select
+                                id="reset_type"
+                                className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                value={resetType}
+                                onChange={(event) =>
+                                    setResetType(
+                                        event.target.value as typeof resetType,
+                                    )
+                                }
+                            >
+                                <option value="password">Password</option>
+                                <option value="pin">PIN</option>
+                            </select>
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="reset_value">
+                                {resetType === 'pin'
+                                    ? 'PIN Baru'
+                                    : 'Password Baru'}
+                            </Label>
+                            <Input
+                                id="reset_value"
+                                value={resetValue}
+                                onChange={(event) =>
+                                    setResetValue(event.target.value)
+                                }
+                                type={
+                                    resetType === 'password'
+                                        ? 'password'
+                                        : 'text'
+                                }
+                                inputMode={
+                                    resetType === 'pin' ? 'numeric' : 'text'
+                                }
+                                placeholder={
+                                    resetType === 'pin'
+                                        ? 'Masukkan PIN baru'
+                                        : 'Masukkan password baru'
+                                }
+                            />
+                        </div>
+
+                        <div className="flex gap-2 pt-2">
+                            <Button type="submit">Reset</Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                    setResetUser(null);
+                                    setResetValue('');
+                                    setResetType('password');
+                                }}
+                            >
+                                Batal
+                            </Button>
+                        </div>
+                    </form>
+                </SheetContent>
+            </Sheet>
         </>
     );
 }
@@ -609,4 +880,34 @@ function formatDate(value: string | null) {
         dateStyle: 'medium',
         timeStyle: 'short',
     }).format(new Date(value));
+}
+
+function PaginationLabel({ label }: { label: string }) {
+    if (
+        label === '&laquo; Previous' ||
+        label === 'pagination.previous' ||
+        label.toLowerCase().includes('previous')
+    ) {
+        return (
+            <>
+                <ChevronLeft className="size-4" />
+                <span className="sr-only">Sebelumnya</span>
+            </>
+        );
+    }
+
+    if (
+        label === 'Next &raquo;' ||
+        label === 'pagination.next' ||
+        label.toLowerCase().includes('next')
+    ) {
+        return (
+            <>
+                <ChevronRight className="size-4" />
+                <span className="sr-only">Berikutnya</span>
+            </>
+        );
+    }
+
+    return <span>{label}</span>;
 }

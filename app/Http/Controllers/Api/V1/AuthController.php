@@ -39,12 +39,8 @@ class AuthController extends Controller
         Auth::guard('web')->login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
-        $user->forceFill([
-            'last_login_at' => now(),
-        ])->save();
-
         return $this->success('Login successful', [
-            'user' => new UserResource($user),
+            'user' => new UserResource($user->refresh()),
         ]);
     }
 

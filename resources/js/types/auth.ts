@@ -1,7 +1,12 @@
 export type User = {
     id: number;
     name: string;
-    email: string;
+    username: string;
+    email: string | null;
+    role: 'admin' | 'teacher' | 'student';
+    pin_enabled: boolean;
+    is_active: boolean;
+    last_login_at: string | null;
     avatar?: string;
     email_verified_at: string | null;
     two_factor_enabled?: boolean;
@@ -11,7 +16,7 @@ export type User = {
 };
 
 export type Auth = {
-    user: User;
+    user: User | null;
 };
 
 /* @chisel-passkeys */

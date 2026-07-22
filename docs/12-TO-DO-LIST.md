@@ -22,17 +22,20 @@ Status:
 
 ## Phase 1 — Authentication and User Management
 
-- [ ] Buat enum role.
-- [ ] Buat migration users.
-- [ ] Implement login.
-- [ ] Implement logout.
-- [ ] Implement current user endpoint.
-- [ ] Implement authorization middleware.
-- [ ] CRUD user.
-- [ ] Aktivasi/nonaktifkan akun.
-- [ ] Reset password/PIN.
-- [ ] Test authentication.
-- [ ] Test authorization.
+- [x] Buat enum role.
+- [x] Buat migration users.
+- [x] Implement login.
+- [x] Implement logout.
+- [x] Implement current user endpoint.
+- [x] Implement authorization middleware.
+- [x] CRUD user.
+- [x] Aktivasi/nonaktifkan akun.
+- [x] Reset password/PIN.
+- [x] Test authentication.
+- [x] Test authorization.
+- [x] Frontend login berbasis username.
+- [x] Frontend dashboard berbasis role.
+- [x] Frontend user management admin.
 
 ## Phase 2 — Academic Structure
 

@@ -25,8 +25,17 @@ composer install
 npm install
 php artisan key:generate
 php artisan migrate
+php artisan db:seed
 npm run build
 ```
+
+Akun lokal hasil seeder:
+
+| Role | Username | Password/PIN |
+| --- | --- | --- |
+| Admin | `admin` | password: `password` |
+| Ustadz | `ustadz` | password: `password` |
+| Santri | `santri` | password: `password`, PIN: `1234` |
 
 6. Jalankan development server:
 

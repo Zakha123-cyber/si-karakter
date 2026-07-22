@@ -1,7 +1,12 @@
-import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import {
+    ClipboardCheck,
+    FileText,
+    LayoutGrid,
+    TreePine,
+    Users,
+} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -14,30 +19,13 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import type { NavItem } from '@/types';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
-
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
+import type { Auth, NavItem } from '@/types';
 
 export function AppSidebar() {
+    const { auth } = usePage<{ auth: Auth }>().props;
+    const role = auth.user?.role ?? 'student';
+    const mainNavItems = getNavItems(role);
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -57,9 +45,59 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>
     );
+}
+
+function getNavItems(role: string): NavItem[] {
+    const baseItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+    ];
+
+    if (role === 'admin') {
+        return [
+            ...baseItems,
+            {
+                title: 'User Management',
+                href: '/admin/users',
+                icon: Users,
+            },
+        ];
+    }
+
+    if (role === 'teacher') {
+        return [
+            ...baseItems,
+            {
+                title: 'Review',
+                href: '/dashboard',
+                icon: ClipboardCheck,
+            },
+            {
+                title: 'Observasi',
+                href: '/dashboard',
+                icon: FileText,
+            },
+        ];
+    }
+
+    return [
+        ...baseItems,
+        {
+            title: 'Pilih Jalanmu',
+            href: '/dashboard',
+            icon: ClipboardCheck,
+        },
+        {
+            title: 'Pohon Kebaikan',
+            href: '/dashboard',
+            icon: TreePine,
+        },
+    ];
 }

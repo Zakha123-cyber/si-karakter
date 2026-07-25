@@ -1,6 +1,8 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
+    BookOpenCheck,
     ClipboardCheck,
+    ClipboardList,
     FileText,
     LayoutGrid,
     TreePine,
@@ -74,6 +76,16 @@ function getNavItems(role: string): NavItem[] {
     if (role === 'teacher') {
         return [
             ...baseItems,
+            {
+                title: 'Paket Tes',
+                href: '/teacher/test-packages',
+                icon: ClipboardList,
+            },
+            {
+                title: 'Kasus Moral',
+                href: '/teacher/moral-cases',
+                icon: BookOpenCheck,
+            },
             {
                 title: 'Review',
                 href: '/dashboard',

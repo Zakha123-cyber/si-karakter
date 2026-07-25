@@ -1,12 +1,15 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
+    BookOpenCheck,
     ClipboardCheck,
+    ClipboardList,
     FileText,
     LayoutGrid,
     Tag,
     TreePine,
     Users,
 } from 'lucide-react';
+import type { Auth, NavItem } from '@/types';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -20,7 +23,6 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import type { Auth, NavItem } from '@/types';
 
 export function AppSidebar() {
     const { auth } = usePage<{ auth: Auth }>().props;
@@ -80,6 +82,16 @@ function getNavItems(role: string): NavItem[] {
     if (role === 'teacher') {
         return [
             ...baseItems,
+            {
+                title: 'Paket Tes',
+                href: '/teacher/test-packages',
+                icon: ClipboardList,
+            },
+            {
+                title: 'Kasus Moral',
+                href: '/teacher/moral-cases',
+                icon: BookOpenCheck,
+            },
             {
                 title: 'Review',
                 href: '/dashboard',

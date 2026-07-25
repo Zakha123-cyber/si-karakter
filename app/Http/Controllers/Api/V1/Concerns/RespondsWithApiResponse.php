@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 trait RespondsWithApiResponse
 {
     /**
-     * @param  array<string, mixed>|object  $data
+     * @param  array<string, mixed>|object|null  $data
      */
     protected function success(string $message, mixed $data = [], int $code = 200): JsonResponse
     {

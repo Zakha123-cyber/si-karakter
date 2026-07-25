@@ -22,24 +22,27 @@ Status:
 
 ## Phase 1 — Authentication and User Management
 
-- [ ] Buat enum role.
-- [ ] Buat migration users.
-- [ ] Implement login.
-- [ ] Implement logout.
-- [ ] Implement current user endpoint.
-- [ ] Implement authorization middleware.
-- [ ] CRUD user.
-- [ ] Aktivasi/nonaktifkan akun.
-- [ ] Reset password/PIN.
-- [ ] Test authentication.
-- [ ] Test authorization.
+- [x] Buat enum role.
+- [x] Buat migration users.
+- [x] Implement login.
+- [x] Implement logout.
+- [x] Implement current user endpoint.
+- [x] Implement authorization middleware.
+- [x] CRUD user.
+- [x] Aktivasi/nonaktifkan akun.
+- [x] Reset password/PIN.
+- [x] Test authentication.
+- [x] Test authorization.
+- [x] Frontend login berbasis username.
+- [x] Frontend dashboard berbasis role.
+- [x] Frontend user management admin.
 
 ## Phase 2 — Academic Structure
 
-- [ ] Migration academic years.
-- [ ] Migration groups.
-- [ ] Migration students.
-- [ ] Migration group histories.
+- [x] Migration academic years.
+- [x] Migration groups.
+- [x] Migration students.
+- [x] Migration group histories.
 - [ ] CRUD tahun ajaran.
 - [ ] Aktivasi tahun ajaran.
 - [ ] CRUD kelompok.
@@ -60,20 +63,20 @@ Status:
 
 ## Phase 4 — Moral Test Management
 
-- [ ] Migration test packages.
-- [ ] Migration package-group.
-- [ ] Migration moral cases.
-- [ ] Migration package-case.
-- [ ] Migration case options.
-- [ ] Migration case indicators.
-- [ ] CRUD paket tes.
-- [ ] CRUD kasus.
-- [ ] CRUD pilihan dinamis.
-- [ ] Upload gambar/audio kasus.
-- [ ] Assignment paket ke kelompok.
-- [ ] Publish/close paket.
-- [ ] Validasi periode aktif.
-- [ ] Test manajemen tes.
+- [x] Migration test packages.
+- [x] Migration package-group.
+- [x] Migration moral cases.
+- [x] Migration package-case.
+- [x] Migration case options.
+- [x] Migration case indicators.
+- [x] CRUD paket tes.
+- [x] CRUD kasus.
+- [x] CRUD pilihan dinamis.
+- [x] Upload gambar/audio kasus.
+- [x] Assignment paket ke kelompok.
+- [x] Publish/close paket.
+- [x] Validasi periode aktif.
+- [x] Test manajemen tes.
 
 ## Phase 5 — Student Test Experience
 
@@ -98,8 +101,8 @@ Status:
 - [ ] Buat interface STT.
 - [ ] Buat DTO hasil transkripsi.
 - [ ] Implement provider pertama.
-- [ ] Migration audio files.
-- [ ] Migration transcriptions.
+- [x] Migration audio files.
+- [x] Migration transcriptions.
 - [ ] Job transkripsi.
 - [ ] Retry policy.
 - [ ] Error logging.
@@ -114,7 +117,7 @@ Status:
 - [ ] Buat DTO input/output.
 - [ ] Definisikan JSON schema.
 - [ ] Buat prompt v1.
-- [ ] Migration AI assessments.
+- [x] Migration AI assessments.
 - [ ] Implement provider pertama.
 - [ ] Job klasifikasi.
 - [ ] Validasi output.
@@ -127,7 +130,7 @@ Status:
 
 ## Phase 8 — Teacher Validation
 
-- [ ] Migration teacher validations.
+- [x] Migration teacher validations.
 - [ ] Queue review list.
 - [ ] Detail review.
 - [ ] Audio player.
@@ -143,8 +146,8 @@ Status:
 
 ## Phase 9 — Daily Observation
 
-- [ ] Migration observation entries.
-- [ ] Migration observation items.
+- [x] Migration observation entries.
+- [x] Migration observation items.
 - [ ] Form observasi cepat.
 - [ ] Checklist indikator.
 - [ ] Sentiment.
@@ -158,8 +161,8 @@ Status:
 
 ## Phase 10 — Character Scoring
 
-- [ ] Migration scoring configurations.
-- [ ] Migration score snapshots.
+- [x] Migration scoring configurations.
+- [x] Migration score snapshots.
 - [ ] Default weight 60/40.
 - [ ] CRUD konfigurasi bobot.
 - [ ] Service perhitungan tes.
@@ -172,8 +175,8 @@ Status:
 
 ## Phase 11 — Early Warning
 
-- [ ] Migration warning rules.
-- [ ] Migration student warnings.
+- [x] Migration warning rules.
+- [x] Migration student warnings.
 - [ ] Seeder rule dummy.
 - [ ] Rule engine awal.
 - [ ] Generate warning.
@@ -186,8 +189,8 @@ Status:
 
 ## Phase 12 — Goodness Tree
 
-- [ ] Migration point transactions.
-- [ ] Migration tree levels.
+- [x] Migration point transactions.
+- [x] Migration tree levels.
 - [ ] Seeder tree levels.
 - [ ] Award reward points.
 - [ ] Hitung total points.
@@ -199,9 +202,9 @@ Status:
 
 ## Phase 13 — Educational Content
 
-- [ ] Migration educational contents.
-- [ ] Migration content indicators.
-- [ ] Migration interactions.
+- [x] Migration educational contents.
+- [x] Migration content indicators.
+- [x] Migration interactions.
 - [ ] CRUD content.
 - [ ] Upload media.
 - [ ] Daftar materi santri.
@@ -212,9 +215,9 @@ Status:
 
 ## Phase 14 — Assertiveness Simulation
 
-- [ ] Migration scenarios.
-- [ ] Migration options.
-- [ ] Migration attempts.
+- [x] Migration scenarios.
+- [x] Migration options.
+- [x] Migration attempts.
 - [ ] CRUD scenario.
 - [ ] CRUD dynamic options.
 - [ ] Feedback per option.
@@ -240,7 +243,7 @@ Status:
 
 ## Phase 16 — Character Reports
 
-- [ ] Migration reports.
+- [x] Migration reports.
 - [ ] Generate report draft.
 - [ ] Rekap tes.
 - [ ] Rekap observasi.
@@ -255,7 +258,7 @@ Status:
 
 ## Phase 17 — Security and Audit
 
-- [ ] Migration audit logs.
+- [x] Migration audit logs.
 - [ ] Audit critical actions.
 - [ ] Rate limit login.
 - [ ] Secure private files.

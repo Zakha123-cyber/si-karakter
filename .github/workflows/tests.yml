@@ -31,8 +31,16 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Setup Application
-        run: composer setup
+      - name: Install PHP Dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Install Node Dependencies
+        run: npm ci
+
+      - name: Prepare Application
+        run: |
+          cp .env.example .env
+          php artisan key:generate --ansi
 
       - name: Run CI Checks
         run: composer ci:check

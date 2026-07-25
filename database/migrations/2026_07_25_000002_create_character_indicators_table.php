@@ -21,7 +21,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-            $table->index('category');
+            $table->index(['category', 'is_active']);
             $table->index('is_warning_indicator');
             $table->index('is_active');
         });

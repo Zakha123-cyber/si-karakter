@@ -117,6 +117,15 @@ Gunakan dokumen ini untuk mencatat keputusan produk dan teknis.
 - Consequences: AI agent dan developer membaca dokumen acuan dari `docs/`. README utama di root akan dibuat ulang setelah Laravel skeleton tersedia.
 - Approved By: User
 
+## D-017 - Phase 1 Session API Authentication
+
+- Date: 2026-07-22
+- Status: Accepted
+- Context: Project menggunakan Laravel starter kit dengan session-based authentication, sementara API contract membutuhkan endpoint `/api/v1/auth/*`.
+- Decision: Endpoint auth fase awal menggunakan session Laravel pada route `/api/v1`, login memakai `username` dan menerima password untuk semua role atau PIN untuk santri yang `pin_enabled`.
+- Consequences: API dapat dipakai frontend monolith tanpa token package tambahan. Akun nonaktif ditolak saat login dan saat mengakses endpoint terproteksi.
+- Approved By: Implementation
+
 ## Template Decision Baru
 
 ```md

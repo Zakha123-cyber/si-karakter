@@ -51,12 +51,21 @@ Status:
 
 ## Phase 3 — Character Indicators
 
+<<<<<<< Updated upstream
 - [ ] Migration character indicators.
 - [ ] Seeder indikator dummy.
 - [ ] CRUD indikator.
 - [ ] Kategori indikator.
 - [ ] Flag warning.
 - [ ] Test indikator.
+=======
+- [x] Migration character indicators.
+- [x] Seeder indikator dummy.
+- [x] CRUD indikator.
+- [x] Kategori indikator.
+- [x] Flag warning.
+- [x] Test indikator.
+>>>>>>> Stashed changes
 
 ## Phase 4 — Moral Test Management
 

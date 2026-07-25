@@ -7,6 +7,7 @@ import {
     TreePine,
     Users,
 } from 'lucide-react';
+import type { Auth } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,7 +18,6 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { dashboard } from '@/routes';
-import type { Auth } from '@/types';
 
 export default function Dashboard() {
     const { auth } = usePage<{ auth: Auth }>().props;

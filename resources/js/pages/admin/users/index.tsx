@@ -10,8 +10,9 @@ import {
     UserCog,
 } from 'lucide-react';
 import { useState } from 'react';
-import type { FormEvent } from 'react';
 import { toast } from 'sonner';
+import type { User } from '@/types';
+import type { FormEvent } from 'react';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -33,7 +34,6 @@ import {
     SheetTitle,
 } from '@/components/ui/sheet';
 import { dashboard } from '@/routes';
-import type { User } from '@/types';
 
 type UserRow = Pick<
     User,

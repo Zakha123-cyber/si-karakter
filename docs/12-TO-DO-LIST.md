@@ -39,10 +39,10 @@ Status:
 
 ## Phase 2 — Academic Structure
 
-- [ ] Migration academic years.
-- [ ] Migration groups.
-- [ ] Migration students.
-- [ ] Migration group histories.
+- [x] Migration academic years.
+- [x] Migration groups.
+- [x] Migration students.
+- [x] Migration group histories.
 - [ ] CRUD tahun ajaran.
 - [ ] Aktivasi tahun ajaran.
 - [ ] CRUD kelompok.
@@ -54,7 +54,7 @@ Status:
 
 ## Phase 3 — Character Indicators
 
-- [ ] Migration character indicators.
+- [x] Migration character indicators.
 - [ ] Seeder indikator dummy.
 - [ ] CRUD indikator.
 - [ ] Kategori indikator.
@@ -63,12 +63,12 @@ Status:
 
 ## Phase 4 — Moral Test Management
 
-- [ ] Migration test packages.
-- [ ] Migration package-group.
-- [ ] Migration moral cases.
-- [ ] Migration package-case.
-- [ ] Migration case options.
-- [ ] Migration case indicators.
+- [x] Migration test packages.
+- [x] Migration package-group.
+- [x] Migration moral cases.
+- [x] Migration package-case.
+- [x] Migration case options.
+- [x] Migration case indicators.
 - [ ] CRUD paket tes.
 - [ ] CRUD kasus.
 - [ ] CRUD pilihan dinamis.
@@ -101,8 +101,8 @@ Status:
 - [ ] Buat interface STT.
 - [ ] Buat DTO hasil transkripsi.
 - [ ] Implement provider pertama.
-- [ ] Migration audio files.
-- [ ] Migration transcriptions.
+- [x] Migration audio files.
+- [x] Migration transcriptions.
 - [ ] Job transkripsi.
 - [ ] Retry policy.
 - [ ] Error logging.
@@ -117,7 +117,7 @@ Status:
 - [ ] Buat DTO input/output.
 - [ ] Definisikan JSON schema.
 - [ ] Buat prompt v1.
-- [ ] Migration AI assessments.
+- [x] Migration AI assessments.
 - [ ] Implement provider pertama.
 - [ ] Job klasifikasi.
 - [ ] Validasi output.
@@ -130,7 +130,7 @@ Status:
 
 ## Phase 8 — Teacher Validation
 
-- [ ] Migration teacher validations.
+- [x] Migration teacher validations.
 - [ ] Queue review list.
 - [ ] Detail review.
 - [ ] Audio player.
@@ -146,8 +146,8 @@ Status:
 
 ## Phase 9 — Daily Observation
 
-- [ ] Migration observation entries.
-- [ ] Migration observation items.
+- [x] Migration observation entries.
+- [x] Migration observation items.
 - [ ] Form observasi cepat.
 - [ ] Checklist indikator.
 - [ ] Sentiment.
@@ -161,8 +161,8 @@ Status:
 
 ## Phase 10 — Character Scoring
 
-- [ ] Migration scoring configurations.
-- [ ] Migration score snapshots.
+- [x] Migration scoring configurations.
+- [x] Migration score snapshots.
 - [ ] Default weight 60/40.
 - [ ] CRUD konfigurasi bobot.
 - [ ] Service perhitungan tes.
@@ -175,8 +175,8 @@ Status:
 
 ## Phase 11 — Early Warning
 
-- [ ] Migration warning rules.
-- [ ] Migration student warnings.
+- [x] Migration warning rules.
+- [x] Migration student warnings.
 - [ ] Seeder rule dummy.
 - [ ] Rule engine awal.
 - [ ] Generate warning.
@@ -189,8 +189,8 @@ Status:
 
 ## Phase 12 — Goodness Tree
 
-- [ ] Migration point transactions.
-- [ ] Migration tree levels.
+- [x] Migration point transactions.
+- [x] Migration tree levels.
 - [ ] Seeder tree levels.
 - [ ] Award reward points.
 - [ ] Hitung total points.
@@ -202,9 +202,9 @@ Status:
 
 ## Phase 13 — Educational Content
 
-- [ ] Migration educational contents.
-- [ ] Migration content indicators.
-- [ ] Migration interactions.
+- [x] Migration educational contents.
+- [x] Migration content indicators.
+- [x] Migration interactions.
 - [ ] CRUD content.
 - [ ] Upload media.
 - [ ] Daftar materi santri.
@@ -215,9 +215,9 @@ Status:
 
 ## Phase 14 — Assertiveness Simulation
 
-- [ ] Migration scenarios.
-- [ ] Migration options.
-- [ ] Migration attempts.
+- [x] Migration scenarios.
+- [x] Migration options.
+- [x] Migration attempts.
 - [ ] CRUD scenario.
 - [ ] CRUD dynamic options.
 - [ ] Feedback per option.
@@ -243,7 +243,7 @@ Status:
 
 ## Phase 16 — Character Reports
 
-- [ ] Migration reports.
+- [x] Migration reports.
 - [ ] Generate report draft.
 - [ ] Rekap tes.
 - [ ] Rekap observasi.
@@ -258,7 +258,7 @@ Status:
 
 ## Phase 17 — Security and Audit
 
-- [ ] Migration audit logs.
+- [x] Migration audit logs.
 - [ ] Audit critical actions.
 - [ ] Rate limit login.
 - [ ] Secure private files.

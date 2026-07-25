@@ -23,6 +23,7 @@ return new class extends Migration
 
             $table->index(['category', 'is_active']);
             $table->index('is_warning_indicator');
+            $table->index('is_active');
         });
     }
 

@@ -17,5 +17,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             InitialRoleUserSeeder::class,
         ]);
+
+        $this->call([
+            CharacterIndicatorSeeder::class,
+        ]);
     }
 }

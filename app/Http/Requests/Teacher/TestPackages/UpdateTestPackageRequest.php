@@ -2,6 +2,4 @@
 
 namespace App\Http\Requests\Teacher\TestPackages;
 
-class UpdateTestPackageRequest extends StoreTestPackageRequest
-{
-}
+class UpdateTestPackageRequest extends StoreTestPackageRequest {}

@@ -2,6 +2,4 @@
 
 namespace App\Http\Requests\Teacher\MoralCases;
 
-class UpdateMoralCaseRequest extends StoreMoralCaseRequest
-{
-}
+class UpdateMoralCaseRequest extends StoreMoralCaseRequest {}

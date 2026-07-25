@@ -5,6 +5,7 @@ import {
     ClipboardList,
     FileText,
     LayoutGrid,
+    Tag,
     TreePine,
     Users,
 } from 'lucide-react';
@@ -25,7 +26,7 @@ import { dashboard } from '@/routes';
 
 export function AppSidebar() {
     const { auth } = usePage<{ auth: Auth }>().props;
-    const role = auth.user?.role ?? 'student';
+    const role = (auth.user?.role as string) ?? 'student';
     const mainNavItems = getNavItems(role);
 
     return (
@@ -69,6 +70,11 @@ function getNavItems(role: string): NavItem[] {
                 title: 'User Management',
                 href: '/admin/users',
                 icon: Users,
+            },
+            {
+                title: 'Indikator Karakter',
+                href: '/admin/character-indicators',
+                icon: Tag,
             },
         ];
     }

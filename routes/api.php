@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\CharacterIndicatorController as ApiCharacterIndicatorController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,8 @@ Route::prefix('v1')->middleware('web')->group(function () {
             Route::apiResource('users', UserController::class)->except(['destroy']);
             Route::patch('users/{user}/status', [UserController::class, 'updateStatus'])->name('users.status');
             Route::post('users/{user}/reset-credential', [UserController::class, 'resetCredential'])->name('users.reset-credential');
+
+            Route::apiResource('character-indicators', ApiCharacterIndicatorController::class);
         });
     });
 });

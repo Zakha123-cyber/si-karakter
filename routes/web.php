@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CharacterIndicatorController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Teacher\MoralCaseController;
 use App\Http\Controllers\Teacher\TestPackageController;
@@ -17,6 +18,9 @@ Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->name('admi
     Route::put('users/{user}', [UserManagementController::class, 'update'])->name('users.update');
     Route::patch('users/{user}/status', [UserManagementController::class, 'updateStatus'])->name('users.status');
     Route::post('users/{user}/reset-credential', [UserManagementController::class, 'resetCredential'])->name('users.reset-credential');
+
+    Route::resource('character-indicators', CharacterIndicatorController::class)->except(['create', 'edit', 'show']);
+    Route::patch('character-indicators/{character_indicator}/status', [CharacterIndicatorController::class, 'updateStatus'])->name('character-indicators.status');
 });
 
 Route::middleware(['auth', 'active', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TestPackageStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -69,6 +70,7 @@ class TestPackage extends Model
             'start_at' => 'datetime',
             'end_at' => 'datetime',
             'attempt_limit' => 'integer',
+            'status' => TestPackageStatus::class,
         ];
     }
 }

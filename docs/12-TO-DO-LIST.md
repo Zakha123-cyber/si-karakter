@@ -69,14 +69,14 @@ Status:
 - [x] Migration package-case.
 - [x] Migration case options.
 - [x] Migration case indicators.
-- [ ] CRUD paket tes.
-- [ ] CRUD kasus.
-- [ ] CRUD pilihan dinamis.
-- [ ] Upload gambar/audio kasus.
-- [ ] Assignment paket ke kelompok.
-- [ ] Publish/close paket.
-- [ ] Validasi periode aktif.
-- [ ] Test manajemen tes.
+- [x] CRUD paket tes.
+- [x] CRUD kasus.
+- [x] CRUD pilihan dinamis.
+- [x] Upload gambar/audio kasus.
+- [x] Assignment paket ke kelompok.
+- [x] Publish/close paket.
+- [x] Validasi periode aktif.
+- [x] Test manajemen tes.
 
 ## Phase 5 — Student Test Experience
 

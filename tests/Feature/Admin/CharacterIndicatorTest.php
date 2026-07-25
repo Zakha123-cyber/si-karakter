@@ -4,13 +4,13 @@ use App\Models\CharacterIndicator;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
-test('admin can view character indicators index page', function () {
+test('authenticated user can view character indicators index page', function () {
     $this->withoutVite();
 
-    $admin = User::factory()->admin()->create();
+    $user = User::factory()->create();
     CharacterIndicator::factory()->create(['name' => 'Indikator Test', 'code' => 'test_code']);
 
-    $response = $this->actingAs($admin)->get('/admin/character-indicators');
+    $response = $this->actingAs($user)->get('/admin/character-indicators');
 
     $response
         ->assertOk()
@@ -20,18 +20,16 @@ test('admin can view character indicators index page', function () {
         );
 });
 
-test('non-admin cannot view character indicators page', function () {
-    $teacher = User::factory()->teacher()->create();
+test('unauthenticated user cannot view character indicators page', function () {
+    $response = $this->get('/admin/character-indicators');
 
-    $response = $this->actingAs($teacher)->get('/admin/character-indicators');
-
-    $response->assertForbidden();
+    $response->assertRedirect('/login');
 });
 
-test('admin can create character indicator', function () {
-    $admin = User::factory()->admin()->create();
+test('authenticated user can create character indicator', function () {
+    $user = User::factory()->create();
 
-    $response = $this->actingAs($admin)->post('/admin/character-indicators', [
+    $response = $this->actingAs($user)->post('/admin/character-indicators', [
         'code' => 'honesty_test',
         'name' => 'Kejujuran Test',
         'description' => 'Deskripsi indikator kejujuran',
@@ -51,14 +49,14 @@ test('admin can create character indicator', function () {
     ]);
 });
 
-test('admin can update character indicator', function () {
-    $admin = User::factory()->admin()->create();
+test('authenticated user can update character indicator', function () {
+    $user = User::factory()->create();
     $indicator = CharacterIndicator::factory()->create([
         'code' => 'old_code',
         'name' => 'Nama Lama',
     ]);
 
-    $response = $this->actingAs($admin)->put("/admin/character-indicators/{$indicator->id}", [
+    $response = $this->actingAs($user)->put("/admin/character-indicators/{$indicator->id}", [
         'code' => 'updated_code',
         'name' => 'Nama Baru',
         'description' => 'Deskripsi diperbarui',
@@ -77,11 +75,11 @@ test('admin can update character indicator', function () {
     ]);
 });
 
-test('admin can toggle character indicator status', function () {
-    $admin = User::factory()->admin()->create();
+test('authenticated user can toggle character indicator status', function () {
+    $user = User::factory()->create();
     $indicator = CharacterIndicator::factory()->create(['is_active' => true]);
 
-    $response = $this->actingAs($admin)->patch("/admin/character-indicators/{$indicator->id}/status", [
+    $response = $this->actingAs($user)->patch("/admin/character-indicators/{$indicator->id}/status", [
         'is_active' => false,
     ]);
 
@@ -93,15 +91,23 @@ test('admin can toggle character indicator status', function () {
     ]);
 });
 
-test('admin can delete character indicator', function () {
-    $admin = User::factory()->admin()->create();
+test('authenticated user can delete character indicator', function () {
+    $user = User::factory()->create();
     $indicator = CharacterIndicator::factory()->create();
 
-    $response = $this->actingAs($admin)->delete("/admin/character-indicators/{$indicator->id}");
+    $response = $this->actingAs($user)->delete("/admin/character-indicators/{$indicator->id}");
 
     $response->assertRedirect();
 
     $this->assertDatabaseMissing('character_indicators', [
         'id' => $indicator->id,
     ]);
+});
+
+test('character indicator scopes filter warning and normal indicators correctly', function () {
+    CharacterIndicator::factory()->create(['is_warning_indicator' => true, 'code' => 'warn_1']);
+    CharacterIndicator::factory()->create(['is_warning_indicator' => false, 'code' => 'norm_1']);
+
+    expect(CharacterIndicator::warning()->count())->toBe(1)
+        ->and(CharacterIndicator::normal()->count())->toBe(1);
 });

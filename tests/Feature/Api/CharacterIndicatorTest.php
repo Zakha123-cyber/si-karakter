@@ -3,31 +3,27 @@
 use App\Models\CharacterIndicator;
 use App\Models\User;
 
-test('non-admin cannot access character indicators API', function () {
-    $teacher = User::factory()->teacher()->create();
+test('unauthenticated user cannot access character indicators API', function () {
+    $response = $this->getJson('/api/v1/character-indicators');
 
-    $response = $this->actingAs($teacher)->getJson('/api/v1/character-indicators');
-
-    $response
-        ->assertForbidden()
-        ->assertJsonPath('success', false);
+    $response->assertUnauthorized();
 });
 
-test('admin can list character indicators API', function () {
-    $admin = User::factory()->admin()->create();
+test('authenticated user can list character indicators API', function () {
+    $user = User::factory()->create();
     CharacterIndicator::factory()->count(3)->create();
 
-    $response = $this->actingAs($admin)->getJson('/api/v1/character-indicators');
+    $response = $this->actingAs($user)->getJson('/api/v1/character-indicators');
 
     $response
         ->assertOk()
         ->assertJsonPath('success', true);
 });
 
-test('admin can create character indicator API', function () {
-    $admin = User::factory()->admin()->create();
+test('authenticated user can create character indicator API', function () {
+    $user = User::factory()->create();
 
-    $response = $this->actingAs($admin)->postJson('/api/v1/character-indicators', [
+    $response = $this->actingAs($user)->postJson('/api/v1/character-indicators', [
         'code' => 'api_honesty',
         'name' => 'API Kejujuran',
         'description' => 'Deskripsi API',
@@ -46,11 +42,11 @@ test('admin can create character indicator API', function () {
     ]);
 });
 
-test('admin can show single character indicator API', function () {
-    $admin = User::factory()->admin()->create();
+test('authenticated user can show single character indicator API', function () {
+    $user = User::factory()->create();
     $indicator = CharacterIndicator::factory()->create();
 
-    $response = $this->actingAs($admin)->getJson("/api/v1/character-indicators/{$indicator->id}");
+    $response = $this->actingAs($user)->getJson("/api/v1/character-indicators/{$indicator->id}");
 
     $response
         ->assertOk()
@@ -58,11 +54,11 @@ test('admin can show single character indicator API', function () {
         ->assertJsonPath('data.indicator.id', $indicator->id);
 });
 
-test('admin can update character indicator API', function () {
-    $admin = User::factory()->admin()->create();
+test('authenticated user can update character indicator API', function () {
+    $user = User::factory()->create();
     $indicator = CharacterIndicator::factory()->create(['code' => 'old_api_code']);
 
-    $response = $this->actingAs($admin)->putJson("/api/v1/character-indicators/{$indicator->id}", [
+    $response = $this->actingAs($user)->putJson("/api/v1/character-indicators/{$indicator->id}", [
         'code' => 'new_api_code',
         'name' => 'Nama API Baru',
         'description' => 'Updated via API',
@@ -82,11 +78,11 @@ test('admin can update character indicator API', function () {
     ]);
 });
 
-test('admin can delete character indicator API', function () {
-    $admin = User::factory()->admin()->create();
+test('authenticated user can delete character indicator API', function () {
+    $user = User::factory()->create();
     $indicator = CharacterIndicator::factory()->create();
 
-    $response = $this->actingAs($admin)->deleteJson("/api/v1/character-indicators/{$indicator->id}");
+    $response = $this->actingAs($user)->deleteJson("/api/v1/character-indicators/{$indicator->id}");
 
     $response
         ->assertOk()

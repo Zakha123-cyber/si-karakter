@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\IndicatorCategory;
 use App\Models\CharacterIndicator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -22,7 +23,7 @@ class StoreCharacterIndicatorRequest extends FormRequest
             'code' => ['required', 'string', 'max:255', Rule::unique(CharacterIndicator::class)],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'category' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'string', Rule::in(IndicatorCategory::values())],
             'is_warning_indicator' => ['sometimes', 'boolean'],
             'is_active' => ['sometimes', 'boolean'],
         ];

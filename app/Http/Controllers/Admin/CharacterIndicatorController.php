@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\IndicatorCategory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCharacterIndicatorRequest;
 use App\Http\Requests\UpdateCharacterIndicatorRequest;
@@ -33,10 +34,6 @@ class CharacterIndicatorController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        $categories = CharacterIndicator::query()
-            ->distinct()
-            ->pluck('category');
-
         return Inertia::render('admin/character-indicators/index', [
             'indicators' => $indicators,
             'filters' => [
@@ -44,7 +41,7 @@ class CharacterIndicatorController extends Controller
                 'category' => $request->string('category')->toString(),
                 'is_warning_indicator' => $request->input('is_warning_indicator', ''),
             ],
-            'categories' => $categories,
+            'categories' => IndicatorCategory::options(),
         ]);
     }
 

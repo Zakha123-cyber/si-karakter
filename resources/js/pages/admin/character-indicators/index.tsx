@@ -8,8 +8,8 @@ import {
     Tag,
     Trash2,
 } from 'lucide-react';
-import { useState } from 'react';
 import type { FormEvent } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
@@ -58,6 +58,11 @@ type PaginatedIndicators = {
     total: number;
 };
 
+type CategoryOption = {
+    value: string;
+    label: string;
+};
+
 type Props = {
     indicators: PaginatedIndicators;
     filters: {
@@ -65,13 +70,13 @@ type Props = {
         category: string;
         is_warning_indicator: string;
     };
-    categories: string[];
+    categories: (CategoryOption | string)[];
 };
 
 export default function AdminCharacterIndicatorsIndex({
     indicators,
     filters,
-    categories,
+    categories = [],
 }: Props) {
     const { props } = usePage<{ flash?: { status?: string } }>();
     const [search, setSearch] = useState(filters.search || '');
@@ -83,11 +88,17 @@ export default function AdminCharacterIndicatorsIndex({
     const [editingIndicator, setEditingIndicator] =
         useState<CharacterIndicator | null>(null);
 
+    const categoryList: CategoryOption[] = categories.map((cat) =>
+        typeof cat === 'string' ? { value: cat, label: cat } : cat,
+    );
+
+    const defaultCategory = categoryList[0]?.value || 'moral_reasoning';
+
     const createForm = useForm({
         code: '',
         name: '',
         description: '',
-        category: 'moral_reasoning',
+        category: defaultCategory,
         is_warning_indicator: false,
         is_active: true,
     });
@@ -96,7 +107,7 @@ export default function AdminCharacterIndicatorsIndex({
         code: '',
         name: '',
         description: '',
-        category: 'moral_reasoning',
+        category: defaultCategory,
         is_warning_indicator: false,
         is_active: true,
     });
@@ -229,6 +240,12 @@ export default function AdminCharacterIndicatorsIndex({
         });
     };
 
+    const getCategoryLabel = (val: string) => {
+        const found = categoryList.find((c) => c.value === val);
+
+        return found ? found.label : val;
+    };
+
     return (
         <>
             <Head title="Manajemen Indikator Karakter" />
@@ -308,9 +325,10 @@ export default function AdminCharacterIndicatorsIndex({
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="category">Kategori</Label>
-                                    <Input
+                                    <Label htmlFor="category">Kategori Indikator</Label>
+                                    <select
                                         id="category"
+                                        className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
                                         value={createForm.data.category}
                                         onChange={(event) =>
                                             createForm.setData(
@@ -318,8 +336,13 @@ export default function AdminCharacterIndicatorsIndex({
                                                 event.target.value,
                                             )
                                         }
-                                        placeholder="Contoh: moral_reasoning, social, responsibility"
-                                    />
+                                    >
+                                        {categoryList.map((cat) => (
+                                            <option key={cat.value} value={cat.value}>
+                                                {cat.label}
+                                            </option>
+                                        ))}
+                                    </select>
                                     <InputError
                                         message={createForm.errors.category}
                                     />
@@ -404,7 +427,7 @@ export default function AdminCharacterIndicatorsIndex({
                             <CardContent className="grid gap-4">
                                 <form
                                     onSubmit={submitFilters}
-                                    className="grid gap-3 md:grid-cols-[minmax(0,1fr)_160px_160px_auto]"
+                                    className="grid gap-3 md:grid-cols-[minmax(0,1fr)_180px_160px_auto]"
                                 >
                                     <Input
                                         value={search}
@@ -421,9 +444,9 @@ export default function AdminCharacterIndicatorsIndex({
                                         }
                                     >
                                         <option value="">Semua Kategori</option>
-                                        {categories.map((cat) => (
-                                            <option key={cat} value={cat}>
-                                                {cat}
+                                        {categoryList.map((cat) => (
+                                            <option key={cat.value} value={cat.value}>
+                                                {cat.label}
                                             </option>
                                         ))}
                                     </select>
@@ -500,7 +523,7 @@ export default function AdminCharacterIndicatorsIndex({
                                                             </td>
                                                             <td className="px-4 py-3">
                                                                 <Badge variant="outline">
-                                                                    {indicator.category}
+                                                                    {getCategoryLabel(indicator.category)}
                                                                 </Badge>
                                                             </td>
                                                             <td className="px-4 py-3">
@@ -671,9 +694,10 @@ export default function AdminCharacterIndicatorsIndex({
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="edit_category">Kategori</Label>
-                            <Input
+                            <Label htmlFor="edit_category">Kategori Indikator</Label>
+                            <select
                                 id="edit_category"
+                                className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
                                 value={editForm.data.category}
                                 onChange={(event) =>
                                     editForm.setData(
@@ -681,7 +705,13 @@ export default function AdminCharacterIndicatorsIndex({
                                         event.target.value,
                                     )
                                 }
-                            />
+                            >
+                                {categoryList.map((cat) => (
+                                    <option key={cat.value} value={cat.value}>
+                                        {cat.label}
+                                    </option>
+                                ))}
+                            </select>
                             <InputError message={editForm.errors.category} />
                         </div>
 

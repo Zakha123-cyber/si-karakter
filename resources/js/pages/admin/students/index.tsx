@@ -1,5 +1,5 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { ChevronLeft, ChevronRight, Pencil, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -87,8 +87,6 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
         student_code: '',
         birth_date: '',
         gender: '',
-        current_group_id: '',
-        enrollment_date: '',
         status: 'active',
     });
 
@@ -96,8 +94,6 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
         student_code: '',
         birth_date: '',
         gender: '',
-        current_group_id: '',
-        enrollment_date: '',
         status: 'active',
     });
 
@@ -125,8 +121,6 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
             student_code: student.student_code,
             birth_date: student.birth_date ?? '',
             gender: student.gender ?? '',
-            current_group_id: String(student.current_group_id ?? ''),
-            enrollment_date: student.current_group ? new Date().toISOString().split('T')[0] : '',
             status: student.status,
         });
         editForm.clearErrors();
@@ -162,6 +156,25 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
         });
     };
 
+    const deleteStudent = (student: StudentRow) => {
+        toast.warning(`Hapus ${student.user?.name}?`, {
+            description: 'Data santri dan riwayat kelompok akan dihapus.',
+            action: {
+                label: 'Hapus',
+                onClick: () => {
+                    const toastId = toast.loading('Menghapus...');
+                    router.delete(`/admin/students/${student.id}`, {
+                        preserveScroll: true,
+                        onSuccess: () => toast.success('Santri dihapus.', { id: toastId }),
+                        onError: () => toast.error('Gagal menghapus.', { id: toastId }),
+                    });
+                },
+            },
+            cancel: { label: 'Batal', onClick: () => undefined },
+            duration: 10000,
+        });
+    };
+
     return (
         <>
             <Head title="Santri" />
@@ -173,7 +186,7 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                         <Badge variant="secondary">Admin</Badge>
                     </div>
                     <p className="max-w-3xl text-sm text-muted-foreground">
-                        Kelola data santri, penempatan kelompok, dan status.
+                        Daftar dan kelola data santri.
                     </p>
                 </div>
 
@@ -195,22 +208,22 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                         <CardContent>
                             <form onSubmit={submitCreate} className="grid gap-4">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="user_id">Akun User</Label>
+                                    <Label htmlFor="user_id">Akun Santri</Label>
                                     <select id="user_id" className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={createForm.data.user_id} onChange={(e) => createForm.setData('user_id', e.target.value)}>
-                                        <option value="">Pilih user santri</option>
+                                        <option value="">Pilih akun santri</option>
                                         {users.map((u) => <option key={u.id} value={u.id}>{u.name} (@{u.username})</option>)}
                                     </select>
                                     <InputError message={createForm.errors.user_id} />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="student_code">Kode Santri</Label>
-                                    <Input id="student_code" value={createForm.data.student_code} onChange={(e) => createForm.setData('student_code', e.target.value)} />
+                                    <Label htmlFor="student_code">Kode Santri (NIS)</Label>
+                                    <Input id="student_code" value={createForm.data.student_code} onChange={(e) => createForm.setData('student_code', e.target.value)} placeholder="Masukkan NIS santri" />
                                     <InputError message={createForm.errors.student_code} />
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="gender">Jenis Kelamin</Label>
                                     <select id="gender" className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={createForm.data.gender} onChange={(e) => createForm.setData('gender', e.target.value)}>
-                                        <option value="">Pilih</option>
+                                        <option value="">Pilih jenis kelamin</option>
                                         <option value="male">Laki-laki</option>
                                         <option value="female">Perempuan</option>
                                     </select>
@@ -219,6 +232,7 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                                 <div className="grid gap-2">
                                     <Label htmlFor="birth_date">Tanggal Lahir</Label>
                                     <Input id="birth_date" type="date" value={createForm.data.birth_date} onChange={(e) => createForm.setData('birth_date', e.target.value)} />
+                                    <InputError message={createForm.errors.birth_date} />
                                 </div>
                                 <Button type="submit" disabled={createForm.processing}>Simpan</Button>
                             </form>
@@ -233,7 +247,7 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                             </CardHeader>
                             <CardContent className="grid gap-4">
                                 <form onSubmit={submitFilters} className="grid gap-3 md:grid-cols-[minmax(0,1fr)_180px_150px_auto]">
-                                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari nama, username, kode" />
+                                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari santri..." />
                                     <select className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}>
                                         <option value="">Semua kelompok</option>
                                         {groups.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
@@ -252,8 +266,8 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                                     <table className="w-full min-w-[760px] text-sm">
                                         <thead className="bg-muted/50 text-left">
                                             <tr>
-                                                <th className="px-4 py-3 font-medium">Nama</th>
-                                                <th className="px-4 py-3 font-medium">Kode</th>
+                                                <th className="px-4 py-3 font-medium">Nama Santri</th>
+                                                <th className="px-4 py-3 font-medium">NIS</th>
                                                 <th className="px-4 py-3 font-medium">Kelompok</th>
                                                 <th className="px-4 py-3 font-medium">Status</th>
                                                 <th className="px-4 py-3 text-right font-medium">Aksi</th>
@@ -266,7 +280,7 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                                                         <div className="font-medium">{student.user?.name ?? '-'}</div>
                                                         <div className="text-xs text-muted-foreground">@{student.user?.username}</div>
                                                     </td>
-                                                    <td className="px-4 py-3 text-muted-foreground">{student.student_code}</td>
+                                                    <td className="px-4 py-3 font-mono font-medium">{student.student_code}</td>
                                                     <td className="px-4 py-3">{student.current_group?.name ?? '-'}</td>
                                                     <td className="px-4 py-3">
                                                         <Badge variant={statusVariant[student.status] ?? 'outline'}>
@@ -276,10 +290,13 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                                                     <td className="px-4 py-3">
                                                         <div className="flex justify-end gap-2">
                                                             <Button type="button" size="sm" variant="outline" onClick={() => startEdit(student)}>
-                                                                <Pencil className="size-4" /> Edit
+                                                                <Pencil className="size-4" />
                                                             </Button>
                                                             <Button type="button" size="sm" variant="outline" onClick={() => toggleStatus(student)}>
                                                                 {student.status === 'active' ? 'Nonaktifkan' : 'Aktifkan'}
+                                                            </Button>
+                                                            <Button type="button" size="sm" variant="outline" onClick={() => deleteStudent(student)}>
+                                                                <Trash2 className="size-4" />
                                                             </Button>
                                                         </div>
                                                     </td>
@@ -312,14 +329,14 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                     </SheetHeader>
                     <form onSubmit={submitEdit} className="grid gap-4 px-4 pb-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="edit_student_code">Kode Santri</Label>
+                            <Label htmlFor="edit_student_code">Kode Santri (NIS)</Label>
                             <Input id="edit_student_code" value={editForm.data.student_code} onChange={(e) => editForm.setData('student_code', e.target.value)} />
                             <InputError message={editForm.errors.student_code} />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="edit_gender">Jenis Kelamin</Label>
                             <select id="edit_gender" className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={editForm.data.gender} onChange={(e) => editForm.setData('gender', e.target.value)}>
-                                <option value="">Pilih</option>
+                                <option value="">Pilih jenis kelamin</option>
                                 <option value="male">Laki-laki</option>
                                 <option value="female">Perempuan</option>
                             </select>
@@ -328,6 +345,7 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                         <div className="grid gap-2">
                             <Label htmlFor="edit_birth_date">Tanggal Lahir</Label>
                             <Input id="edit_birth_date" type="date" value={editForm.data.birth_date} onChange={(e) => editForm.setData('birth_date', e.target.value)} />
+                            <InputError message={editForm.errors.birth_date} />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="edit_status">Status</Label>

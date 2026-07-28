@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -52,7 +53,10 @@ class StudentController extends Controller
             ]);
 
         $groups = Group::query()->select('id', 'name')->get();
-        $users = User::query()->where('role', 'student')->select('id', 'name', 'username')->get();
+        $users = User::query()->where('role', 'student')
+            ->whereNotIn('id', Student::query()->select('user_id'))
+            ->select('id', 'name', 'username')
+            ->get();
 
         return Inertia::render('admin/students/index', [
             'students' => $students,
@@ -73,10 +77,11 @@ class StudentController extends Controller
             'student_code' => ['required', 'string', 'max:50', Rule::unique(Student::class)],
             'birth_date' => ['nullable', 'date'],
             'gender' => ['nullable', 'string', 'in:male,female'],
-            'current_group_id' => ['nullable', 'integer', 'exists:groups,id'],
-            'enrollment_date' => ['nullable', 'date'],
             'status' => ['sometimes', 'string', 'in:active,inactive,graduated,transferred'],
         ]);
+
+        $data['gender'] = $data['gender'] ?: null;
+        $data['birth_date'] = $data['birth_date'] ?: null;
 
         Student::query()->create($data);
 
@@ -89,10 +94,11 @@ class StudentController extends Controller
             'student_code' => ['sometimes', 'string', 'max:50', Rule::unique(Student::class)->ignore($student->id)],
             'birth_date' => ['nullable', 'date'],
             'gender' => ['nullable', 'string', 'in:male,female'],
-            'current_group_id' => ['nullable', 'integer', 'exists:groups,id'],
-            'enrollment_date' => ['nullable', 'date'],
             'status' => ['sometimes', 'string', 'in:active,inactive,graduated,transferred'],
         ]);
+
+        $data['gender'] = $data['gender'] ?: null;
+        $data['birth_date'] = $data['birth_date'] ?: null;
 
         $student->update($data);
 
@@ -108,5 +114,15 @@ class StudentController extends Controller
         $student->forceFill($data)->save();
 
         return back()->with('status', 'Status santri berhasil diperbarui.');
+    }
+
+    public function destroy(Student $student): RedirectResponse
+    {
+        DB::transaction(function () use ($student) {
+            $student->groupStudentHistories()->delete();
+            $student->delete();
+        });
+
+        return back()->with('status', 'Santri berhasil dihapus.');
     }
 }

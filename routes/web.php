@@ -45,6 +45,7 @@ Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->name('admi
     Route::post('students', [StudentController::class, 'store'])->name('students.store');
     Route::put('students/{student}', [StudentController::class, 'update'])->name('students.update');
     Route::patch('students/{student}/status', [StudentController::class, 'updateStatus'])->name('students.status');
+    Route::delete('students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 });
 
 Route::middleware(['auth', 'active', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {

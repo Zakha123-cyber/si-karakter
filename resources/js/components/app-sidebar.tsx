@@ -75,9 +75,9 @@ function getNavItems(role: string): NavItem[] {
                 icon: CalendarDays,
             },
             {
-                title: 'Kelompok',
-                href: '/admin/groups',
-                icon: BookMarked,
+                title: 'User Management',
+                href: '/admin/users',
+                icon: UserCheck,
             },
             {
                 title: 'Santri',
@@ -85,9 +85,9 @@ function getNavItems(role: string): NavItem[] {
                 icon: Users,
             },
             {
-                title: 'User Management',
-                href: '/admin/users',
-                icon: UserCheck,
+                title: 'Kelompok',
+                href: '/admin/groups',
+                icon: BookMarked,
             },
             {
                 title: 'Indikator Karakter',

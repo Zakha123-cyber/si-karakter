@@ -188,8 +188,8 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                         <CardContent>
                             <form onSubmit={submitCreate} className="grid gap-4">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Nama</Label>
-                                    <Input id="name" value={createForm.data.name} onChange={(e) => createForm.setData('name', e.target.value)} />
+                                    <Label htmlFor="name">Nama Tahun Ajaran</Label>
+                                    <Input id="name" value={createForm.data.name} onChange={(e) => createForm.setData('name', e.target.value)} placeholder="Misal: 2026/2027" />
                                     <InputError message={createForm.errors.name} />
                                 </div>
                                 <div className="grid gap-2">
@@ -201,6 +201,16 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                                     <Label htmlFor="end_date">Tanggal Selesai</Label>
                                     <Input id="end_date" type="date" value={createForm.data.end_date} onChange={(e) => createForm.setData('end_date', e.target.value)} />
                                     <InputError message={createForm.errors.end_date} />
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <input
+                                        id="is_active"
+                                        type="checkbox"
+                                        className="size-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                        checked={createForm.data.is_active}
+                                        onChange={(e) => createForm.setData('is_active', e.target.checked)}
+                                    />
+                                    <Label htmlFor="is_active" className="text-sm">Aktifkan sekarang</Label>
                                 </div>
                                 <Button type="submit" disabled={createForm.processing}>Simpan</Button>
                             </form>
@@ -217,7 +227,7 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                             </CardHeader>
                             <CardContent className="grid gap-4">
                                 <form onSubmit={submitFilters} className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
-                                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari nama tahun ajaran" />
+                                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari tahun ajaran..." />
                                     <Button type="submit" variant="outline">Filter</Button>
                                 </form>
 
@@ -225,10 +235,10 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                                     <table className="w-full min-w-[660px] text-sm">
                                         <thead className="bg-muted/50 text-left">
                                             <tr>
-                                                <th className="px-4 py-3 font-medium">Nama</th>
+                                                <th className="px-4 py-3 font-medium">Nama Tahun Ajaran</th>
                                                 <th className="px-4 py-3 font-medium">Periode</th>
                                                 <th className="px-4 py-3 font-medium">Status</th>
-                                                <th className="px-4 py-3 font-medium">Kelompok</th>
+                                                <th className="px-4 py-3 font-medium">Jumlah Kelompok</th>
                                                 <th className="px-4 py-3 text-right font-medium">Aksi</th>
                                             </tr>
                                         </thead>
@@ -292,8 +302,8 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                     </SheetHeader>
                     <form onSubmit={submitEdit} className="grid gap-4 px-4 pb-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="edit_name">Nama</Label>
-                            <Input id="edit_name" value={editForm.data.name} onChange={(e) => editForm.setData('name', e.target.value)} />
+                            <Label htmlFor="edit_name">Nama Tahun Ajaran</Label>
+                            <Input id="edit_name" value={editForm.data.name} onChange={(e) => editForm.setData('name', e.target.value)} placeholder="Misal: 2026/2027" />
                             <InputError message={editForm.errors.name} />
                         </div>
                         <div className="grid gap-2">
@@ -305,6 +315,16 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                             <Label htmlFor="edit_end_date">Tanggal Selesai</Label>
                             <Input id="edit_end_date" type="date" value={editForm.data.end_date} onChange={(e) => editForm.setData('end_date', e.target.value)} />
                             <InputError message={editForm.errors.end_date} />
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <input
+                                id="edit_is_active"
+                                type="checkbox"
+                                className="size-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                checked={editForm.data.is_active}
+                                onChange={(e) => editForm.setData('is_active', e.target.checked)}
+                            />
+                            <Label htmlFor="edit_is_active" className="text-sm">Aktif</Label>
                         </div>
                         <div className="flex gap-2 pt-2">
                             <Button type="submit" disabled={editForm.processing}>Simpan Perubahan</Button>

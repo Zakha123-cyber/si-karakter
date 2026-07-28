@@ -6,7 +6,6 @@ import {
     ClipboardCheck,
     ClipboardList,
     FileText,
-    GraduationCap,
     LayoutGrid,
     Tag,
     TreePine,

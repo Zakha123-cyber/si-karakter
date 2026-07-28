@@ -219,7 +219,9 @@ export default function StudentTestWork({
         }
 
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+            });
             const mr = new MediaRecorder(stream);
             const chunks: BlobPart[] = [];
 
@@ -261,9 +263,14 @@ export default function StudentTestWork({
 
         const formData = new FormData();
         formData.append('moral_case_id', String(current_case.id));
-        formData.append('selected_option_id', String(form.data.selected_option_id ?? ''));
+        formData.append(
+            'selected_option_id',
+            String(form.data.selected_option_id ?? ''),
+        );
         formData.append('typed_reason', form.data.typed_reason);
-        const file = new File([blob], `recording-${Date.now()}.webm`, { type: blob.type });
+        const file = new File([blob], `recording-${Date.now()}.webm`, {
+            type: blob.type,
+        });
         formData.append('audio', file);
 
         setAutoSaveStatus('saving');
@@ -435,11 +442,18 @@ export default function StudentTestWork({
 
                                 <div className="flex items-center gap-2">
                                     {!isRecording ? (
-                                        <Button type="button" onClick={startRecording}>
+                                        <Button
+                                            type="button"
+                                            onClick={startRecording}
+                                        >
                                             Mulai Rekam
                                         </Button>
                                     ) : (
-                                        <Button type="button" variant="destructive" onClick={stopRecording}>
+                                        <Button
+                                            type="button"
+                                            variant="destructive"
+                                            onClick={stopRecording}
+                                        >
                                             Stop
                                         </Button>
                                     )}

@@ -12,7 +12,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -170,7 +169,10 @@ class GroupController extends Controller
             return back()->withErrors(['error' => 'Tidak dapat menghapus kelompok yang memiliki santri.']);
         }
 
-        $group->delete();
+        DB::transaction(function () use ($group) {
+            $group->groupStudentHistories()->delete();
+            $group->delete();
+        });
 
         return back()->with('status', 'Kelompok berhasil dihapus.');
     }

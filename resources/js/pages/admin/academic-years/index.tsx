@@ -3,7 +3,6 @@ import { ChevronLeft, ChevronRight, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -146,7 +145,10 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                     router.delete(`/admin/academic-years/${year.id}`, {
                         preserveScroll: true,
                         onSuccess: () => toast.success('Tahun ajaran dihapus.', { id: toastId }),
-                        onError: () => toast.error('Gagal menghapus.', { id: toastId }),
+                        onError: (errors) => {
+                            const msg = errors?.error ?? errors?.message ?? 'Gagal menghapus.';
+                            toast.error(Array.isArray(msg) ? msg[0] : msg, { id: toastId });
+                        },
                     });
                 },
             },
@@ -190,12 +192,10 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                                 <div className="grid gap-2">
                                     <Label htmlFor="name">Nama Tahun Ajaran</Label>
                                     <Input id="name" value={createForm.data.name} onChange={(e) => createForm.setData('name', e.target.value)} placeholder="Misal: 2026/2027" />
-                                    <InputError message={createForm.errors.name} />
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="start_date">Tanggal Mulai</Label>
                                     <Input id="start_date" type="date" value={createForm.data.start_date} onChange={(e) => createForm.setData('start_date', e.target.value)} />
-                                    <InputError message={createForm.errors.start_date} />
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="end_date">Tanggal Selesai</Label>
@@ -304,12 +304,10 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                         <div className="grid gap-2">
                             <Label htmlFor="edit_name">Nama Tahun Ajaran</Label>
                             <Input id="edit_name" value={editForm.data.name} onChange={(e) => editForm.setData('name', e.target.value)} placeholder="Misal: 2026/2027" />
-                            <InputError message={editForm.errors.name} />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="edit_start_date">Tanggal Mulai</Label>
                             <Input id="edit_start_date" type="date" value={editForm.data.start_date} onChange={(e) => editForm.setData('start_date', e.target.value)} />
-                            <InputError message={editForm.errors.start_date} />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="edit_end_date">Tanggal Selesai</Label>

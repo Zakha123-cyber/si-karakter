@@ -6,6 +6,8 @@ use App\Http\Controllers\Teacher\MoralCaseController;
 use App\Http\Controllers\Teacher\TestPackageController;
 use Illuminate\Support\Facades\Route;
 
+require __DIR__.'/student.php';
+
 Route::inertia('/', 'welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {

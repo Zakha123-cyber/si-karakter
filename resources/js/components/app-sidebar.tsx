@@ -1,9 +1,11 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
     BookOpenCheck,
+    Calendar,
     ClipboardCheck,
     ClipboardList,
     FileText,
+    GraduationCap,
     LayoutGrid,
     Tag,
     TreePine,
@@ -69,6 +71,21 @@ function getNavItems(role: string): NavItem[] {
             {
                 title: 'User Management',
                 href: '/admin/users',
+                icon: Users,
+            },
+            {
+                title: 'Tahun Ajaran',
+                href: '/admin/academic-years',
+                icon: Calendar,
+            },
+            {
+                title: 'Kelompok',
+                href: '/admin/groups',
+                icon: GraduationCap,
+            },
+            {
+                title: 'Santri',
+                href: '/admin/students',
                 icon: Users,
             },
             {

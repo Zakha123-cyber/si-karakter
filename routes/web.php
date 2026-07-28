@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\AcademicYearController;
 use App\Http\Controllers\Admin\CharacterIndicatorController;
+use App\Http\Controllers\Admin\GroupController;
+use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Teacher\MoralCaseController;
 use App\Http\Controllers\Teacher\TestPackageController;
@@ -21,6 +24,25 @@ Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->name('admi
 
     Route::resource('character-indicators', CharacterIndicatorController::class)->except(['create', 'edit', 'show']);
     Route::patch('character-indicators/{character_indicator}/status', [CharacterIndicatorController::class, 'updateStatus'])->name('character-indicators.status');
+
+    Route::get('academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
+    Route::post('academic-years', [AcademicYearController::class, 'store'])->name('academic-years.store');
+    Route::put('academic-years/{academicYear}', [AcademicYearController::class, 'update'])->name('academic-years.update');
+    Route::delete('academic-years/{academicYear}', [AcademicYearController::class, 'destroy'])->name('academic-years.destroy');
+    Route::patch('academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
+
+    Route::get('groups', [GroupController::class, 'index'])->name('groups.index');
+    Route::post('groups', [GroupController::class, 'store'])->name('groups.store');
+    Route::put('groups/{group}', [GroupController::class, 'update'])->name('groups.update');
+    Route::delete('groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy');
+    Route::post('groups/{group}/students', [GroupController::class, 'assignStudent'])->name('groups.students.assign');
+    Route::delete('groups/{group}/students/{student}', [GroupController::class, 'removeStudent'])->name('groups.students.remove');
+
+    Route::get('students', [StudentController::class, 'index'])->name('students.index');
+    Route::post('students', [StudentController::class, 'store'])->name('students.store');
+    Route::put('students/{student}', [StudentController::class, 'update'])->name('students.update');
+    Route::patch('students/{student}/status', [StudentController::class, 'updateStatus'])->name('students.status');
+    Route::get('students/{student}', [StudentController::class, 'show'])->name('students.show');
 });
 
 Route::middleware(['auth', 'active', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {

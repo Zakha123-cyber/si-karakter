@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -82,7 +83,10 @@ class AcademicYearController extends Controller
             return back()->withErrors(['error' => 'Tidak dapat menghapus tahun ajaran yang memiliki kelompok.']);
         }
 
-        $academicYear->delete();
+        DB::transaction(function () use ($academicYear) {
+            $academicYear->groupStudentHistories()->delete();
+            $academicYear->delete();
+        });
 
         return back()->with('status', 'Tahun ajaran berhasil dihapus.');
     }

@@ -166,7 +166,10 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                     router.delete(`/admin/students/${student.id}`, {
                         preserveScroll: true,
                         onSuccess: () => toast.success('Santri dihapus.', { id: toastId }),
-                        onError: () => toast.error('Gagal menghapus.', { id: toastId }),
+                        onError: (errors) => {
+                            const msg = errors?.error ?? errors?.message ?? 'Gagal menghapus.';
+                            toast.error(Array.isArray(msg) ? msg[0] : msg, { id: toastId });
+                        },
                     });
                 },
             },

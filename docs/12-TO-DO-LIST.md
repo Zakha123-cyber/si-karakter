@@ -80,21 +80,21 @@ Status:
 
 ## Phase 5 — Student Test Experience
 
-- [ ] Daftar paket tersedia.
-- [ ] Buat attempt.
-- [ ] Validasi attempt limit.
-- [ ] Halaman cerita per kasus.
-- [ ] Text-to-speech atau pemutaran audio cerita.
-- [ ] Pilihan jawaban dinamis.
-- [ ] Input alasan teks.
-- [ ] UI rekaman suara.
-- [ ] Upload audio.
-- [ ] Audio preview.
-- [ ] Autosave.
-- [ ] Progress indicator.
-- [ ] Submit attempt.
-- [ ] Lock jawaban setelah submit.
-- [ ] Test student flow.
+- [x] Daftar paket tersedia.
+- [x] Buat attempt.
+- [x] Validasi attempt limit.
+- [x] Halaman cerita per kasus.
+- [X] Text-to-speech atau pemutaran audio cerita.
+- [x] Pilihan jawaban dinamis.
+- [x] Input alasan teks.
+- [X] UI rekaman suara.
+- [x] Upload audio.
+- [X] Audio preview.
+- [x] Autosave.
+- [x] Progress indicator.
+- [x] Submit attempt.
+- [X] Lock jawaban setelah submit.
+- [x] Test student flow.
 
 ## Phase 6 — Speech-to-Text
 

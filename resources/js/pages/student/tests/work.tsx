@@ -1,5 +1,5 @@
 import { Head, router, useForm } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -60,6 +60,13 @@ export default function StudentTestWork({
         'idle' | 'saving' | 'saved'
     >('idle');
 
+    // Recorder & preview state
+    const [isRecording, setIsRecording] = useState(false);
+    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+    const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
+    const [recordedUrl, setRecordedUrl] = useState<string | null>(null);
+    const [filePreviewUrl, setFilePreviewUrl] = useState<string | null>(null);
+
     const nextCase = case_index + 1;
     const isLastCase = nextCase >= total_cases;
     const answerState = current_case
@@ -107,6 +114,17 @@ export default function StudentTestWork({
 
         return () => window.clearTimeout(timer);
     }, [attempt.id, current_case, form, pkg.id]);
+
+    useEffect(() => {
+        return () => {
+            if (recordedUrl) {
+                URL.revokeObjectURL(recordedUrl);
+            }
+            if (filePreviewUrl) {
+                URL.revokeObjectURL(filePreviewUrl);
+            }
+        };
+    }, [recordedUrl, filePreviewUrl]);
 
     const chooseOption = (optionId: number) => {
         form.setData('selected_option_id', optionId);
@@ -175,6 +193,12 @@ export default function StudentTestWork({
         formData.append('typed_reason', form.data.typed_reason);
         formData.append('audio', file);
 
+        // set preview for uploaded file
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setFilePreviewUrl(url);
+        }
+
         setAutoSaveStatus('saving');
         router.post(
             `/student/tests/${pkg.id}/attempts/${attempt.id}/answers`,
@@ -186,6 +210,85 @@ export default function StudentTestWork({
                 onError: () => setAutoSaveStatus('idle'),
             },
         );
+    };
+
+    const startRecording = async () => {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            alert('Browser Anda tidak mendukung perekaman audio.');
+            return;
+        }
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const mr = new MediaRecorder(stream);
+            const chunks: BlobPart[] = [];
+
+            mr.ondataavailable = (e) => {
+                if (e.data && e.data.size > 0) chunks.push(e.data);
+            };
+
+            mr.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                setRecordedBlob(blob);
+                const url = URL.createObjectURL(blob);
+                setRecordedUrl(url);
+                // auto upload recorded audio
+                uploadRecordedAudio(blob);
+            };
+
+            mediaRecorderRef.current = mr;
+            mr.start();
+            setIsRecording(true);
+        } catch (err) {
+            // eslint-disable-next-line no-console
+            console.error(err);
+            alert('Gagal mengakses mikrofon.');
+        }
+    };
+
+    const stopRecording = () => {
+        const mr = mediaRecorderRef.current;
+        if (!mr) return;
+        mr.stop();
+        setIsRecording(false);
+        // stop all tracks
+        mr.stream.getTracks().forEach((t) => t.stop());
+        mediaRecorderRef.current = null;
+    };
+
+    const uploadRecordedAudio = (blob: Blob) => {
+        if (!current_case) return;
+
+        const formData = new FormData();
+        formData.append('moral_case_id', String(current_case.id));
+        formData.append('selected_option_id', String(form.data.selected_option_id ?? ''));
+        formData.append('typed_reason', form.data.typed_reason);
+        const file = new File([blob], `recording-${Date.now()}.webm`, { type: blob.type });
+        formData.append('audio', file);
+
+        setAutoSaveStatus('saving');
+        router.post(
+            `/student/tests/${pkg.id}/attempts/${attempt.id}/answers`,
+            formData,
+            {
+                forceFormData: true,
+                preserveScroll: true,
+                onSuccess: () => setAutoSaveStatus('saved'),
+                onError: () => setAutoSaveStatus('idle'),
+            },
+        );
+    };
+
+    const playStory = () => {
+        if (!current_case) return;
+        if (!('speechSynthesis' in window)) {
+            alert('Browser Anda tidak mendukung Text-to-Speech.');
+            return;
+        }
+
+        const utter = new SpeechSynthesisUtterance(current_case.story);
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utter);
     };
 
     if (!current_case) {
@@ -308,16 +411,47 @@ export default function StudentTestWork({
                         </div>
 
                         <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
-                            <label className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <span className="font-medium text-foreground">
-                                    Audio singkat
-                                </span>
-                                <input
-                                    type="file"
-                                    accept="audio/*"
-                                    onChange={handleAudioUpload}
-                                />
-                            </label>
+                            <div className="flex flex-col gap-2">
+                                <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <span className="font-medium text-foreground">
+                                        Audio singkat
+                                    </span>
+                                </label>
+
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="file"
+                                        accept="audio/*"
+                                        onChange={handleAudioUpload}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="text-sm text-primary underline"
+                                        onClick={playStory}
+                                    >
+                                        Putar Cerita (TTS)
+                                    </button>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    {!isRecording ? (
+                                        <Button type="button" onClick={startRecording}>
+                                            Mulai Rekam
+                                        </Button>
+                                    ) : (
+                                        <Button type="button" variant="destructive" onClick={stopRecording}>
+                                            Stop
+                                        </Button>
+                                    )}
+                                    {recordedUrl ? (
+                                        <audio controls src={recordedUrl} />
+                                    ) : null}
+                                    {filePreviewUrl ? (
+                                        <audio controls src={filePreviewUrl} />
+                                    ) : null}
+                                </div>
+                            </div>
+
                             <div className="flex flex-wrap justify-end gap-2">
                                 {case_index > 0 ? (
                                     <Button

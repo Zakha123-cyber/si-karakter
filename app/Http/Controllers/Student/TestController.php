@@ -131,6 +131,19 @@ class TestController extends Controller
             abort(403);
         }
 
+        // Prevent updating answers if the attempt has already been submitted.
+        if ($testAttempt->status === 'submitted') {
+            return back()->withErrors([
+                'attempt' => 'Percobaan sudah dikirim dan tidak dapat diubah.',
+            ]);
+        }
+
+        if ($testAttempt->status === 'submitted') {
+            return back()->withErrors([
+                'attempt' => 'Percobaan sudah dikirim dan tidak dapat diubah.',
+            ]);
+        }
+
         $data = $request->validate([
             'moral_case_id' => ['required', 'exists:moral_cases,id'],
             'selected_option_id' => ['nullable', 'exists:moral_case_options,id'],

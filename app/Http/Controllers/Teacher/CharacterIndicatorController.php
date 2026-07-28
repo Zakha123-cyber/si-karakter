@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Teacher;
 
 use App\Enums\IndicatorCategory;
 use App\Http\Controllers\Controller;
@@ -34,7 +34,7 @@ class CharacterIndicatorController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        return Inertia::render('admin/character-indicators/index', [
+        return Inertia::render('teacher/character-indicators/index', [
             'indicators' => $indicators,
             'filters' => [
                 'search' => $request->string('search')->toString(),

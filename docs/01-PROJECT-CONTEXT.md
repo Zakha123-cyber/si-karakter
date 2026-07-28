@@ -18,7 +18,6 @@ Sistem dikembangkan untuk mendukung kegiatan penguatan kapasitas adaptif remaja 
 - Mengelola pengaturan sistem.
 - Mengelola paket tes dan konten.
 - Melihat data global.
-- Mengelola indikator dan bobot penilaian.
 
 ### Ustadz/Pengelola
 
@@ -31,6 +30,7 @@ Sistem dikembangkan untuk mendukung kegiatan penguatan kapasitas adaptif remaja 
 - Melihat dashboard.
 - Melihat early warning.
 - Membuat rapor karakter.
+- Mengelola indikator karakter dan bobot penilaian.
 
 ### Santri
 

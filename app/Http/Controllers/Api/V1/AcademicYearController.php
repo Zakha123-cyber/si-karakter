@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\V1\Concerns\RespondsWithApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\AcademicYears\StoreAcademicYearRequest;
 use App\Http\Requests\Api\V1\AcademicYears\UpdateAcademicYearRequest;
-use App\Http\Resources\AcademicYearResource;
+use App\Http\Resources\Academic\AcademicYearResource;
 use App\Models\AcademicYear;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,7 +22,7 @@ class AcademicYearController extends Controller
                 $search = $request->string('search')->toString();
                 $query->where('name', 'like', "%{$search}%");
             })
-            ->when($request->boolean('active_only'), fn ($query) => $query->where('is_active', true))
+            ->when($request->boolean('is_active'), fn ($q) => $q->where('is_active', true))
             ->withCount('groups')
             ->latest()
             ->paginate($request->integer('per_page', 15));
@@ -32,7 +32,13 @@ class AcademicYearController extends Controller
 
     public function store(StoreAcademicYearRequest $request): JsonResponse
     {
-        $academicYear = AcademicYear::query()->create($request->validated());
+        $data = $request->validated();
+
+        if ($data['is_active'] ?? false) {
+            AcademicYear::query()->where('is_active', true)->update(['is_active' => false]);
+        }
+
+        $academicYear = AcademicYear::query()->create($data);
 
         return $this->success('Academic year created', [
             'academic_year' => new AcademicYearResource($academicYear),
@@ -50,7 +56,13 @@ class AcademicYearController extends Controller
 
     public function update(UpdateAcademicYearRequest $request, AcademicYear $academicYear): JsonResponse
     {
-        $academicYear->update($request->validated());
+        $data = $request->validated();
+
+        if (($data['is_active'] ?? false) && !$academicYear->is_active) {
+            AcademicYear::query()->where('is_active', true)->update(['is_active' => false]);
+        }
+
+        $academicYear->update($data);
 
         return $this->success('Academic year updated', [
             'academic_year' => new AcademicYearResource($academicYear->refresh()),
@@ -70,6 +82,12 @@ class AcademicYearController extends Controller
 
     public function activate(AcademicYear $academicYear): JsonResponse
     {
+        if ($academicYear->is_active) {
+            return $this->success('Academic year already active', [
+                'academic_year' => new AcademicYearResource($academicYear),
+            ]);
+        }
+
         AcademicYear::query()->where('is_active', true)->update(['is_active' => false]);
 
         $academicYear->forceFill(['is_active' => true])->save();

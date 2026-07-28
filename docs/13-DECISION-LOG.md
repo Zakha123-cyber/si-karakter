@@ -126,6 +126,28 @@ Gunakan dokumen ini untuk mencatat keputusan produk dan teknis.
 - Consequences: API dapat dipakai frontend monolith tanpa token package tambahan. Akun nonaktif ditolak saat login dan saat mengakses endpoint terproteksi.
 - Approved By: Implementation
 
+## D-018 — Phase 2 Academic Structure Implementation
+
+- Date: 2026-07-28
+- Status: Accepted
+- Context: Phase 2 requires CRUD for academic years, groups, students, and their relationships (assign ustadz to group, assign students to group, group history timeline).
+- Decision:
+  - AcademicYearController handles CRUD + activate endpoint that deactivates other active years.
+  - GroupController handles CRUD + assignStudents (POST with student_ids array) + removeStudent (DELETE).
+  - StudentController handles CRUD (no destroy) + updateStatus + timeline (group history).
+  - All endpoints placed under admin role middleware.
+  - Group assignment automatically creates GroupStudentHistory records and updates current_group_id.
+- Consequences: API contract for Phase 2 is fully implemented. Tests cover all CRUD and assignment flows.
+
+## D-019 - Character Indicator and Scoring Configuration Ownership
+
+- Date: 2026-07-28
+- Status: Accepted
+- Context: `01-PROJECT-CONTEXT.md` semula menempatkan "mengelola indikator dan bobot penilaian" sebagai tanggung jawab Admin, dan implementasi awal (Phase 3) menaruh CRUD Character Indicators di bawah role Admin (`/admin/character-indicators`). Ustadz adalah pengguna yang benar-benar memakai indikator karakter untuk observasi dan validasi asesmen, sehingga kepemilikan di Admin dinilai salah tempat.
+- Decision: CRUD Character Indicators dan konfigurasi bobot penilaian (test/observation weight, Phase 10) dipindahkan menjadi kewenangan Ustadz, bukan Admin. Route web pindah dari `/admin/character-indicators` ke `/teacher/character-indicators`, endpoint API pindah dari grup middleware `role:admin` ke `role:teacher`.
+- Consequences: `01-PROJECT-CONTEXT.md`, `05-API-CONTRACT.md`, `07-UI-UX-GUIDELINES.md`, dan `12-TO-DO-LIST.md` diperbarui. Controller, halaman React, sidebar nav, dan test terkait dipindahkan dari namespace/direktori Admin ke Teacher.
+- Approved By: User
+
 ## Template Decision Baru
 
 ```md

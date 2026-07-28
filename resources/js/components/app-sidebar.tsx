@@ -1,7 +1,8 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
+    BookMarked,
     BookOpenCheck,
-    Calendar,
+    CalendarDays,
     ClipboardCheck,
     ClipboardList,
     FileText,
@@ -9,6 +10,7 @@ import {
     LayoutGrid,
     Tag,
     TreePine,
+    UserCheck,
     Users,
 } from 'lucide-react';
 import type { Auth, NavItem } from '@/types';
@@ -69,29 +71,24 @@ function getNavItems(role: string): NavItem[] {
         return [
             ...baseItems,
             {
-                title: 'User Management',
-                href: '/admin/users',
-                icon: Users,
-            },
-            {
                 title: 'Tahun Ajaran',
                 href: '/admin/academic-years',
-                icon: Calendar,
+                icon: CalendarDays,
             },
             {
-                title: 'Kelompok',
-                href: '/admin/groups',
-                icon: GraduationCap,
+                title: 'User Management',
+                href: '/admin/users',
+                icon: UserCheck,
             },
             {
                 title: 'Santri',
                 href: '/admin/students',
                 icon: Users,
             },
-            {
-                title: 'Indikator Karakter',
-                href: '/admin/character-indicators',
-                icon: Tag,
+{
+                title: 'Kelompok',
+                href: '/admin/groups',
+                icon: BookMarked,
             },
         ];
     }
@@ -108,6 +105,11 @@ function getNavItems(role: string): NavItem[] {
                 title: 'Kasus Moral',
                 href: '/teacher/moral-cases',
                 icon: BookOpenCheck,
+            },
+            {
+                title: 'Indikator Karakter',
+                href: '/teacher/character-indicators',
+                icon: Tag,
             },
             {
                 title: 'Review',

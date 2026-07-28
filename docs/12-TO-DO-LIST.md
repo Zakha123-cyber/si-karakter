@@ -52,11 +52,11 @@ Status:
 - [x] Riwayat perpindahan kelompok.
 - [x] Test seluruh alur.
 
-## Phase 3 — Character Indicators
+## Phase 3 — Character Indicators (Ustadz)
 
 - [x] Migration character indicators.
 - [x] Seeder indikator dummy.
-- [x] CRUD indikator.
+- [x] CRUD indikator (dipindahkan dari role Admin ke role Ustadz, lihat D-018).
 - [x] Kategori indikator.
 - [x] Flag warning.
 - [x] Test indikator.
@@ -80,21 +80,21 @@ Status:
 
 ## Phase 5 — Student Test Experience
 
-- [ ] Daftar paket tersedia.
-- [ ] Buat attempt.
-- [ ] Validasi attempt limit.
-- [ ] Halaman cerita per kasus.
-- [ ] Text-to-speech atau pemutaran audio cerita.
-- [ ] Pilihan jawaban dinamis.
-- [ ] Input alasan teks.
-- [ ] UI rekaman suara.
-- [ ] Upload audio.
-- [ ] Audio preview.
-- [ ] Autosave.
-- [ ] Progress indicator.
-- [ ] Submit attempt.
-- [ ] Lock jawaban setelah submit.
-- [ ] Test student flow.
+- [x] Daftar paket tersedia.
+- [x] Buat attempt.
+- [x] Validasi attempt limit.
+- [x] Halaman cerita per kasus.
+- [X] Text-to-speech atau pemutaran audio cerita.
+- [x] Pilihan jawaban dinamis.
+- [x] Input alasan teks.
+- [X] UI rekaman suara.
+- [x] Upload audio.
+- [X] Audio preview.
+- [x] Autosave.
+- [x] Progress indicator.
+- [x] Submit attempt.
+- [X] Lock jawaban setelah submit.
+- [x] Test student flow.
 
 ## Phase 6 — Speech-to-Text
 
@@ -159,12 +159,12 @@ Status:
 - [ ] Audit log.
 - [ ] Test observation flow.
 
-## Phase 10 — Character Scoring
+## Phase 10 — Character Scoring (Ustadz)
 
 - [x] Migration scoring configurations.
 - [x] Migration score snapshots.
 - [ ] Default weight 60/40.
-- [ ] CRUD konfigurasi bobot.
+- [ ] CRUD konfigurasi bobot (kewenangan Ustadz, lihat D-018).
 - [ ] Service perhitungan tes.
 - [ ] Service perhitungan observasi.
 - [ ] Service skor gabungan.

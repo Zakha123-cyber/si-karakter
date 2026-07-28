@@ -8,18 +8,20 @@ use Illuminate\Validation\Rule;
 
 class UpdateStudentRequest extends BaseApiRequest
 {
-    /**
-     * @return array<string, mixed>
-     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
     public function rules(): array
     {
         return [
-            'student_code' => ['sometimes', 'string', 'max:50', Rule::unique('students', 'student_code')->ignore($this->route('student'))],
+            'student_code' => ['sometimes', 'string', 'max:50', Rule::unique(Student::class)->ignore($this->route('student'))],
             'birth_date' => ['nullable', 'date'],
-            'gender' => ['nullable', 'string', 'max:20'],
-            'current_group_id' => ['nullable', Rule::exists('groups', 'id')],
+            'gender' => ['nullable', 'string', 'in:male,female'],
+            'current_group_id' => ['nullable', 'integer', 'exists:groups,id'],
             'enrollment_date' => ['nullable', 'date'],
-            'status' => ['sometimes', 'string', 'max:30', Rule::in(['active', 'inactive', 'graduated', 'transferred'])],
+            'status' => ['sometimes', 'string', 'in:active,inactive,graduated,transferred'],
         ];
     }
 }

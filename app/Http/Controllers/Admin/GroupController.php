@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\Group;
@@ -11,7 +10,8 @@ use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -21,55 +21,98 @@ class GroupController extends Controller
     public function index(Request $request): Response
     {
         $groups = Group::query()
-            ->with(['academicYear', 'teacher'])
+            ->with('academicYear')
+            ->with('teacher:id,name,username')
             ->withCount('students')
-            ->when($request->string('search')->toString() !== '', function ($query) use ($request) {
+            ->when($request->string('search')->toString() !== '', function ($q) use ($request) {
                 $search = $request->string('search')->toString();
-                $query->where('name', 'like', "%{$search}%");
+                $q->where('name', 'like', "%{$search}%");
             })
-            ->when($request->integer('academic_year_id'), fn ($query, $id) => $query->where('academic_year_id', $id))
+            ->when($request->integer('academic_year_id'), fn ($q, $id) => $q->where('academic_year_id', $id))
             ->latest()
             ->paginate(12)
             ->withQueryString()
-            ->through(fn (Group $group) => [
-                'id' => $group->id,
-                'name' => $group->name,
-                'description' => $group->description,
-                'academic_year_id' => $group->academic_year_id,
-                'academic_year' => $group->academicYear ? ['id' => $group->academicYear->id, 'name' => $group->academicYear->name] : null,
-                'teacher_id' => $group->teacher_id,
-                'teacher' => $group->teacher ? ['id' => $group->teacher->id, 'name' => $group->teacher->name] : null,
-                'is_active' => $group->is_active,
-                'students_count' => $group->students_count,
+            ->through(fn (Group $g) => [
+                'id' => $g->id,
+                'name' => $g->name,
+                'description' => $g->description,
+                'academic_year_id' => $g->academic_year_id,
+                'teacher_id' => $g->teacher_id,
+                'is_active' => $g->is_active,
+                'students_count' => $g->students_count,
+                'academic_year' => $g->academicYear ? [
+                    'id' => $g->academicYear->id,
+                    'name' => $g->academicYear->name,
+                ] : null,
+                'teacher' => $g->teacher ? [
+                    'id' => $g->teacher->id,
+                    'name' => $g->teacher->name,
+                ] : null,
+            ]);
+
+        $academicYears = AcademicYear::query()->select('id', 'name', 'is_active')->get()->map(fn ($ay) => [
+            'id' => $ay->id,
+            'name' => $ay->name,
+            'is_active' => $ay->is_active,
+        ]);
+        $teachers = User::query()->where('role', 'teacher')->select('id', 'name')->get();
+        $students = Student::query()
+            ->with('user:id,name,username')
+            ->with('currentGroup:id,name,academic_year_id')
+            ->get()
+            ->map(fn (Student $s) => [
+                'id' => $s->id,
+                'student_code' => $s->student_code,
+                'user' => $s->user ? ['id' => $s->user->id, 'name' => $s->user->name] : null,
+                'current_group_id' => $s->current_group_id,
+                'current_group' => $s->currentGroup ? [
+                    'id' => $s->currentGroup->id,
+                    'name' => $s->currentGroup->name,
+                    'academic_year_id' => $s->currentGroup->academic_year_id,
+                ] : null,
             ]);
 
         return Inertia::render('admin/groups/index', [
             'groups' => $groups,
+            'academic_years' => $academicYears,
+            'teachers' => $teachers,
+            'students' => $students,
             'filters' => [
                 'search' => $request->string('search')->toString(),
                 'academic_year_id' => $request->integer('academic_year_id'),
             ],
-            'academic_years' => AcademicYear::query()->select('id', 'name')->latest()->get(),
-            'teachers' => User::query()
-                ->where('role', UserRole::Teacher->value)
-                ->where('is_active', true)
-                ->select('id', 'name')
-                ->orderBy('name')
-                ->get(),
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'academic_year_id' => ['required', Rule::exists(AcademicYear::class, 'id')],
+            'academic_year_id' => ['required', 'exists:academic_years,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'teacher_id' => ['nullable', Rule::exists(User::class, 'id')->where('role', UserRole::Teacher->value)],
+            'teacher_id' => ['nullable', 'exists:users,id'],
             'is_active' => ['sometimes', 'boolean'],
+            'student_ids' => ['nullable', 'array'],
+            'student_ids.*' => ['integer', 'exists:students,id'],
         ]);
 
-        Group::query()->create($data);
+        $studentIds = array_unique(array_filter(($data['student_ids'] ?? [])));
+        $data['teacher_id'] = $data['teacher_id'] ?: null;
+        $data['description'] = $data['description'] ?: null;
+
+        DB::transaction(function () use ($data, $studentIds) {
+            $group = Group::query()->create(Arr::except($data, 'student_ids'));
+
+            foreach ($studentIds as $studentId) {
+                GroupStudentHistory::query()->create([
+                    'student_id' => $studentId,
+                    'group_id' => $group->id,
+                    'academic_year_id' => $data['academic_year_id'],
+                    'joined_at' => now()->toDateString(),
+                ]);
+                Student::query()->where('id', $studentId)->update(['current_group_id' => $group->id]);
+            }
+        });
 
         return back()->with('status', 'Kelompok berhasil dibuat.');
     }
@@ -77,14 +120,46 @@ class GroupController extends Controller
     public function update(Request $request, Group $group): RedirectResponse
     {
         $data = $request->validate([
-            'academic_year_id' => ['required', Rule::exists(AcademicYear::class, 'id')],
-            'name' => ['required', 'string', 'max:255'],
+            'academic_year_id' => ['sometimes', 'exists:academic_years,id'],
+            'name' => ['sometimes', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'teacher_id' => ['nullable', Rule::exists(User::class, 'id')->where('role', UserRole::Teacher->value)],
+            'teacher_id' => ['nullable', 'exists:users,id'],
             'is_active' => ['sometimes', 'boolean'],
+            'student_ids' => ['nullable', 'array'],
+            'student_ids.*' => ['integer', 'exists:students,id'],
         ]);
 
-        $group->update($data);
+        $newIds = array_unique(array_filter(($data['student_ids'] ?? [])));
+        $data['teacher_id'] = $data['teacher_id'] ?: null;
+        $data['description'] = $data['description'] ?: null;
+
+        DB::transaction(function () use ($data, $group, $newIds) {
+            $group->update(Arr::except($data, 'student_ids'));
+
+            $currentIds = $group->students()->pluck('id')->toArray();
+            $ayId = $data['academic_year_id'] ?? $group->academic_year_id;
+
+            $toRemove = array_diff($currentIds, $newIds);
+            foreach ($toRemove as $sid) {
+                GroupStudentHistory::query()->where('student_id', $sid)
+                    ->where('group_id', $group->id)->whereNull('left_at')
+                    ->update(['left_at' => now()->toDateString()]);
+                Student::query()->where('id', $sid)->update(['current_group_id' => null]);
+            }
+
+            $toAdd = array_diff($newIds, $currentIds);
+            foreach ($toAdd as $sid) {
+                GroupStudentHistory::query()->where('student_id', $sid)
+                    ->whereNull('left_at')->update(['left_at' => now()->toDateString()]);
+                GroupStudentHistory::query()->create([
+                    'student_id' => $sid,
+                    'group_id' => $group->id,
+                    'academic_year_id' => $ayId,
+                    'joined_at' => now()->toDateString(),
+                ]);
+                Student::query()->where('id', $sid)->update(['current_group_id' => $group->id]);
+            }
+        });
 
         return back()->with('status', 'Kelompok berhasil diperbarui.');
     }
@@ -100,33 +175,41 @@ class GroupController extends Controller
         return back()->with('status', 'Kelompok berhasil dihapus.');
     }
 
-    public function assignStudent(Request $request, Group $group): RedirectResponse
+    public function assignStudents(Request $request, Group $group): RedirectResponse
     {
         $data = $request->validate([
-            'student_id' => ['required', Rule::exists(Student::class, 'id')],
+            'student_ids' => ['nullable', 'array'],
+            'student_ids.*' => ['integer', 'exists:students,id'],
         ]);
 
-        $student = Student::query()->findOrFail($data['student_id']);
-        $previousGroupId = $student->current_group_id;
+        $newIds = array_unique(array_filter(($data['student_ids'] ?? [])));
 
-        $student->forceFill(['current_group_id' => $group->id])->save();
+        DB::transaction(function () use ($data, $group, $newIds) {
+            $currentIds = $group->students()->pluck('id')->toArray();
 
-        if ($previousGroupId) {
-            GroupStudentHistory::query()
-                ->where('student_id', $student->id)
-                ->where('group_id', $previousGroupId)
-                ->whereNull('left_at')
-                ->update(['left_at' => Carbon::today()]);
-        }
+            $toRemove = array_diff($currentIds, $newIds);
+            foreach ($toRemove as $sid) {
+                GroupStudentHistory::query()->where('student_id', $sid)
+                    ->where('group_id', $group->id)->whereNull('left_at')
+                    ->update(['left_at' => now()->toDateString()]);
+                Student::query()->where('id', $sid)->update(['current_group_id' => null]);
+            }
 
-        GroupStudentHistory::query()->create([
-            'student_id' => $student->id,
-            'group_id' => $group->id,
-            'academic_year_id' => $group->academic_year_id,
-            'joined_at' => Carbon::today(),
-        ]);
+            $toAdd = array_diff($newIds, $currentIds);
+            foreach ($toAdd as $sid) {
+                GroupStudentHistory::query()->where('student_id', $sid)
+                    ->whereNull('left_at')->update(['left_at' => now()->toDateString()]);
+                GroupStudentHistory::query()->create([
+                    'student_id' => $sid,
+                    'group_id' => $group->id,
+                    'academic_year_id' => $group->academic_year_id,
+                    'joined_at' => now()->toDateString(),
+                ]);
+                Student::query()->where('id', $sid)->update(['current_group_id' => $group->id]);
+            }
+        });
 
-        return back()->with('status', 'Santri berhasil ditambahkan ke kelompok.');
+        return back()->with('status', 'Santri berhasil diperbarui.');
     }
 
     public function removeStudent(Group $group, Student $student): RedirectResponse
@@ -135,13 +218,14 @@ class GroupController extends Controller
             return back()->withErrors(['error' => 'Santri tidak berada di kelompok ini.']);
         }
 
-        $student->forceFill(['current_group_id' => null])->save();
+        DB::transaction(function () use ($student, $group) {
+            GroupStudentHistory::query()->where('student_id', $student->id)
+                ->where('group_id', $group->id)
+                ->whereNull('left_at')
+                ->update(['left_at' => now()->toDateString()]);
 
-        GroupStudentHistory::query()
-            ->where('student_id', $student->id)
-            ->where('group_id', $group->id)
-            ->whereNull('left_at')
-            ->update(['left_at' => Carbon::today()]);
+            $student->forceFill(['current_group_id' => null])->save();
+        });
 
         return back()->with('status', 'Santri berhasil dikeluarkan dari kelompok.');
     }

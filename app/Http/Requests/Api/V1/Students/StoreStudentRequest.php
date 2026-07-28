@@ -3,25 +3,27 @@
 namespace App\Http\Requests\Api\V1\Students;
 
 use App\Http\Requests\Api\BaseApiRequest;
-use App\Models\Group;
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Validation\Rule;
 
 class StoreStudentRequest extends BaseApiRequest
 {
-    /**
-     * @return array<string, mixed>
-     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
     public function rules(): array
     {
         return [
-            'user_id' => ['required', Rule::exists(User::class, 'id')],
-            'student_code' => ['required', 'string', 'max:50', Rule::unique('students', 'student_code')],
+            'user_id' => ['required', 'integer', Rule::unique(Student::class), 'exists:users,id'],
+            'student_code' => ['required', 'string', 'max:50', Rule::unique(Student::class)],
             'birth_date' => ['nullable', 'date'],
-            'gender' => ['nullable', 'string', 'max:20'],
-            'current_group_id' => ['nullable', Rule::exists(Group::class, 'id')],
+            'gender' => ['nullable', 'string', 'in:male,female'],
+            'current_group_id' => ['nullable', 'integer', 'exists:groups,id'],
             'enrollment_date' => ['nullable', 'date'],
-            'status' => ['sometimes', 'string', 'max:30', Rule::in(['active', 'inactive', 'graduated', 'transferred'])],
+            'status' => ['sometimes', 'string', 'in:active,inactive,graduated,transferred'],
         ];
     }
 }

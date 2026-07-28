@@ -9,8 +9,18 @@ test('unauthenticated user cannot access character indicators API', function () 
     $response->assertUnauthorized();
 });
 
-test('authenticated user can list character indicators API', function () {
-    $user = User::factory()->create();
+test('non teacher cannot access character indicators API', function () {
+    $admin = User::factory()->admin()->create();
+
+    $response = $this->actingAs($admin)->getJson('/api/v1/character-indicators');
+
+    $response
+        ->assertForbidden()
+        ->assertJsonPath('success', false);
+});
+
+test('teacher can list character indicators API', function () {
+    $user = User::factory()->teacher()->create();
     CharacterIndicator::factory()->count(3)->create();
 
     $response = $this->actingAs($user)->getJson('/api/v1/character-indicators');
@@ -20,8 +30,8 @@ test('authenticated user can list character indicators API', function () {
         ->assertJsonPath('success', true);
 });
 
-test('authenticated user can create character indicator API', function () {
-    $user = User::factory()->create();
+test('teacher can create character indicator API', function () {
+    $user = User::factory()->teacher()->create();
 
     $response = $this->actingAs($user)->postJson('/api/v1/character-indicators', [
         'code' => 'api_honesty',
@@ -42,8 +52,8 @@ test('authenticated user can create character indicator API', function () {
     ]);
 });
 
-test('authenticated user can show single character indicator API', function () {
-    $user = User::factory()->create();
+test('teacher can show single character indicator API', function () {
+    $user = User::factory()->teacher()->create();
     $indicator = CharacterIndicator::factory()->create();
 
     $response = $this->actingAs($user)->getJson("/api/v1/character-indicators/{$indicator->id}");
@@ -54,8 +64,8 @@ test('authenticated user can show single character indicator API', function () {
         ->assertJsonPath('data.indicator.id', $indicator->id);
 });
 
-test('authenticated user can update character indicator API', function () {
-    $user = User::factory()->create();
+test('teacher can update character indicator API', function () {
+    $user = User::factory()->teacher()->create();
     $indicator = CharacterIndicator::factory()->create(['code' => 'old_api_code']);
 
     $response = $this->actingAs($user)->putJson("/api/v1/character-indicators/{$indicator->id}", [
@@ -78,8 +88,8 @@ test('authenticated user can update character indicator API', function () {
     ]);
 });
 
-test('authenticated user can delete character indicator API', function () {
-    $user = User::factory()->create();
+test('teacher can delete character indicator API', function () {
+    $user = User::factory()->teacher()->create();
     $indicator = CharacterIndicator::factory()->create();
 
     $response = $this->actingAs($user)->deleteJson("/api/v1/character-indicators/{$indicator->id}");

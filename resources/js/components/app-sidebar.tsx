@@ -84,15 +84,10 @@ function getNavItems(role: string): NavItem[] {
                 href: '/admin/students',
                 icon: Users,
             },
-            {
+{
                 title: 'Kelompok',
                 href: '/admin/groups',
                 icon: BookMarked,
-            },
-            {
-                title: 'Indikator Karakter',
-                href: '/admin/character-indicators',
-                icon: Tag,
             },
         ];
     }
@@ -109,6 +104,11 @@ function getNavItems(role: string): NavItem[] {
                 title: 'Kasus Moral',
                 href: '/teacher/moral-cases',
                 icon: BookOpenCheck,
+            },
+            {
+                title: 'Indikator Karakter',
+                href: '/teacher/character-indicators',
+                icon: Tag,
             },
             {
                 title: 'Review',

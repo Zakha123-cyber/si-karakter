@@ -171,9 +171,10 @@ function getDashboardCards(role: string) {
 
     return [
         {
-            title: 'Pilih Jalanmu',
-            description:
-                'Tes dilema moral akan tersedia setelah paket tes dibuat.',
+            title: 'Tes Dilema Moral',
+            description: 'Kerjakan paket tes moral yang tersedia untukmu.',
+            action: 'Lihat tes',
+            href: '/student/tests',
             icon: ClipboardCheck,
         },
         {

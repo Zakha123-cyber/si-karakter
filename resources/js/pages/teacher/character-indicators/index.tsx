@@ -8,9 +8,9 @@ import {
     Tag,
     Trash2,
 } from 'lucide-react';
-import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import type { FormEvent } from 'react';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -73,7 +73,7 @@ type Props = {
     categories: (CategoryOption | string)[];
 };
 
-export default function AdminCharacterIndicatorsIndex({
+export default function TeacherCharacterIndicatorsIndex({
     indicators,
     filters,
     categories = [],
@@ -116,7 +116,7 @@ export default function AdminCharacterIndicatorsIndex({
         event.preventDefault();
 
         router.get(
-            '/admin/character-indicators',
+            '/teacher/character-indicators',
             { search, category, is_warning_indicator: isWarningFilter },
             { preserveState: true, replace: true },
         );
@@ -126,7 +126,7 @@ export default function AdminCharacterIndicatorsIndex({
         event.preventDefault();
         const toastId = toast.loading('Menyimpan indikator baru...');
 
-        createForm.post('/admin/character-indicators', {
+        createForm.post('/teacher/character-indicators', {
             preserveScroll: true,
             onSuccess: () => {
                 toast.success('Indikator karakter berhasil dibuat.', {
@@ -171,29 +171,26 @@ export default function AdminCharacterIndicatorsIndex({
 
         const toastId = toast.loading('Menyimpan perubahan indikator...');
 
-        editForm.put(
-            `/admin/character-indicators/${editingIndicator.id}`,
-            {
-                preserveScroll: true,
-                onSuccess: () => {
-                    toast.success('Indikator berhasil diperbarui.', {
-                        id: toastId,
-                    });
-                    cancelEdit();
-                },
-                onError: () => {
-                    toast.error(
-                        'Indikator belum bisa diperbarui. Periksa kembali form.',
-                        { id: toastId },
-                    );
-                },
+editForm.put(`/teacher/character-indicators/${editingIndicator.id}`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success('Indikator berhasil diperbarui.', {
+                    id: toastId,
+                });
+                cancelEdit();
             },
-        );
+            onError: () => {
+                toast.error(
+                    'Indikator belum bisa diperbarui. Periksa kembali form.',
+                    { id: toastId },
+                );
+            },
+        });
     };
 
     const toggleStatus = (indicator: CharacterIndicator) => {
         router.patch(
-            `/admin/character-indicators/${indicator.id}/status`,
+            `/teacher/character-indicators/${indicator.id}/status`,
             { is_active: !indicator.is_active },
             {
                 preserveScroll: true,
@@ -219,7 +216,7 @@ export default function AdminCharacterIndicatorsIndex({
                 label: 'Hapus',
                 onClick: () => {
                     router.delete(
-                        `/admin/character-indicators/${indicator.id}`,
+                        `/teacher/character-indicators/${indicator.id}`,
                         {
                             preserveScroll: true,
                             onSuccess: () => {
@@ -256,11 +253,12 @@ export default function AdminCharacterIndicatorsIndex({
                         <h1 className="text-2xl font-semibold tracking-normal">
                             Indikator Karakter
                         </h1>
-                        <Badge variant="secondary">Admin</Badge>
+                        <Badge variant="secondary">Ustadz</Badge>
                     </div>
                     <p className="max-w-3xl text-sm text-muted-foreground">
                         Kelola daftar indikator perkembangan karakter santri,
-                        kategori evaluasi, serta penanda indikator peringatan (warning flag).
+                        kategori evaluasi, serta penanda indikator peringatan
+                        (warning flag).
                     </p>
                 </div>
 
@@ -280,7 +278,8 @@ export default function AdminCharacterIndicatorsIndex({
                                 </CardTitle>
                             </div>
                             <CardDescription>
-                                Buat indikator karakter baru untuk observasi & asesmen.
+                                Buat indikator karakter baru untuk observasi &
+                                asesmen.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -325,7 +324,9 @@ export default function AdminCharacterIndicatorsIndex({
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="category">Kategori Indikator</Label>
+                                    <Label htmlFor="category">
+                                        Kategori Indikator
+                                    </Label>
                                     <select
                                         id="category"
                                         className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
@@ -338,7 +339,10 @@ export default function AdminCharacterIndicatorsIndex({
                                         }
                                     >
                                         {categoryList.map((cat) => (
-                                            <option key={cat.value} value={cat.value}>
+                                            <option
+                                                key={cat.value}
+                                                value={cat.value}
+                                            >
                                                 {cat.label}
                                             </option>
                                         ))}
@@ -349,7 +353,9 @@ export default function AdminCharacterIndicatorsIndex({
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="description">Deskripsi</Label>
+                                    <Label htmlFor="description">
+                                        Deskripsi
+                                    </Label>
                                     <textarea
                                         id="description"
                                         rows={3}
@@ -420,8 +426,8 @@ export default function AdminCharacterIndicatorsIndex({
                                     </CardTitle>
                                 </div>
                                 <CardDescription>
-                                    {indicators.from ?? 0}-{indicators.to ?? 0} dari{' '}
-                                    {indicators.total} indikator
+                                    {indicators.from ?? 0}-{indicators.to ?? 0}{' '}
+                                    dari {indicators.total} indikator
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="grid gap-4">
@@ -445,7 +451,10 @@ export default function AdminCharacterIndicatorsIndex({
                                     >
                                         <option value="">Semua Kategori</option>
                                         {categoryList.map((cat) => (
-                                            <option key={cat.value} value={cat.value}>
+                                            <option
+                                                key={cat.value}
+                                                value={cat.value}
+                                            >
                                                 {cat.label}
                                             </option>
                                         ))}
@@ -496,7 +505,8 @@ export default function AdminCharacterIndicatorsIndex({
                                                         colSpan={5}
                                                         className="px-4 py-8 text-center text-muted-foreground"
                                                     >
-                                                        Belum ada indikator karakter.
+                                                        Belum ada indikator
+                                                        karakter.
                                                     </td>
                                                 </tr>
                                             ) : (
@@ -508,22 +518,30 @@ export default function AdminCharacterIndicatorsIndex({
                                                         >
                                                             <td className="px-4 py-3">
                                                                 <div className="font-medium">
-                                                                    {indicator.name}
+                                                                    {
+                                                                        indicator.name
+                                                                    }
                                                                 </div>
                                                                 <div className="text-xs text-muted-foreground">
                                                                     <code>
-                                                                        {indicator.code}
+                                                                        {
+                                                                            indicator.code
+                                                                        }
                                                                     </code>
                                                                 </div>
                                                                 {indicator.description && (
-                                                                    <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
-                                                                        {indicator.description}
+                                                                    <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                                                                        {
+                                                                            indicator.description
+                                                                        }
                                                                     </p>
                                                                 )}
                                                             </td>
                                                             <td className="px-4 py-3">
                                                                 <Badge variant="outline">
-                                                                    {getCategoryLabel(indicator.category)}
+                                                                    {getCategoryLabel(
+                                                                        indicator.category,
+                                                                    )}
                                                                 </Badge>
                                                             </td>
                                                             <td className="px-4 py-3">
@@ -694,7 +712,9 @@ export default function AdminCharacterIndicatorsIndex({
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="edit_category">Kategori Indikator</Label>
+                            <Label htmlFor="edit_category">
+                                Kategori Indikator
+                            </Label>
                             <select
                                 id="edit_category"
                                 className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
@@ -729,9 +749,7 @@ export default function AdminCharacterIndicatorsIndex({
                                     )
                                 }
                             />
-                            <InputError
-                                message={editForm.errors.description}
-                            />
+                            <InputError message={editForm.errors.description} />
                         </div>
 
                         <div className="flex items-center gap-3">

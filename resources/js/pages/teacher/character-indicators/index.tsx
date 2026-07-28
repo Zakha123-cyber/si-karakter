@@ -73,7 +73,7 @@ type Props = {
     categories: (CategoryOption | string)[];
 };
 
-export default function AdminCharacterIndicatorsIndex({
+export default function TeacherCharacterIndicatorsIndex({
     indicators,
     filters,
     categories = [],
@@ -116,7 +116,7 @@ export default function AdminCharacterIndicatorsIndex({
         event.preventDefault();
 
         router.get(
-            '/admin/character-indicators',
+            '/teacher/character-indicators',
             { search, category, is_warning_indicator: isWarningFilter },
             { preserveState: true, replace: true },
         );
@@ -126,7 +126,7 @@ export default function AdminCharacterIndicatorsIndex({
         event.preventDefault();
         const toastId = toast.loading('Menyimpan indikator baru...');
 
-        createForm.post('/admin/character-indicators', {
+        createForm.post('/teacher/character-indicators', {
             preserveScroll: true,
             onSuccess: () => {
                 toast.success('Indikator karakter berhasil dibuat.', {
@@ -171,7 +171,7 @@ export default function AdminCharacterIndicatorsIndex({
 
         const toastId = toast.loading('Menyimpan perubahan indikator...');
 
-        editForm.put(`/admin/character-indicators/${editingIndicator.id}`, {
+editForm.put(`/teacher/character-indicators/${editingIndicator.id}`, {
             preserveScroll: true,
             onSuccess: () => {
                 toast.success('Indikator berhasil diperbarui.', {
@@ -190,7 +190,7 @@ export default function AdminCharacterIndicatorsIndex({
 
     const toggleStatus = (indicator: CharacterIndicator) => {
         router.patch(
-            `/admin/character-indicators/${indicator.id}/status`,
+            `/teacher/character-indicators/${indicator.id}/status`,
             { is_active: !indicator.is_active },
             {
                 preserveScroll: true,
@@ -216,7 +216,7 @@ export default function AdminCharacterIndicatorsIndex({
                 label: 'Hapus',
                 onClick: () => {
                     router.delete(
-                        `/admin/character-indicators/${indicator.id}`,
+                        `/teacher/character-indicators/${indicator.id}`,
                         {
                             preserveScroll: true,
                             onSuccess: () => {
@@ -253,7 +253,7 @@ export default function AdminCharacterIndicatorsIndex({
                         <h1 className="text-2xl font-semibold tracking-normal">
                             Indikator Karakter
                         </h1>
-                        <Badge variant="secondary">Admin</Badge>
+                        <Badge variant="secondary">Ustadz</Badge>
                     </div>
                     <p className="max-w-3xl text-sm text-muted-foreground">
                         Kelola daftar indikator perkembangan karakter santri,

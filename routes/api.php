@@ -17,7 +17,9 @@ Route::prefix('v1')->middleware('web')->group(function () {
             Route::apiResource('users', UserController::class)->except(['destroy']);
             Route::patch('users/{user}/status', [UserController::class, 'updateStatus'])->name('users.status');
             Route::post('users/{user}/reset-credential', [UserController::class, 'resetCredential'])->name('users.reset-credential');
+        });
 
+        Route::middleware('role:teacher')->group(function () {
             Route::apiResource('character-indicators', ApiCharacterIndicatorController::class);
         });
     });

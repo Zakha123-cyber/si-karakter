@@ -259,18 +259,28 @@ class TestController extends Controller
             ->latest('id')
             ->first();
 
+        $attemptsUsed = TestAttempt::query()
+            ->where('test_package_id', $package->id)
+            ->where('student_id', $student?->id)
+            ->count();
+
+        $hasInProgress = $activeAttempt !== null && $activeAttempt->status === 'in_progress';
+        $hasReachedLimit = $attemptsUsed >= max(1, $package->attempt_limit);
+
         return [
             'id' => $package->id,
             'title' => $package->title,
             'description' => $package->description,
             'attempt_limit' => $package->attempt_limit,
+            'attempts_used' => $attemptsUsed,
             'cases_count' => $package->cases_count,
             'active_attempt' => $activeAttempt === null ? null : [
                 'id' => $activeAttempt->id,
                 'status' => $activeAttempt->status,
                 'attempt_number' => $activeAttempt->attempt_number,
             ],
-            'can_start' => $activeAttempt === null || $activeAttempt->status !== 'in_progress',
+            'can_resume' => $hasInProgress,
+            'can_start' => !$hasInProgress && !$hasReachedLimit,
         ];
     }
 }

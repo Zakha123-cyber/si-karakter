@@ -17,6 +17,7 @@ type PackageRow = {
     title: string;
     description: string | null;
     attempt_limit: number;
+    attempts_used: number;
     cases_count: number;
     active_attempt: {
         id: number;
@@ -24,6 +25,7 @@ type PackageRow = {
         attempt_number: number;
     } | null;
     can_start: boolean;
+    can_resume: boolean;
 };
 
 type Props = {
@@ -75,6 +77,9 @@ export default function StudentTestsIndex({ packages }: Props) {
                                     <span>
                                         Batas percobaan: {pkg.attempt_limit}
                                     </span>
+                                    <span>
+                                        Digunakan: {pkg.attempts_used}
+                                    </span>
                                     {pkg.active_attempt ? (
                                         <span>
                                             Aktif: percobaan{' '}
@@ -86,7 +91,17 @@ export default function StudentTestsIndex({ packages }: Props) {
                                     )}
                                 </div>
                                 <div className="flex gap-2">
-                                    {pkg.can_start ? (
+                                    {pkg.can_resume ? (
+                                        <Button
+                                            onClick={() =>
+                                                router.get(
+                                                    `/student/tests/${pkg.id}/attempts/${pkg.active_attempt!.id}`,
+                                                )
+                                            }
+                                        >
+                                            Lanjutkan
+                                        </Button>
+                                    ) : pkg.can_start ? (
                                         <Button
                                             onClick={() =>
                                                 router.post(
@@ -98,10 +113,17 @@ export default function StudentTestsIndex({ packages }: Props) {
                                         </Button>
                                     ) : (
                                         <Button variant="outline" disabled>
-                                            Sedang Berjalan
+                                            Habis
                                         </Button>
                                     )}
                                 </div>
+                                {!pkg.can_resume &&
+                                    !pkg.can_start &&
+                                    pkg.attempts_used >= pkg.attempt_limit && (
+                                        <p className="text-xs text-destructive">
+                                            Batas percobaan sudah terpenuhi.
+                                        </p>
+                                    )}
                             </CardContent>
                         </Card>
                     ))}

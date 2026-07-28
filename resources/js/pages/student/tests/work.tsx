@@ -87,15 +87,18 @@ export default function StudentTestWork({
             answerState.selected_option_id ?? null,
         );
         form.setData('typed_reason', answerState.typed_reason ?? '');
-    }, [
-        answerState.selected_option_id,
-        answerState.typed_reason,
-        current_case,
-        form,
-    ]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [current_case?.id, answerState.selected_option_id, answerState.typed_reason]);
 
     useEffect(() => {
         if (!current_case) {
+            return;
+        }
+
+        const hasData =
+            form.data.selected_option_id !== null ||
+            form.data.typed_reason !== '';
+        if (!hasData) {
             return;
         }
 
@@ -113,7 +116,14 @@ export default function StudentTestWork({
         }, 800);
 
         return () => window.clearTimeout(timer);
-    }, [attempt.id, current_case, form, pkg.id]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+        attempt.id,
+        current_case?.id,
+        form.data.selected_option_id,
+        form.data.typed_reason,
+        pkg.id,
+    ]);
 
     useEffect(() => {
         return () => {

@@ -243,7 +243,7 @@ GET    /reports/{id}/pdf
 
 ## Authorization
 
-- Admin: seluruh master data dan konfigurasi.
-- Ustadz: santri dalam kelompok yang menjadi tanggung jawabnya.
+- Admin: seluruh master data dan konfigurasi, kecuali indikator karakter dan bobot penilaian.
+- Ustadz: santri dalam kelompok yang menjadi tanggung jawabnya, serta indikator karakter dan bobot penilaian.
 - Santri: data dan aktivitas miliknya sendiri.
 - Endpoint file harus memeriksa hak akses.

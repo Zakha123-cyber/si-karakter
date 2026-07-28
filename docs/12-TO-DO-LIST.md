@@ -52,11 +52,11 @@ Status:
 - [ ] Riwayat perpindahan kelompok.
 - [ ] Test seluruh alur.
 
-## Phase 3 — Character Indicators
+## Phase 3 — Character Indicators (Ustadz)
 
 - [x] Migration character indicators.
 - [x] Seeder indikator dummy.
-- [x] CRUD indikator.
+- [x] CRUD indikator (dipindahkan dari role Admin ke role Ustadz, lihat D-018).
 - [x] Kategori indikator.
 - [x] Flag warning.
 - [x] Test indikator.
@@ -159,12 +159,12 @@ Status:
 - [ ] Audit log.
 - [ ] Test observation flow.
 
-## Phase 10 — Character Scoring
+## Phase 10 — Character Scoring (Ustadz)
 
 - [x] Migration scoring configurations.
 - [x] Migration score snapshots.
 - [ ] Default weight 60/40.
-- [ ] CRUD konfigurasi bobot.
+- [ ] CRUD konfigurasi bobot (kewenangan Ustadz, lihat D-018).
 - [ ] Service perhitungan tes.
 - [ ] Service perhitungan observasi.
 - [ ] Service skor gabungan.

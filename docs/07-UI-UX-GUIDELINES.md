@@ -79,13 +79,18 @@ Form validasi ustadz
 - Catatan singkat.
 - Simpan cepat.
 
+### Indicator and Scoring Settings
+
+- CRUD indikator karakter.
+- Kategori indikator.
+- Flag warning.
+- Konfigurasi bobot penilaian (tes dan observasi).
+
 ## 3. Portal Admin
 
 - User management.
 - Academic structure.
 - Test management.
-- Indicator settings.
-- Scoring settings.
 - Content management.
 - Tree levels.
 - Audit log.

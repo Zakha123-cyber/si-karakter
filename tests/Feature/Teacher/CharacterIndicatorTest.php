@@ -4,32 +4,40 @@ use App\Models\CharacterIndicator;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
-test('authenticated user can view character indicators index page', function () {
+test('non teacher cannot view character indicators page', function () {
+    $admin = User::factory()->admin()->create();
+
+    $response = $this->actingAs($admin)->get('/teacher/character-indicators');
+
+    $response->assertForbidden();
+});
+
+test('teacher can view character indicators index page', function () {
     $this->withoutVite();
 
-    $user = User::factory()->create();
+    $teacher = User::factory()->teacher()->create();
     CharacterIndicator::factory()->create(['name' => 'Indikator Test', 'code' => 'test_code']);
 
-    $response = $this->actingAs($user)->get('/admin/character-indicators');
+    $response = $this->actingAs($teacher)->get('/teacher/character-indicators');
 
     $response
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->component('admin/character-indicators/index')
+            ->component('teacher/character-indicators/index')
             ->has('indicators.data')
         );
 });
 
 test('unauthenticated user cannot view character indicators page', function () {
-    $response = $this->get('/admin/character-indicators');
+    $response = $this->get('/teacher/character-indicators');
 
     $response->assertRedirect('/login');
 });
 
-test('authenticated user can create character indicator', function () {
-    $user = User::factory()->create();
+test('teacher can create character indicator', function () {
+    $teacher = User::factory()->teacher()->create();
 
-    $response = $this->actingAs($user)->post('/admin/character-indicators', [
+    $response = $this->actingAs($teacher)->post('/teacher/character-indicators', [
         'code' => 'honesty_test',
         'name' => 'Kejujuran Test',
         'description' => 'Deskripsi indikator kejujuran',
@@ -49,14 +57,14 @@ test('authenticated user can create character indicator', function () {
     ]);
 });
 
-test('authenticated user can update character indicator', function () {
-    $user = User::factory()->create();
+test('teacher can update character indicator', function () {
+    $teacher = User::factory()->teacher()->create();
     $indicator = CharacterIndicator::factory()->create([
         'code' => 'old_code',
         'name' => 'Nama Lama',
     ]);
 
-    $response = $this->actingAs($user)->put("/admin/character-indicators/{$indicator->id}", [
+    $response = $this->actingAs($teacher)->put("/teacher/character-indicators/{$indicator->id}", [
         'code' => 'updated_code',
         'name' => 'Nama Baru',
         'description' => 'Deskripsi diperbarui',
@@ -75,11 +83,11 @@ test('authenticated user can update character indicator', function () {
     ]);
 });
 
-test('authenticated user can toggle character indicator status', function () {
-    $user = User::factory()->create();
+test('teacher can toggle character indicator status', function () {
+    $teacher = User::factory()->teacher()->create();
     $indicator = CharacterIndicator::factory()->create(['is_active' => true]);
 
-    $response = $this->actingAs($user)->patch("/admin/character-indicators/{$indicator->id}/status", [
+    $response = $this->actingAs($teacher)->patch("/teacher/character-indicators/{$indicator->id}/status", [
         'is_active' => false,
     ]);
 
@@ -91,11 +99,11 @@ test('authenticated user can toggle character indicator status', function () {
     ]);
 });
 
-test('authenticated user can delete character indicator', function () {
-    $user = User::factory()->create();
+test('teacher can delete character indicator', function () {
+    $teacher = User::factory()->teacher()->create();
     $indicator = CharacterIndicator::factory()->create();
 
-    $response = $this->actingAs($user)->delete("/admin/character-indicators/{$indicator->id}");
+    $response = $this->actingAs($teacher)->delete("/teacher/character-indicators/{$indicator->id}");
 
     $response->assertRedirect();
 

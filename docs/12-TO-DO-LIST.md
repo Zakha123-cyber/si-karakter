@@ -43,14 +43,14 @@ Status:
 - [x] Migration groups.
 - [x] Migration students.
 - [x] Migration group histories.
-- [ ] CRUD tahun ajaran.
-- [ ] Aktivasi tahun ajaran.
-- [ ] CRUD kelompok.
-- [ ] Assign ustadz.
-- [ ] CRUD santri.
-- [ ] Assign santri ke kelompok.
-- [ ] Riwayat perpindahan kelompok.
-- [ ] Test seluruh alur.
+- [x] CRUD tahun ajaran.
+- [x] Aktivasi tahun ajaran.
+- [x] CRUD kelompok.
+- [x] Assign ustadz.
+- [x] CRUD santri.
+- [x] Assign santri ke kelompok.
+- [x] Riwayat perpindahan kelompok.
+- [x] Test seluruh alur.
 
 ## Phase 3 — Character Indicators (Ustadz)
 

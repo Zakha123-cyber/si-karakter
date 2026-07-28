@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AcademicYearController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CharacterIndicatorController as ApiCharacterIndicatorController;
+use App\Http\Controllers\Api\V1\GroupController;
+use App\Http\Controllers\Api\V1\StudentController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +24,17 @@ Route::prefix('v1')->middleware('web')->group(function () {
 
         Route::middleware('role:teacher')->group(function () {
             Route::apiResource('character-indicators', ApiCharacterIndicatorController::class);
+
+            Route::apiResource('academic-years', AcademicYearController::class);
+            Route::patch('academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
+
+            Route::apiResource('groups', GroupController::class);
+            Route::post('groups/{group}/students', [GroupController::class, 'assignStudents'])->name('groups.students.assign');
+            Route::delete('groups/{group}/students/{student}', [GroupController::class, 'removeStudent'])->name('groups.students.remove');
+
+            Route::apiResource('students', StudentController::class)->except(['destroy']);
+            Route::patch('students/{student}/status', [StudentController::class, 'updateStatus'])->name('students.status');
+            Route::get('students/{student}/timeline', [StudentController::class, 'timeline'])->name('students.timeline');
         });
     });
 });

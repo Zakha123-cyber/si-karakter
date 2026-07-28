@@ -126,7 +126,20 @@ Gunakan dokumen ini untuk mencatat keputusan produk dan teknis.
 - Consequences: API dapat dipakai frontend monolith tanpa token package tambahan. Akun nonaktif ditolak saat login dan saat mengakses endpoint terproteksi.
 - Approved By: Implementation
 
-## D-018 - Character Indicator and Scoring Configuration Ownership
+## D-018 — Phase 2 Academic Structure Implementation
+
+- Date: 2026-07-28
+- Status: Accepted
+- Context: Phase 2 requires CRUD for academic years, groups, students, and their relationships (assign ustadz to group, assign students to group, group history timeline).
+- Decision:
+  - AcademicYearController handles CRUD + activate endpoint that deactivates other active years.
+  - GroupController handles CRUD + assignStudents (POST with student_ids array) + removeStudent (DELETE).
+  - StudentController handles CRUD (no destroy) + updateStatus + timeline (group history).
+  - All endpoints placed under admin role middleware.
+  - Group assignment automatically creates GroupStudentHistory records and updates current_group_id.
+- Consequences: API contract for Phase 2 is fully implemented. Tests cover all CRUD and assignment flows.
+
+## D-019 - Character Indicator and Scoring Configuration Ownership
 
 - Date: 2026-07-28
 - Status: Accepted

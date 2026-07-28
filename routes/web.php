@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\AcademicYearController;
+use App\Http\Controllers\Admin\GroupController;
+use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Teacher\CharacterIndicatorController;
 use App\Http\Controllers\Teacher\MoralCaseController;
@@ -20,6 +23,28 @@ Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->name('admi
     Route::put('users/{user}', [UserManagementController::class, 'update'])->name('users.update');
     Route::patch('users/{user}/status', [UserManagementController::class, 'updateStatus'])->name('users.status');
     Route::post('users/{user}/reset-credential', [UserManagementController::class, 'resetCredential'])->name('users.reset-credential');
+
+    // Academic Years
+    Route::get('academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
+    Route::post('academic-years', [AcademicYearController::class, 'store'])->name('academic-years.store');
+    Route::put('academic-years/{academicYear}', [AcademicYearController::class, 'update'])->name('academic-years.update');
+    Route::delete('academic-years/{academicYear}', [AcademicYearController::class, 'destroy'])->name('academic-years.destroy');
+    Route::patch('academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
+
+    // Groups
+    Route::get('groups', [GroupController::class, 'index'])->name('groups.index');
+    Route::post('groups', [GroupController::class, 'store'])->name('groups.store');
+    Route::put('groups/{group}', [GroupController::class, 'update'])->name('groups.update');
+    Route::delete('groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy');
+    Route::post('groups/{group}/students', [GroupController::class, 'assignStudents'])->name('groups.students.assign');
+    Route::delete('groups/{group}/students/{student}', [GroupController::class, 'removeStudent'])->name('groups.students.remove');
+
+    // Students
+    Route::get('students', [StudentController::class, 'index'])->name('students.index');
+    Route::post('students', [StudentController::class, 'store'])->name('students.store');
+    Route::put('students/{student}', [StudentController::class, 'update'])->name('students.update');
+    Route::patch('students/{student}/status', [StudentController::class, 'updateStatus'])->name('students.status');
+    Route::delete('students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 });
 
 Route::middleware(['auth', 'active', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {

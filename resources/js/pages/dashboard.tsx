@@ -1,6 +1,8 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
+    BookMarked,
     BookOpen,
+    CalendarDays,
     ClipboardCheck,
     FileText,
     LayoutDashboard,
@@ -109,6 +111,13 @@ function getDashboardCards(role: string) {
     if (role === 'admin') {
         return [
             {
+                title: 'Tahun Ajaran',
+                description: 'Atur tahun ajaran untuk kegiatan akademik.',
+                action: 'Kelola tahun ajaran',
+                href: '/admin/academic-years',
+                icon: CalendarDays,
+            },
+            {
                 title: 'User Management',
                 description: 'Kelola akun admin, ustadz, dan santri.',
                 action: 'Kelola user',
@@ -116,10 +125,18 @@ function getDashboardCards(role: string) {
                 icon: Users,
             },
             {
-                title: 'Struktur Akademik',
-                description:
-                    'Tahun ajaran dan kelompok akan dikerjakan pada Phase 2.',
-                icon: LayoutDashboard,
+                title: 'Santri',
+                description: 'Daftar dan kelola data santri.',
+                action: 'Kelola santri',
+                href: '/admin/students',
+                icon: Users,
+            },
+            {
+                title: 'Kelompok',
+                description: 'Buat kelompok dan atur penempatan santri.',
+                action: 'Kelola kelompok',
+                href: '/admin/groups',
+                icon: BookMarked,
             },
             {
                 title: 'Pengaturan Sistem',
@@ -154,9 +171,10 @@ function getDashboardCards(role: string) {
 
     return [
         {
-            title: 'Pilih Jalanmu',
-            description:
-                'Tes dilema moral akan tersedia setelah paket tes dibuat.',
+            title: 'Tes Dilema Moral',
+            description: 'Kerjakan paket tes moral yang tersedia untukmu.',
+            action: 'Lihat tes',
+            href: '/student/tests',
             icon: ClipboardCheck,
         },
         {

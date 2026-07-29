@@ -1,9 +1,16 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
+    BookMarked,
+    BookOpenCheck,
+    CalendarDays,
     ClipboardCheck,
+    ClipboardList,
+    FileSearch,
     FileText,
     LayoutGrid,
+    Tag,
     TreePine,
+    UserCheck,
     Users,
 } from 'lucide-react';
 import type { Auth, NavItem } from '@/types';
@@ -23,7 +30,7 @@ import { dashboard } from '@/routes';
 
 export function AppSidebar() {
     const { auth } = usePage<{ auth: Auth }>().props;
-    const role = auth.user?.role ?? 'student';
+    const role = (auth.user?.role as string) ?? 'student';
     const mainNavItems = getNavItems(role);
 
     return (
@@ -64,9 +71,29 @@ function getNavItems(role: string): NavItem[] {
         return [
             ...baseItems,
             {
+                title: 'Tahun Ajaran',
+                href: '/admin/academic-years',
+                icon: CalendarDays,
+            },
+            {
                 title: 'User Management',
                 href: '/admin/users',
+                icon: UserCheck,
+            },
+            {
+                title: 'Santri',
+                href: '/admin/students',
                 icon: Users,
+            },
+            {
+                title: 'Kelompok',
+                href: '/admin/groups',
+                icon: BookMarked,
+            },
+            {
+                title: 'Hasil Test',
+                href: '/admin/test-results',
+                icon: FileSearch,
             },
         ];
     }
@@ -75,8 +102,23 @@ function getNavItems(role: string): NavItem[] {
         return [
             ...baseItems,
             {
+                title: 'Paket Tes',
+                href: '/teacher/test-packages',
+                icon: ClipboardList,
+            },
+            {
+                title: 'Kasus Moral',
+                href: '/teacher/moral-cases',
+                icon: BookOpenCheck,
+            },
+            {
+                title: 'Indikator Karakter',
+                href: '/teacher/character-indicators',
+                icon: Tag,
+            },
+            {
                 title: 'Review',
-                href: '/dashboard',
+                href: '/teacher/reviews',
                 icon: ClipboardCheck,
             },
             {

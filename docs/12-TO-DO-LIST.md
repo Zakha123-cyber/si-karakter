@@ -43,23 +43,23 @@ Status:
 - [x] Migration groups.
 - [x] Migration students.
 - [x] Migration group histories.
-- [ ] CRUD tahun ajaran.
-- [ ] Aktivasi tahun ajaran.
-- [ ] CRUD kelompok.
-- [ ] Assign ustadz.
-- [ ] CRUD santri.
-- [ ] Assign santri ke kelompok.
-- [ ] Riwayat perpindahan kelompok.
-- [ ] Test seluruh alur.
+- [x] CRUD tahun ajaran.
+- [x] Aktivasi tahun ajaran.
+- [x] CRUD kelompok.
+- [x] Assign ustadz.
+- [x] CRUD santri.
+- [x] Assign santri ke kelompok.
+- [x] Riwayat perpindahan kelompok.
+- [x] Test seluruh alur.
 
-## Phase 3 — Character Indicators
+## Phase 3 — Character Indicators (Ustadz)
 
 - [x] Migration character indicators.
-- [ ] Seeder indikator dummy.
-- [ ] CRUD indikator.
-- [ ] Kategori indikator.
-- [ ] Flag warning.
-- [ ] Test indikator.
+- [x] Seeder indikator dummy.
+- [x] CRUD indikator (dipindahkan dari role Admin ke role Ustadz, lihat D-018).
+- [x] Kategori indikator.
+- [x] Flag warning.
+- [x] Test indikator.
 
 ## Phase 4 — Moral Test Management
 
@@ -69,80 +69,80 @@ Status:
 - [x] Migration package-case.
 - [x] Migration case options.
 - [x] Migration case indicators.
-- [ ] CRUD paket tes.
-- [ ] CRUD kasus.
-- [ ] CRUD pilihan dinamis.
-- [ ] Upload gambar/audio kasus.
-- [ ] Assignment paket ke kelompok.
-- [ ] Publish/close paket.
-- [ ] Validasi periode aktif.
-- [ ] Test manajemen tes.
+- [x] CRUD paket tes.
+- [x] CRUD kasus.
+- [x] CRUD pilihan dinamis.
+- [x] Upload gambar/audio kasus.
+- [x] Assignment paket ke kelompok.
+- [x] Publish/close paket.
+- [x] Validasi periode aktif.
+- [x] Test manajemen tes.
 
 ## Phase 5 — Student Test Experience
 
-- [ ] Daftar paket tersedia.
-- [ ] Buat attempt.
-- [ ] Validasi attempt limit.
-- [ ] Halaman cerita per kasus.
-- [ ] Text-to-speech atau pemutaran audio cerita.
-- [ ] Pilihan jawaban dinamis.
-- [ ] Input alasan teks.
-- [ ] UI rekaman suara.
-- [ ] Upload audio.
-- [ ] Audio preview.
-- [ ] Autosave.
-- [ ] Progress indicator.
-- [ ] Submit attempt.
-- [ ] Lock jawaban setelah submit.
-- [ ] Test student flow.
+- [x] Daftar paket tersedia.
+- [x] Buat attempt.
+- [x] Validasi attempt limit.
+- [x] Halaman cerita per kasus.
+- [x] Text-to-speech atau pemutaran audio cerita.
+- [x] Pilihan jawaban dinamis.
+- [x] Input alasan teks.
+- [x] UI rekaman suara.
+- [x] Upload audio.
+- [x] Audio preview.
+- [x] Autosave.
+- [x] Progress indicator.
+- [x] Submit attempt.
+- [x] Lock jawaban setelah submit.
+- [x] Test student flow.
 
 ## Phase 6 — Speech-to-Text
 
-- [ ] Buat interface STT.
-- [ ] Buat DTO hasil transkripsi.
-- [ ] Implement provider pertama.
+- [x] Buat interface STT.
+- [x] Buat DTO hasil transkripsi.
+- [x] Implement provider pertama.
 - [x] Migration audio files.
 - [x] Migration transcriptions.
-- [ ] Job transkripsi.
-- [ ] Retry policy.
-- [ ] Error logging.
-- [ ] Simpan raw response.
-- [ ] Endpoint retry.
-- [ ] Mock test provider.
-- [ ] Integration test.
+- [x] Job transkripsi.
+- [x] Retry policy.
+- [x] Error logging.
+- [x] Simpan raw response.
+- [x] Endpoint retry.
+- [x] Mock test provider.
+- [x] Integration test.
 
 ## Phase 7 — LLM Moral Assessment
 
-- [ ] Buat interface assessment.
-- [ ] Buat DTO input/output.
-- [ ] Definisikan JSON schema.
-- [ ] Buat prompt v1.
+- [x] Buat interface assessment.
+- [x] Buat DTO input/output.
+- [x] Definisikan JSON schema.
+- [x] Buat prompt v1.
 - [x] Migration AI assessments.
-- [ ] Implement provider pertama.
-- [ ] Job klasifikasi.
-- [ ] Validasi output.
-- [ ] Simpan raw response.
-- [ ] Simpan prompt version.
-- [ ] Retry policy.
-- [ ] Test invalid JSON.
-- [ ] Test timeout/rate limit.
-- [ ] Integration test.
+- [x] Implement provider pertama.
+- [x] Job klasifikasi.
+- [x] Validasi output.
+- [x] Simpan raw response.
+- [x] Simpan prompt version.
+- [x] Retry policy.
+- [x] Test invalid JSON.
+- [x] Test timeout/rate limit.
+- [x] Integration test.
 
 ## Phase 8 — Teacher Validation
 
 - [x] Migration teacher validations.
-- [ ] Queue review list.
-- [ ] Detail review.
-- [ ] Audio player.
-- [ ] Tampilan transkripsi asli.
-- [ ] Edit transkripsi.
-- [ ] Tampilan rekomendasi AI.
-- [ ] Approve.
-- [ ] Override.
-- [ ] Wajib alasan override.
-- [ ] Audit perubahan.
-- [ ] Test authorization kelompok.
-- [ ] Test approval/override.
+- [x] Queue review list.
+- [x] Detail review.
+- [x] Audio player.
+- [x] Tampilan transkripsi asli.
+- [x] Edit transkripsi.
+- [x] Tampilan rekomendasi AI.
+- [x] Approve.
+- [x] Override.
+- [x] Wajib alasan override.
+- [x] Audit perubahan.
+- [x] Test authorization kelompok.
+- [x] Test approval/override.
 
 ## Phase 9 — Daily Observation
 
@@ -159,12 +159,12 @@ Status:
 - [ ] Audit log.
 - [ ] Test observation flow.
 
-## Phase 10 — Character Scoring
+## Phase 10 — Character Scoring (Ustadz)
 
 - [x] Migration scoring configurations.
 - [x] Migration score snapshots.
 - [ ] Default weight 60/40.
-- [ ] CRUD konfigurasi bobot.
+- [ ] CRUD konfigurasi bobot (kewenangan Ustadz, lihat D-018).
 - [ ] Service perhitungan tes.
 - [ ] Service perhitungan observasi.
 - [ ] Service skor gabungan.
@@ -228,6 +228,7 @@ Status:
 
 ## Phase 15 — Analytics Dashboard
 
+- [x] Halaman admin hasil pengerjaan test.
 - [ ] Admin dashboard.
 - [ ] Teacher dashboard.
 - [ ] Student dashboard.

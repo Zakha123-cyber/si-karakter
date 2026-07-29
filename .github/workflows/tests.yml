@@ -42,5 +42,8 @@ jobs:
           cp .env.example .env
           php artisan key:generate --ansi
 
+      - name: Generate Wayfinder Types
+        run: php artisan wayfinder:generate
+
       - name: Run CI Checks
         run: composer ci:check

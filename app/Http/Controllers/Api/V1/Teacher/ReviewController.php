@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Teacher;
 
+use App\Enums\TranscriptionStatus;
 use App\Http\Controllers\Api\V1\Concerns\RespondsWithApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Teacher\Reviews\ApproveValidationRequest;
@@ -199,22 +200,26 @@ class ReviewController extends Controller
     {
         $user = $request->user();
 
-        if ($user->role->value === 'teacher') {
-            /** @var TestAttempt|null $attempt */
-            $attempt = $answer->testAttempt;
-            /** @var Student|null $student */
-            $student = $attempt?->student;
-            $studentGroupTeacherId = $student?->currentGroup?->teacher_id;
-            if ($studentGroupTeacherId !== $user->id) {
-                return $this->error('Unauthorized to retry transcription for this student', 403);
-            }
+        if ($user->role->value !== 'teacher') {
+            return $this->error('Only teachers can retry transcription', 403);
         }
 
         /** @var AnswerAudioFile|null $audioFile */
         $audioFile = $answer->audioFiles()->first();
         if (! $audioFile) {
-            return $this->error('No audio file found for this answer', 404);
+            return $this->error('No audio file found for this answer', 422);
         }
+
+        Transcription::query()->updateOrCreate(
+            ['test_answer_id' => $answer->id],
+            [
+                'provider' => config('speech.provider'),
+                'model' => config('speech.groq.model'),
+                'status' => TranscriptionStatus::Pending->value,
+                'error_message' => null,
+                'processed_at' => null,
+            ],
+        );
 
         TranscribeAnswerJob::dispatch($audioFile->id);
 

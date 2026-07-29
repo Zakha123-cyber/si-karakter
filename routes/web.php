@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AcademicYearController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\StudentController;
+use App\Http\Controllers\Admin\TestResultController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Teacher\CharacterIndicatorController;
 use App\Http\Controllers\Teacher\MoralCaseController;
@@ -46,6 +47,11 @@ Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->name('admi
     Route::put('students/{student}', [StudentController::class, 'update'])->name('students.update');
     Route::patch('students/{student}/status', [StudentController::class, 'updateStatus'])->name('students.status');
     Route::delete('students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
+
+    // Test Results
+    Route::get('test-results', [TestResultController::class, 'index'])->name('test-results.index');
+    Route::get('test-results/answers/{answer}/audio', [TestResultController::class, 'audio'])->name('test-results.answers.audio');
+    Route::get('test-results/{testAttempt}', [TestResultController::class, 'show'])->name('test-results.show');
 });
 
 Route::middleware(['auth', 'active', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {

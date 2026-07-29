@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Student;
 
 use App\Enums\TestPackageStatus;
+use App\Enums\TranscriptionStatus;
 use App\Http\Controllers\Controller;
+use App\Jobs\TranscribeAnswerJob;
 use App\Models\Student;
 use App\Models\TestAnswer;
+use App\Models\Transcription;
 use App\Models\TestAttempt;
 use App\Models\TestPackage;
 use App\Models\User;
@@ -150,7 +153,7 @@ class TestController extends Controller
             'selected_option_id' => ['nullable', 'exists:moral_case_options,id'],
             'typed_reason' => ['nullable', 'string'],
             'final_transcript' => ['nullable', 'string'],
-            'audio' => ['nullable', 'file', 'mimes:mp3,wav,m4a,ogg', 'max:20480'],
+            'audio' => ['nullable', 'file', 'mimes:mp3,wav,m4a,ogg,webm', 'max:20480'],
         ]);
 
         $caseBelongsToPackage = $testPackage->cases()->whereKey($data['moral_case_id'])->exists();
@@ -177,7 +180,7 @@ class TestController extends Controller
             $audioFile = $request->file('audio');
             $path = $audioFile->store('student-audio', 'local');
 
-            $answer->audioFiles()->create([
+            $savedAudioFile = $answer->audioFiles()->create([
                 'file_path' => $path,
                 'original_name' => $audioFile->getClientOriginalName(),
                 'mime_type' => $audioFile->getClientMimeType(),
@@ -185,6 +188,19 @@ class TestController extends Controller
                 'duration_seconds' => null,
                 'checksum' => md5_file($audioFile->getRealPath()),
             ]);
+
+            Transcription::query()->updateOrCreate(
+                ['test_answer_id' => $answer->id],
+                [
+                    'provider' => config('speech.provider'),
+                    'model' => config('speech.groq.model'),
+                    'status' => TranscriptionStatus::Pending->value,
+                    'error_message' => null,
+                    'processed_at' => null,
+                ],
+            );
+
+            TranscribeAnswerJob::dispatch($savedAudioFile->id);
         }
 
         return back()->with('status', 'Jawaban tersimpan.');

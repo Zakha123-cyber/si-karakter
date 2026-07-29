@@ -5,6 +5,7 @@ import {
     CalendarDays,
     ClipboardCheck,
     ClipboardList,
+    FileSearch,
     FileText,
     LayoutGrid,
     Tag,
@@ -88,6 +89,11 @@ function getNavItems(role: string): NavItem[] {
                 title: 'Kelompok',
                 href: '/admin/groups',
                 icon: BookMarked,
+            },
+            {
+                title: 'Hasil Test',
+                href: '/admin/test-results',
+                icon: FileSearch,
             },
         ];
     }

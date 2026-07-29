@@ -3,14 +3,26 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Teacher\Reviews\ApproveValidationRequest;
+use App\Http\Requests\Teacher\Reviews\OverrideValidationRequest;
+use App\Http\Requests\Teacher\Reviews\UpdateTranscriptRequest;
 use App\Http\Resources\Teacher\ReviewDetailResource;
 use App\Http\Resources\Teacher\ReviewQueueResource;
+use App\Models\AiAssessment;
+use App\Models\AnswerAudioFile;
 use App\Models\Group;
+use App\Models\MoralCaseOption;
+use App\Models\Student;
+use App\Models\TeacherValidation;
 use App\Models\TestAnswer;
+use App\Models\TestAttempt;
 use App\Models\TestPackage;
+use App\Models\Transcription;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReviewController extends Controller
 {
@@ -92,7 +104,11 @@ class ReviewController extends Controller
         $user = $request->user();
 
         if ($user->role->value === 'teacher') {
-            $studentGroupTeacherId = $answer->testAttempt?->student?->currentGroup?->teacher_id;
+            /** @var TestAttempt|null $attempt */
+            $attempt = $answer->testAttempt;
+            /** @var Student|null $student */
+            $student = $attempt?->student;
+            $studentGroupTeacherId = $student?->currentGroup?->teacher_id;
             if ($studentGroupTeacherId !== $user->id) {
                 abort(403, 'Unauthorized to view review for this student.');
             }
@@ -115,47 +131,52 @@ class ReviewController extends Controller
         ]);
     }
 
-    public function audio(Request $request, TestAnswer $answer)
+    public function audio(Request $request, TestAnswer $answer): BinaryFileResponse
     {
         $user = $request->user();
 
         if ($user->role->value === 'teacher') {
-            $studentGroupTeacherId = $answer->testAttempt?->student?->currentGroup?->teacher_id;
+            /** @var TestAttempt|null $attempt */
+            $attempt = $answer->testAttempt;
+            /** @var Student|null $student */
+            $student = $attempt?->student;
+            $studentGroupTeacherId = $student?->currentGroup?->teacher_id;
             if ($studentGroupTeacherId !== $user->id) {
                 abort(403, 'Unauthorized to access audio for this student.');
             }
         }
 
+        /** @var AnswerAudioFile|null $audioFile */
         $audioFile = $answer->audioFiles()->first();
         if (! $audioFile) {
             abort(404, 'Audio file not found.');
         }
 
-        $filePath = storage_path('app/' . $audioFile->file_path);
+        $filePath = storage_path('app/'.$audioFile->file_path);
         if (! file_exists($filePath)) {
-            $filePath = storage_path('app/public/' . $audioFile->file_path);
+            $filePath = storage_path('app/public/'.$audioFile->file_path);
         }
 
         if (! file_exists($filePath)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Audio file storage path does not exist on disk',
-                'file_path' => $audioFile->file_path,
-            ], 404);
+            abort(404, 'Audio physical file does not exist.');
         }
 
         return response()->file($filePath, [
             'Content-Type' => $audioFile->mime_type ?: 'audio/mpeg',
-            'Content-Disposition' => 'inline; filename="' . $audioFile->original_name . '"',
+            'Content-Disposition' => 'inline; filename="'.$audioFile->original_name.'"',
         ]);
     }
 
-    public function updateTranscript(\App\Http\Requests\Teacher\Reviews\UpdateTranscriptRequest $request, TestAnswer $answer)
+    public function updateTranscript(UpdateTranscriptRequest $request, TestAnswer $answer): RedirectResponse
     {
         $user = $request->user();
 
         if ($user->role->value === 'teacher') {
-            $studentGroupTeacherId = $answer->testAttempt?->student?->currentGroup?->teacher_id;
+            /** @var TestAttempt|null $attempt */
+            $attempt = $answer->testAttempt;
+            /** @var Student|null $student */
+            $student = $attempt?->student;
+            $studentGroupTeacherId = $student?->currentGroup?->teacher_id;
             if ($studentGroupTeacherId !== $user->id) {
                 abort(403, 'Unauthorized to edit transcript for this student.');
             }
@@ -163,6 +184,7 @@ class ReviewController extends Controller
 
         $editedText = $request->validated('edited_text');
 
+        /** @var Transcription|null $transcription */
         $transcription = $answer->transcriptions()->latest()->first();
         if ($transcription) {
             $transcription->update([
@@ -187,22 +209,29 @@ class ReviewController extends Controller
         return back()->with('success', 'Transkripsi berhasil diperbarui.');
     }
 
-    public function approve(\App\Http\Requests\Teacher\Reviews\ApproveValidationRequest $request, TestAnswer $answer)
+    public function approve(ApproveValidationRequest $request, TestAnswer $answer): RedirectResponse
     {
         $user = $request->user();
 
         if ($user->role->value === 'teacher') {
-            $studentGroupTeacherId = $answer->testAttempt?->student?->currentGroup?->teacher_id;
+            /** @var TestAttempt|null $attempt */
+            $attempt = $answer->testAttempt;
+            /** @var Student|null $student */
+            $student = $attempt?->student;
+            $studentGroupTeacherId = $student?->currentGroup?->teacher_id;
             if ($studentGroupTeacherId !== $user->id) {
                 abort(403, 'Unauthorized to validate review for this student.');
             }
         }
 
+        /** @var AiAssessment|null $aiAssessment */
         $aiAssessment = $answer->aiAssessments()->latest()->first();
-        $moralLevel = $aiAssessment?->moral_level ?? $answer->selectedOption?->indicative_level ?? 'Belum Ditentukan';
-        $indicators = $aiAssessment?->indicators_json ?? [];
+        /** @var MoralCaseOption|null $selectedOption */
+        $selectedOption = $answer->selectedOption;
+        $moralLevel = $aiAssessment ? $aiAssessment->moral_level : ($selectedOption ? $selectedOption->internal_value : 'Belum Ditentukan');
+        $indicators = $aiAssessment ? $aiAssessment->indicators_json : [];
 
-        \App\Models\TeacherValidation::query()->updateOrCreate(
+        TeacherValidation::query()->updateOrCreate(
             ['test_answer_id' => $answer->id],
             [
                 'ai_assessment_id' => $aiAssessment?->id,
@@ -219,21 +248,26 @@ class ReviewController extends Controller
         return back()->with('success', 'Rekomendasi AI berhasil disetujui.');
     }
 
-    public function override(\App\Http\Requests\Teacher\Reviews\OverrideValidationRequest $request, TestAnswer $answer)
+    public function override(OverrideValidationRequest $request, TestAnswer $answer): RedirectResponse
     {
         $user = $request->user();
 
         if ($user->role->value === 'teacher') {
-            $studentGroupTeacherId = $answer->testAttempt?->student?->currentGroup?->teacher_id;
+            /** @var TestAttempt|null $attempt */
+            $attempt = $answer->testAttempt;
+            /** @var Student|null $student */
+            $student = $attempt?->student;
+            $studentGroupTeacherId = $student?->currentGroup?->teacher_id;
             if ($studentGroupTeacherId !== $user->id) {
                 abort(403, 'Unauthorized to validate review for this student.');
             }
         }
 
+        /** @var AiAssessment|null $aiAssessment */
         $aiAssessment = $answer->aiAssessments()->latest()->first();
-        $indicators = $request->validated('final_indicators') ?? $aiAssessment?->indicators_json ?? [];
+        $indicators = $request->validated('final_indicators') ?: ($aiAssessment ? $aiAssessment->indicators_json : []);
 
-        \App\Models\TeacherValidation::query()->updateOrCreate(
+        TeacherValidation::query()->updateOrCreate(
             ['test_answer_id' => $answer->id],
             [
                 'ai_assessment_id' => $aiAssessment?->id,

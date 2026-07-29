@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AcademicYear;
+use App\Models\Group;
 use App\Models\User;
 
 test('non admin cannot access academic years', function () {
@@ -97,7 +98,7 @@ test('activating a year deactivates others', function () {
 test('cannot delete academic year with existing groups', function () {
     $admin = User::factory()->admin()->create();
     $academicYear = AcademicYear::factory()->active()->create();
-    \App\Models\Group::factory()->create(['academic_year_id' => $academicYear->id]);
+    Group::factory()->create(['academic_year_id' => $academicYear->id]);
 
     $response = $this->actingAs($admin)->deleteJson("/api/v1/academic-years/{$academicYear->id}");
 

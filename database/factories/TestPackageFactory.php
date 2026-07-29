@@ -19,7 +19,7 @@ class TestPackageFactory extends Factory
 
         return [
             'title' => $title,
-            'slug' => Str::slug($title) . '-' . Str::random(5),
+            'slug' => Str::slug($title).'-'.Str::random(5),
             'description' => fake()->paragraph(),
             'start_at' => null,
             'end_at' => null,

@@ -2,6 +2,7 @@
 
 use App\Models\AcademicYear;
 use App\Models\Group;
+use App\Models\Student;
 use App\Models\User;
 
 test('non admin cannot access groups', function () {
@@ -74,7 +75,7 @@ test('admin can update group', function () {
 test('cannot delete group with existing students', function () {
     $admin = User::factory()->admin()->create();
     $group = Group::factory()->create();
-    \App\Models\Student::factory()->create(['current_group_id' => $group->id]);
+    Student::factory()->create(['current_group_id' => $group->id]);
 
     $response = $this->actingAs($admin)->deleteJson("/api/v1/groups/{$group->id}");
 
@@ -94,7 +95,7 @@ test('admin can assign students to group', function () {
     $admin = User::factory()->admin()->create();
     $academicYear = AcademicYear::factory()->active()->create();
     $group = Group::factory()->create(['academic_year_id' => $academicYear->id]);
-    $students = \App\Models\Student::factory()->count(3)->create();
+    $students = Student::factory()->count(3)->create();
 
     $response = $this->actingAs($admin)->postJson("/api/v1/groups/{$group->id}/students", [
         'student_ids' => $students->pluck('id')->toArray(),
@@ -110,7 +111,7 @@ test('admin can assign students to group', function () {
 test('admin can remove student from group', function () {
     $admin = User::factory()->admin()->create();
     $group = Group::factory()->create();
-    $student = \App\Models\Student::factory()->create(['current_group_id' => $group->id]);
+    $student = Student::factory()->create(['current_group_id' => $group->id]);
 
     $response = $this->actingAs($admin)->deleteJson("/api/v1/groups/{$group->id}/students/{$student->id}");
 

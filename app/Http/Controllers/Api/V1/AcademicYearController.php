@@ -58,7 +58,7 @@ class AcademicYearController extends Controller
     {
         $data = $request->validated();
 
-        if (($data['is_active'] ?? false) && !$academicYear->is_active) {
+        if (($data['is_active'] ?? false) && ! $academicYear->is_active) {
             AcademicYear::query()->where('is_active', true)->update(['is_active' => false]);
         }
 

@@ -4,7 +4,6 @@ namespace App\Http\Requests\Api\V1\Students;
 
 use App\Http\Requests\Api\BaseApiRequest;
 use App\Models\Student;
-use App\Models\User;
 use Illuminate\Validation\Rule;
 
 class StoreStudentRequest extends BaseApiRequest
@@ -14,6 +13,9 @@ class StoreStudentRequest extends BaseApiRequest
         return true;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [

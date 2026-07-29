@@ -68,19 +68,31 @@ const statusLabel: Record<string, string> = {
     transferred: 'Pindah',
 };
 
-const statusVariant: Record<string, 'secondary' | 'outline' | 'destructive' | 'default'> = {
+const statusVariant: Record<
+    string,
+    'secondary' | 'outline' | 'destructive' | 'default'
+> = {
     active: 'secondary',
     inactive: 'destructive',
     graduated: 'default',
     transferred: 'outline',
 };
 
-export default function AdminStudentsIndex({ students, groups, users, filters }: Props) {
+export default function AdminStudentsIndex({
+    students,
+    groups,
+    users,
+    filters,
+}: Props) {
     const { props } = usePage<{ flash?: { status?: string } }>();
     const [search, setSearch] = useState(filters.search);
-    const [groupFilter, setGroupFilter] = useState(String(filters.current_group_id || ''));
+    const [groupFilter, setGroupFilter] = useState(
+        String(filters.current_group_id || ''),
+    );
     const [statusFilter, setStatusFilter] = useState(filters.status);
-    const [editingStudent, setEditingStudent] = useState<StudentRow | null>(null);
+    const [editingStudent, setEditingStudent] = useState<StudentRow | null>(
+        null,
+    );
 
     const createForm = useForm({
         user_id: '',
@@ -99,7 +111,11 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
 
     const submitFilters = (event: FormEvent) => {
         event.preventDefault();
-        router.get('/admin/students', { search, current_group_id: groupFilter, status: statusFilter }, { preserveState: true, replace: true });
+        router.get(
+            '/admin/students',
+            { search, current_group_id: groupFilter, status: statusFilter },
+            { preserveState: true, replace: true },
+        );
     };
 
     const submitCreate = (event: FormEvent) => {
@@ -111,7 +127,8 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                 toast.success('Santri berhasil dibuat.', { id: toastId });
                 createForm.reset();
             },
-            onError: () => toast.error('Periksa kembali form.', { id: toastId }),
+            onError: () =>
+                toast.error('Periksa kembali form.', { id: toastId }),
         });
     };
 
@@ -142,18 +159,25 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                 toast.success('Santri berhasil diperbarui.', { id: toastId });
                 cancelEdit();
             },
-            onError: () => toast.error('Periksa kembali form.', { id: toastId }),
+            onError: () =>
+                toast.error('Periksa kembali form.', { id: toastId }),
         });
     };
 
     const toggleStatus = (student: StudentRow) => {
         const newStatus = student.status === 'active' ? 'inactive' : 'active';
         const toastId = toast.loading('Mengubah status...');
-        router.patch(`/admin/students/${student.id}/status`, { status: newStatus }, {
-            preserveScroll: true,
-            onSuccess: () => toast.success('Status diperbarui.', { id: toastId }),
-            onError: () => toast.error('Gagal memperbarui status.', { id: toastId }),
-        });
+        router.patch(
+            `/admin/students/${student.id}/status`,
+            { status: newStatus },
+            {
+                preserveScroll: true,
+                onSuccess: () =>
+                    toast.success('Status diperbarui.', { id: toastId }),
+                onError: () =>
+                    toast.error('Gagal memperbarui status.', { id: toastId }),
+            },
+        );
     };
 
     const deleteStudent = (student: StudentRow) => {
@@ -165,10 +189,16 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                     const toastId = toast.loading('Menghapus...');
                     router.delete(`/admin/students/${student.id}`, {
                         preserveScroll: true,
-                        onSuccess: () => toast.success('Santri dihapus.', { id: toastId }),
+                        onSuccess: () =>
+                            toast.success('Santri dihapus.', { id: toastId }),
                         onError: (errors) => {
-                            const msg = errors?.error ?? errors?.message ?? 'Gagal menghapus.';
-                            toast.error(Array.isArray(msg) ? msg[0] : msg, { id: toastId });
+                            const msg =
+                                errors?.error ??
+                                errors?.message ??
+                                'Gagal menghapus.';
+                            toast.error(Array.isArray(msg) ? msg[0] : msg, {
+                                id: toastId,
+                            });
                         },
                     });
                 },
@@ -185,7 +215,9 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
             <div className="flex h-full flex-1 flex-col gap-6 p-4">
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-wrap items-center gap-3">
-                        <h1 className="text-2xl font-semibold tracking-normal">Santri</h1>
+                        <h1 className="text-2xl font-semibold tracking-normal">
+                            Santri
+                        </h1>
                         <Badge variant="secondary">Admin</Badge>
                     </div>
                     <p className="max-w-3xl text-sm text-muted-foreground">
@@ -204,40 +236,116 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                         <CardHeader>
                             <div className="flex items-center gap-2">
                                 <Plus className="size-5 text-muted-foreground" />
-                                <CardTitle className="text-base">Tambah Santri</CardTitle>
+                                <CardTitle className="text-base">
+                                    Tambah Santri
+                                </CardTitle>
                             </div>
-                            <CardDescription>Buat data santri baru.</CardDescription>
+                            <CardDescription>
+                                Buat data santri baru.
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={submitCreate} className="grid gap-4">
+                            <form
+                                onSubmit={submitCreate}
+                                className="grid gap-4"
+                            >
                                 <div className="grid gap-2">
                                     <Label htmlFor="user_id">Akun Santri</Label>
-                                    <select id="user_id" className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={createForm.data.user_id} onChange={(e) => createForm.setData('user_id', e.target.value)}>
-                                        <option value="">Pilih akun santri</option>
-                                        {users.map((u) => <option key={u.id} value={u.id}>{u.name} (@{u.username})</option>)}
+                                    <select
+                                        id="user_id"
+                                        className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                        value={createForm.data.user_id}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'user_id',
+                                                e.target.value,
+                                            )
+                                        }
+                                    >
+                                        <option value="">
+                                            Pilih akun santri
+                                        </option>
+                                        {users.map((u) => (
+                                            <option key={u.id} value={u.id}>
+                                                {u.name} (@{u.username})
+                                            </option>
+                                        ))}
                                     </select>
-                                    <InputError message={createForm.errors.user_id} />
+                                    <InputError
+                                        message={createForm.errors.user_id}
+                                    />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="student_code">Kode Santri (NIS)</Label>
-                                    <Input id="student_code" value={createForm.data.student_code} onChange={(e) => createForm.setData('student_code', e.target.value)} placeholder="Masukkan NIS santri" />
-                                    <InputError message={createForm.errors.student_code} />
+                                    <Label htmlFor="student_code">
+                                        Kode Santri (NIS)
+                                    </Label>
+                                    <Input
+                                        id="student_code"
+                                        value={createForm.data.student_code}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'student_code',
+                                                e.target.value,
+                                            )
+                                        }
+                                        placeholder="Masukkan NIS santri"
+                                    />
+                                    <InputError
+                                        message={createForm.errors.student_code}
+                                    />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="gender">Jenis Kelamin</Label>
-                                    <select id="gender" className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={createForm.data.gender} onChange={(e) => createForm.setData('gender', e.target.value)}>
-                                        <option value="">Pilih jenis kelamin</option>
+                                    <Label htmlFor="gender">
+                                        Jenis Kelamin
+                                    </Label>
+                                    <select
+                                        id="gender"
+                                        className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                        value={createForm.data.gender}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'gender',
+                                                e.target.value,
+                                            )
+                                        }
+                                    >
+                                        <option value="">
+                                            Pilih jenis kelamin
+                                        </option>
                                         <option value="male">Laki-laki</option>
-                                        <option value="female">Perempuan</option>
+                                        <option value="female">
+                                            Perempuan
+                                        </option>
                                     </select>
-                                    <InputError message={createForm.errors.gender} />
+                                    <InputError
+                                        message={createForm.errors.gender}
+                                    />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="birth_date">Tanggal Lahir</Label>
-                                    <Input id="birth_date" type="date" value={createForm.data.birth_date} onChange={(e) => createForm.setData('birth_date', e.target.value)} />
-                                    <InputError message={createForm.errors.birth_date} />
+                                    <Label htmlFor="birth_date">
+                                        Tanggal Lahir
+                                    </Label>
+                                    <Input
+                                        id="birth_date"
+                                        type="date"
+                                        value={createForm.data.birth_date}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'birth_date',
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                    <InputError
+                                        message={createForm.errors.birth_date}
+                                    />
                                 </div>
-                                <Button type="submit" disabled={createForm.processing}>Simpan</Button>
+                                <Button
+                                    type="submit"
+                                    disabled={createForm.processing}
+                                >
+                                    Simpan
+                                </Button>
                             </form>
                         </CardContent>
                     </Card>
@@ -245,60 +353,162 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                     <div className="flex min-w-0 flex-col gap-4">
                         <Card className="rounded-lg">
                             <CardHeader>
-                                <CardTitle className="text-base">Daftar Santri</CardTitle>
-                                <CardDescription>{students.from ?? 0}-{students.to ?? 0} dari {students.total}</CardDescription>
+                                <CardTitle className="text-base">
+                                    Daftar Santri
+                                </CardTitle>
+                                <CardDescription>
+                                    {students.from ?? 0}-{students.to ?? 0} dari{' '}
+                                    {students.total}
+                                </CardDescription>
                             </CardHeader>
                             <CardContent className="grid gap-4">
-                                <form onSubmit={submitFilters} className="grid gap-3 md:grid-cols-[minmax(0,1fr)_180px_150px_auto]">
-                                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari santri..." />
-                                    <select className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}>
+                                <form
+                                    onSubmit={submitFilters}
+                                    className="grid gap-3 md:grid-cols-[minmax(0,1fr)_180px_150px_auto]"
+                                >
+                                    <Input
+                                        value={search}
+                                        onChange={(e) =>
+                                            setSearch(e.target.value)
+                                        }
+                                        placeholder="Cari santri..."
+                                    />
+                                    <select
+                                        className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                        value={groupFilter}
+                                        onChange={(e) =>
+                                            setGroupFilter(e.target.value)
+                                        }
+                                    >
                                         <option value="">Semua kelompok</option>
-                                        {groups.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
+                                        {groups.map((g) => (
+                                            <option key={g.id} value={g.id}>
+                                                {g.name}
+                                            </option>
+                                        ))}
                                     </select>
-                                    <select className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                                    <select
+                                        className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                        value={statusFilter}
+                                        onChange={(e) =>
+                                            setStatusFilter(e.target.value)
+                                        }
+                                    >
                                         <option value="">Semua status</option>
                                         <option value="active">Aktif</option>
-                                        <option value="inactive">Nonaktif</option>
+                                        <option value="inactive">
+                                            Nonaktif
+                                        </option>
                                         <option value="graduated">Lulus</option>
-                                        <option value="transferred">Pindah</option>
+                                        <option value="transferred">
+                                            Pindah
+                                        </option>
                                     </select>
-                                    <Button type="submit" variant="outline">Filter</Button>
+                                    <Button type="submit" variant="outline">
+                                        Filter
+                                    </Button>
                                 </form>
 
                                 <div className="overflow-x-auto rounded-md border">
                                     <table className="w-full min-w-[760px] text-sm">
                                         <thead className="bg-muted/50 text-left">
                                             <tr>
-                                                <th className="px-4 py-3 font-medium">Nama Santri</th>
-                                                <th className="px-4 py-3 font-medium">NIS</th>
-                                                <th className="px-4 py-3 font-medium">Kelompok</th>
-                                                <th className="px-4 py-3 font-medium">Status</th>
-                                                <th className="px-4 py-3 text-right font-medium">Aksi</th>
+                                                <th className="px-4 py-3 font-medium">
+                                                    Nama Santri
+                                                </th>
+                                                <th className="px-4 py-3 font-medium">
+                                                    NIS
+                                                </th>
+                                                <th className="px-4 py-3 font-medium">
+                                                    Kelompok
+                                                </th>
+                                                <th className="px-4 py-3 font-medium">
+                                                    Status
+                                                </th>
+                                                <th className="px-4 py-3 text-right font-medium">
+                                                    Aksi
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {students.data.map((student) => (
-                                                <tr key={student.id} className="border-t">
+                                                <tr
+                                                    key={student.id}
+                                                    className="border-t"
+                                                >
                                                     <td className="px-4 py-3">
-                                                        <div className="font-medium">{student.user?.name ?? '-'}</div>
-                                                        <div className="text-xs text-muted-foreground">@{student.user?.username}</div>
+                                                        <div className="font-medium">
+                                                            {student.user
+                                                                ?.name ?? '-'}
+                                                        </div>
+                                                        <div className="text-xs text-muted-foreground">
+                                                            @
+                                                            {
+                                                                student.user
+                                                                    ?.username
+                                                            }
+                                                        </div>
                                                     </td>
-                                                    <td className="px-4 py-3 font-mono font-medium">{student.student_code}</td>
-                                                    <td className="px-4 py-3">{student.current_group?.name ?? '-'}</td>
+                                                    <td className="px-4 py-3 font-mono font-medium">
+                                                        {student.student_code}
+                                                    </td>
                                                     <td className="px-4 py-3">
-                                                        <Badge variant={statusVariant[student.status] ?? 'outline'}>
-                                                            {statusLabel[student.status] ?? student.status}
+                                                        {student.current_group
+                                                            ?.name ?? '-'}
+                                                    </td>
+                                                    <td className="px-4 py-3">
+                                                        <Badge
+                                                            variant={
+                                                                statusVariant[
+                                                                    student
+                                                                        .status
+                                                                ] ?? 'outline'
+                                                            }
+                                                        >
+                                                            {statusLabel[
+                                                                student.status
+                                                            ] ?? student.status}
                                                         </Badge>
                                                     </td>
                                                     <td className="px-4 py-3">
                                                         <div className="flex justify-end gap-2">
-                                                            <Button type="button" size="sm" variant="outline" onClick={() => startEdit(student)}>
+                                                            <Button
+                                                                type="button"
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() =>
+                                                                    startEdit(
+                                                                        student,
+                                                                    )
+                                                                }
+                                                            >
                                                                 <Pencil className="size-4" />
                                                             </Button>
-                                                            <Button type="button" size="sm" variant="outline" onClick={() => toggleStatus(student)}>
-                                                                {student.status === 'active' ? 'Nonaktifkan' : 'Aktifkan'}
+                                                            <Button
+                                                                type="button"
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() =>
+                                                                    toggleStatus(
+                                                                        student,
+                                                                    )
+                                                                }
+                                                            >
+                                                                {student.status ===
+                                                                'active'
+                                                                    ? 'Nonaktifkan'
+                                                                    : 'Aktifkan'}
                                                             </Button>
-                                                            <Button type="button" size="sm" variant="outline" onClick={() => deleteStudent(student)}>
+                                                            <Button
+                                                                type="button"
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() =>
+                                                                    deleteStudent(
+                                                                        student,
+                                                                    )
+                                                                }
+                                                            >
                                                                 <Trash2 className="size-4" />
                                                             </Button>
                                                         </div>
@@ -311,10 +521,47 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
 
                                 <div className="flex flex-wrap gap-2">
                                     {students.links.map((link) => (
-                                        <Button key={`${link.label}-${link.url}`} type="button" size="sm" variant={link.active ? 'default' : 'outline'} disabled={!link.url} onClick={() => { if (link.url) router.visit(link.url, { preserveScroll: true }); }}>
-                                            {link.label === '&laquo; Previous' || link.label.toLowerCase().includes('previous') ? <><ChevronLeft className="size-4" /><span className="sr-only">Sebelumnya</span></>
-                                                : link.label === 'Next &raquo;' || link.label.toLowerCase().includes('next') ? <><ChevronRight className="size-4" /><span className="sr-only">Berikutnya</span></>
-                                                    : <span>{link.label}</span>}
+                                        <Button
+                                            key={`${link.label}-${link.url}`}
+                                            type="button"
+                                            size="sm"
+                                            variant={
+                                                link.active
+                                                    ? 'default'
+                                                    : 'outline'
+                                            }
+                                            disabled={!link.url}
+                                            onClick={() => {
+                                                if (link.url)
+                                                    router.visit(link.url, {
+                                                        preserveScroll: true,
+                                                    });
+                                            }}
+                                        >
+                                            {link.label ===
+                                                '&laquo; Previous' ||
+                                            link.label
+                                                .toLowerCase()
+                                                .includes('previous') ? (
+                                                <>
+                                                    <ChevronLeft className="size-4" />
+                                                    <span className="sr-only">
+                                                        Sebelumnya
+                                                    </span>
+                                                </>
+                                            ) : link.label === 'Next &raquo;' ||
+                                              link.label
+                                                  .toLowerCase()
+                                                  .includes('next') ? (
+                                                <>
+                                                    <ChevronRight className="size-4" />
+                                                    <span className="sr-only">
+                                                        Berikutnya
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <span>{link.label}</span>
+                                            )}
                                         </Button>
                                     ))}
                                 </div>
@@ -324,21 +571,52 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                 </div>
             </div>
 
-            <Sheet open={editingStudent !== null} onOpenChange={(open) => { if (!open) cancelEdit(); }}>
+            <Sheet
+                open={editingStudent !== null}
+                onOpenChange={(open) => {
+                    if (!open) cancelEdit();
+                }}
+            >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
                     <SheetHeader>
                         <SheetTitle>Edit Santri</SheetTitle>
-                        <SheetDescription>{editingStudent?.user?.name} ({editingStudent?.student_code})</SheetDescription>
+                        <SheetDescription>
+                            {editingStudent?.user?.name} (
+                            {editingStudent?.student_code})
+                        </SheetDescription>
                     </SheetHeader>
-                    <form onSubmit={submitEdit} className="grid gap-4 px-4 pb-4">
+                    <form
+                        onSubmit={submitEdit}
+                        className="grid gap-4 px-4 pb-4"
+                    >
                         <div className="grid gap-2">
-                            <Label htmlFor="edit_student_code">Kode Santri (NIS)</Label>
-                            <Input id="edit_student_code" value={editForm.data.student_code} onChange={(e) => editForm.setData('student_code', e.target.value)} />
-                            <InputError message={editForm.errors.student_code} />
+                            <Label htmlFor="edit_student_code">
+                                Kode Santri (NIS)
+                            </Label>
+                            <Input
+                                id="edit_student_code"
+                                value={editForm.data.student_code}
+                                onChange={(e) =>
+                                    editForm.setData(
+                                        'student_code',
+                                        e.target.value,
+                                    )
+                                }
+                            />
+                            <InputError
+                                message={editForm.errors.student_code}
+                            />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="edit_gender">Jenis Kelamin</Label>
-                            <select id="edit_gender" className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={editForm.data.gender} onChange={(e) => editForm.setData('gender', e.target.value)}>
+                            <select
+                                id="edit_gender"
+                                className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                value={editForm.data.gender}
+                                onChange={(e) =>
+                                    editForm.setData('gender', e.target.value)
+                                }
+                            >
                                 <option value="">Pilih jenis kelamin</option>
                                 <option value="male">Laki-laki</option>
                                 <option value="female">Perempuan</option>
@@ -346,13 +624,32 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                             <InputError message={editForm.errors.gender} />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="edit_birth_date">Tanggal Lahir</Label>
-                            <Input id="edit_birth_date" type="date" value={editForm.data.birth_date} onChange={(e) => editForm.setData('birth_date', e.target.value)} />
+                            <Label htmlFor="edit_birth_date">
+                                Tanggal Lahir
+                            </Label>
+                            <Input
+                                id="edit_birth_date"
+                                type="date"
+                                value={editForm.data.birth_date}
+                                onChange={(e) =>
+                                    editForm.setData(
+                                        'birth_date',
+                                        e.target.value,
+                                    )
+                                }
+                            />
                             <InputError message={editForm.errors.birth_date} />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="edit_status">Status</Label>
-                            <select id="edit_status" className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={editForm.data.status} onChange={(e) => editForm.setData('status', e.target.value)}>
+                            <select
+                                id="edit_status"
+                                className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                value={editForm.data.status}
+                                onChange={(e) =>
+                                    editForm.setData('status', e.target.value)
+                                }
+                            >
                                 <option value="active">Aktif</option>
                                 <option value="inactive">Nonaktif</option>
                                 <option value="graduated">Lulus</option>
@@ -361,8 +658,19 @@ export default function AdminStudentsIndex({ students, groups, users, filters }:
                             <InputError message={editForm.errors.status} />
                         </div>
                         <div className="flex gap-2 pt-2">
-                            <Button type="submit" disabled={editForm.processing}>Simpan</Button>
-                            <Button type="button" variant="outline" onClick={cancelEdit}>Batal</Button>
+                            <Button
+                                type="submit"
+                                disabled={editForm.processing}
+                            >
+                                Simpan
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={cancelEdit}
+                            >
+                                Batal
+                            </Button>
                         </div>
                     </form>
                 </SheetContent>

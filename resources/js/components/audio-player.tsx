@@ -16,7 +16,11 @@ interface AudioPlayerProps {
     durationSeconds?: number | null;
 }
 
-export function AudioPlayer({ src, originalName, durationSeconds }: AudioPlayerProps) {
+export function AudioPlayer({
+    src,
+    originalName,
+    durationSeconds,
+}: AudioPlayerProps) {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -30,7 +34,8 @@ export function AudioPlayer({ src, originalName, durationSeconds }: AudioPlayerP
         if (!audio) return;
 
         const updateTime = () => setCurrentTime(audio.currentTime);
-        const updateDuration = () => setDuration(audio.duration || durationSeconds || 0);
+        const updateDuration = () =>
+            setDuration(audio.duration || durationSeconds || 0);
         const handleEnded = () => setIsPlaying(false);
 
         audio.addEventListener('timeupdate', updateTime);
@@ -52,7 +57,10 @@ export function AudioPlayer({ src, originalName, durationSeconds }: AudioPlayerP
             audio.pause();
             setIsPlaying(false);
         } else {
-            audio.play().then(() => setIsPlaying(true)).catch((err) => console.warn('Audio playback prevented:', err));
+            audio
+                .play()
+                .then(() => setIsPlaying(true))
+                .catch((err) => console.warn('Audio playback prevented:', err));
         }
     };
 
@@ -110,7 +118,9 @@ export function AudioPlayer({ src, originalName, durationSeconds }: AudioPlayerP
             {/* Header info */}
             <div className="flex items-center justify-between border-b border-indigo-100/60 pb-3 dark:border-indigo-900/30">
                 <div className="flex items-center gap-2 text-xs font-semibold text-indigo-900 dark:text-indigo-200">
-                    <AudioLines className={`h-4 w-4 ${isPlaying ? 'animate-pulse text-indigo-600' : 'text-slate-400'}`} />
+                    <AudioLines
+                        className={`h-4 w-4 ${isPlaying ? 'animate-pulse text-indigo-600' : 'text-slate-400'}`}
+                    />
                     <span>{originalName || 'Rekaman Suara Santri'}</span>
                 </div>
                 <a
@@ -127,24 +137,29 @@ export function AudioPlayer({ src, originalName, durationSeconds }: AudioPlayerP
 
             {/* Waveform Visualizer simulation */}
             <div className="my-3 flex items-center justify-center gap-1 py-1">
-                {[40, 70, 30, 90, 50, 80, 40, 60, 100, 45, 75, 35, 85, 65, 40, 95, 55, 75, 45].map((height, i) => (
+                {[
+                    40, 70, 30, 90, 50, 80, 40, 60, 100, 45, 75, 35, 85, 65, 40,
+                    95, 55, 75, 45,
+                ].map((height, i) => (
                     <div
                         key={i}
                         className={`w-1 rounded-full transition-all duration-300 ${
                             isPlaying
-                                ? 'bg-indigo-500 animate-pulse'
+                                ? 'animate-pulse bg-indigo-500'
                                 : (currentTime / (duration || 1)) * 19 >= i
-                                ? 'bg-indigo-400'
-                                : 'bg-slate-200 dark:bg-slate-700'
+                                  ? 'bg-indigo-400'
+                                  : 'bg-slate-200 dark:bg-slate-700'
                         }`}
-                        style={{ height: `${isPlaying ? Math.max(12, (height * (i % 2 === 0 ? 0.9 : 0.6))) : 16}px` }}
+                        style={{
+                            height: `${isPlaying ? Math.max(12, height * (i % 2 === 0 ? 0.9 : 0.6)) : 16}px`,
+                        }}
                     />
                 ))}
             </div>
 
             {/* Seek Bar */}
             <div className="flex items-center gap-3">
-                <span className="text-[11px] font-mono font-medium text-slate-500 dark:text-slate-400">
+                <span className="font-mono text-[11px] font-medium text-slate-500 dark:text-slate-400">
                     {formatTime(currentTime)}
                 </span>
                 <input
@@ -156,7 +171,7 @@ export function AudioPlayer({ src, originalName, durationSeconds }: AudioPlayerP
                     onChange={handleSeek}
                     className="h-1.5 flex-1 cursor-pointer appearance-none rounded-lg bg-slate-200 accent-indigo-600 dark:bg-slate-700"
                 />
-                <span className="text-[11px] font-mono font-medium text-slate-500 dark:text-slate-400">
+                <span className="font-mono text-[11px] font-medium text-slate-500 dark:text-slate-400">
                     {formatTime(duration)}
                 </span>
             </div>
@@ -169,7 +184,11 @@ export function AudioPlayer({ src, originalName, durationSeconds }: AudioPlayerP
                         onClick={togglePlay}
                         className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-white shadow-md shadow-indigo-600/30 transition hover:bg-indigo-700 active:scale-95"
                     >
-                        {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="ml-0.5 h-5 w-5" />}
+                        {isPlaying ? (
+                            <Pause className="h-5 w-5" />
+                        ) : (
+                            <Play className="ml-0.5 h-5 w-5" />
+                        )}
                     </button>
 
                     <button
@@ -206,8 +225,15 @@ export function AudioPlayer({ src, originalName, durationSeconds }: AudioPlayerP
 
                 {/* Volume Control */}
                 <div className="flex items-center gap-2">
-                    <button onClick={toggleMute} className="text-slate-500 hover:text-indigo-600">
-                        {isMuted || volume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                    <button
+                        onClick={toggleMute}
+                        className="text-slate-500 hover:text-indigo-600"
+                    >
+                        {isMuted || volume === 0 ? (
+                            <VolumeX className="h-4 w-4" />
+                        ) : (
+                            <Volume2 className="h-4 w-4" />
+                        )}
                     </button>
                     <input
                         type="range"

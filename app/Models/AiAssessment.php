@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class AiAssessment extends Model
 {
     use HasFactory;
+
     public function testAnswer(): BelongsTo
     {
         return $this->belongsTo(TestAnswer::class);

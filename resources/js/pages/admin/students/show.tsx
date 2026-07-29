@@ -78,43 +78,82 @@ export default function AdminStudentShow({ student, timeline }: Props) {
                                     <User className="size-6 text-primary" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-lg">{student.name}</CardTitle>
-                                    <CardDescription>@{student.username}</CardDescription>
+                                    <CardTitle className="text-lg">
+                                        {student.name}
+                                    </CardTitle>
+                                    <CardDescription>
+                                        @{student.username}
+                                    </CardDescription>
                                 </div>
                             </div>
                         </CardHeader>
                         <CardContent className="grid gap-3">
                             <div className="grid grid-cols-2 gap-2 text-sm">
-                                <span className="text-muted-foreground">Kode Santri</span>
-                                <span className="font-mono font-medium">{student.student_code}</span>
+                                <span className="text-muted-foreground">
+                                    Kode Santri
+                                </span>
+                                <span className="font-mono font-medium">
+                                    {student.student_code}
+                                </span>
 
-                                <span className="text-muted-foreground">Status</span>
+                                <span className="text-muted-foreground">
+                                    Status
+                                </span>
                                 <span>
-                                    <Badge className={student.status === 'active' ? 'bg-green-100 text-green-700' : ''}>
-                                        {statusLabels[student.status] || student.status}
+                                    <Badge
+                                        className={
+                                            student.status === 'active'
+                                                ? 'bg-green-100 text-green-700'
+                                                : ''
+                                        }
+                                    >
+                                        {statusLabels[student.status] ||
+                                            student.status}
                                     </Badge>
                                 </span>
 
-                                <span className="text-muted-foreground">Akun</span>
+                                <span className="text-muted-foreground">
+                                    Akun
+                                </span>
                                 <span>
                                     {student.is_active ? (
-                                        <Badge className="bg-green-100 text-green-700">Aktif</Badge>
+                                        <Badge className="bg-green-100 text-green-700">
+                                            Aktif
+                                        </Badge>
                                     ) : (
-                                        <Badge variant="secondary">Nonaktif</Badge>
+                                        <Badge variant="secondary">
+                                            Nonaktif
+                                        </Badge>
                                     )}
                                 </span>
 
-                                <span className="text-muted-foreground">Jenis Kelamin</span>
+                                <span className="text-muted-foreground">
+                                    Jenis Kelamin
+                                </span>
                                 <span>{student.gender || '-'}</span>
 
-                                <span className="text-muted-foreground">Tanggal Lahir</span>
+                                <span className="text-muted-foreground">
+                                    Tanggal Lahir
+                                </span>
                                 <span>{formatDate(student.birth_date)}</span>
 
-                                <span className="text-muted-foreground">Kelompok Saat Ini</span>
-                                <span>{student.current_group || <span className="text-muted-foreground">-</span>}</span>
+                                <span className="text-muted-foreground">
+                                    Kelompok Saat Ini
+                                </span>
+                                <span>
+                                    {student.current_group || (
+                                        <span className="text-muted-foreground">
+                                            -
+                                        </span>
+                                    )}
+                                </span>
 
-                                <span className="text-muted-foreground">Tanggal Daftar</span>
-                                <span>{formatDate(student.enrollment_date)}</span>
+                                <span className="text-muted-foreground">
+                                    Tanggal Daftar
+                                </span>
+                                <span>
+                                    {formatDate(student.enrollment_date)}
+                                </span>
                             </div>
                         </CardContent>
                     </Card>
@@ -123,10 +162,13 @@ export default function AdminStudentShow({ student, timeline }: Props) {
                         <CardHeader>
                             <div className="flex items-center gap-2">
                                 <History className="size-5 text-muted-foreground" />
-                                <CardTitle className="text-base">Riwayat Perpindahan Kelompok</CardTitle>
+                                <CardTitle className="text-base">
+                                    Riwayat Perpindahan Kelompok
+                                </CardTitle>
                             </div>
                             <CardDescription>
-                                Catatan perpindahan kelompok santri selama di pesantren.
+                                Catatan perpindahan kelompok santri selama di
+                                pesantren.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -136,21 +178,39 @@ export default function AdminStudentShow({ student, timeline }: Props) {
                                 </p>
                             ) : (
                                 <div className="relative">
-                                    <div className="absolute left-4 top-0 h-full w-px bg-border" />
+                                    <div className="absolute top-0 left-4 h-full w-px bg-border" />
                                     <div className="space-y-6">
                                         {timeline.map((item) => (
-                                            <div key={item.id} className="relative pl-10">
-                                                <div className="absolute left-2.5 top-1 size-3 rounded-full border-2 border-primary bg-background" />
+                                            <div
+                                                key={item.id}
+                                                className="relative pl-10"
+                                            >
+                                                <div className="absolute top-1 left-2.5 size-3 rounded-full border-2 border-primary bg-background" />
                                                 <div>
-                                                    <p className="font-medium">{item.group_name}</p>
-                                                    <p className="text-sm text-muted-foreground">{item.academic_year}</p>
+                                                    <p className="font-medium">
+                                                        {item.group_name}
+                                                    </p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {item.academic_year}
+                                                    </p>
                                                     <p className="text-xs text-muted-foreground">
-                                                        Bergabung: {formatDate(item.joined_at)}
+                                                        Bergabung:{' '}
+                                                        {formatDate(
+                                                            item.joined_at,
+                                                        )}
                                                         {item.left_at && (
-                                                            <> — Keluar: {formatDate(item.left_at)}</>
+                                                            <>
+                                                                {' '}
+                                                                — Keluar:{' '}
+                                                                {formatDate(
+                                                                    item.left_at,
+                                                                )}
+                                                            </>
                                                         )}
                                                         {!item.left_at && (
-                                                            <span className="ml-1 text-green-600">(Aktif)</span>
+                                                            <span className="ml-1 text-green-600">
+                                                                (Aktif)
+                                                            </span>
                                                         )}
                                                     </p>
                                                 </div>

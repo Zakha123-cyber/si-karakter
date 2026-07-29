@@ -56,8 +56,8 @@ class TestReviewSeeder extends Seeder
         foreach ($names as $idx => $name) {
             $sUser = User::query()->create([
                 'name' => $name,
-                'username' => 'santri_' . ($idx + 1),
-                'email' => 'santri' . ($idx + 1) . '@example.com',
+                'username' => 'santri_'.($idx + 1),
+                'email' => 'santri'.($idx + 1).'@example.com',
                 'password' => bcrypt('password'),
                 'role' => UserRole::Student,
                 'is_active' => true,
@@ -65,7 +65,7 @@ class TestReviewSeeder extends Seeder
 
             $student = Student::query()->create([
                 'user_id' => $sUser->id,
-                'student_code' => 'STU-00' . ($idx + 1),
+                'student_code' => 'STU-00'.($idx + 1),
                 'gender' => $idx === 2 ? 'F' : 'M',
                 'birth_date' => '2017-05-12',
                 'current_group_id' => $group->id,
@@ -117,7 +117,7 @@ class TestReviewSeeder extends Seeder
 
         $testPackage = TestPackage::query()->create([
             'title' => 'Asesmen Karakter Kejujuran & Tanggung Jawab',
-            'slug' => Str::slug('Asesmen Karakter Kejujuran ' . Str::random(5)),
+            'slug' => Str::slug('Asesmen Karakter Kejujuran '.Str::random(5)),
             'description' => 'Paket tes untuk mengukur tingkat penalaran moral santri usia 7-10 tahun.',
             'status' => 'published',
             'created_by' => $teacher->id,

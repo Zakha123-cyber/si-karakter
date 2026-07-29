@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CharacterIndicatorController as ApiCharacterIndicatorController;
 use App\Http\Controllers\Api\V1\GroupController;
 use App\Http\Controllers\Api\V1\StudentController;
+use App\Http\Controllers\Api\V1\Teacher\ReviewController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,12 +39,12 @@ Route::prefix('v1')->middleware('web')->group(function () {
         });
 
         Route::middleware('role:teacher,admin')->prefix('teacher')->group(function () {
-            Route::get('reviews', [\App\Http\Controllers\Api\V1\Teacher\ReviewController::class, 'index'])->name('api.teacher.reviews.index');
-            Route::get('reviews/{answer}', [\App\Http\Controllers\Api\V1\Teacher\ReviewController::class, 'show'])->name('api.teacher.reviews.show');
-            Route::get('reviews/{answer}/audio', [\App\Http\Controllers\Api\V1\Teacher\ReviewController::class, 'audio'])->name('api.teacher.reviews.audio');
-            Route::put('reviews/{answer}/transcript', [\App\Http\Controllers\Api\V1\Teacher\ReviewController::class, 'updateTranscript'])->name('api.teacher.reviews.transcript.update');
-            Route::post('reviews/{answer}/approve', [\App\Http\Controllers\Api\V1\Teacher\ReviewController::class, 'approve'])->name('api.teacher.reviews.approve');
-            Route::post('reviews/{answer}/override', [\App\Http\Controllers\Api\V1\Teacher\ReviewController::class, 'override'])->name('api.teacher.reviews.override');
+            Route::get('reviews', [ReviewController::class, 'index'])->name('api.teacher.reviews.index');
+            Route::get('reviews/{answer}', [ReviewController::class, 'show'])->name('api.teacher.reviews.show');
+            Route::get('reviews/{answer}/audio', [ReviewController::class, 'audio'])->name('api.teacher.reviews.audio');
+            Route::put('reviews/{answer}/transcript', [ReviewController::class, 'updateTranscript'])->name('api.teacher.reviews.transcript.update');
+            Route::post('reviews/{answer}/approve', [ReviewController::class, 'approve'])->name('api.teacher.reviews.approve');
+            Route::post('reviews/{answer}/override', [ReviewController::class, 'override'])->name('api.teacher.reviews.override');
         });
     });
 });

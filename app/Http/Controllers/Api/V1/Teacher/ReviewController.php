@@ -4,11 +4,22 @@ namespace App\Http\Controllers\Api\V1\Teacher;
 
 use App\Http\Controllers\Api\V1\Concerns\RespondsWithApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Teacher\Reviews\ApproveValidationRequest;
+use App\Http\Requests\Teacher\Reviews\OverrideValidationRequest;
+use App\Http\Requests\Teacher\Reviews\UpdateTranscriptRequest;
 use App\Http\Resources\Teacher\ReviewDetailResource;
 use App\Http\Resources\Teacher\ReviewQueueResource;
+use App\Models\AiAssessment;
+use App\Models\AnswerAudioFile;
+use App\Models\MoralCaseOption;
+use App\Models\Student;
+use App\Models\TeacherValidation;
 use App\Models\TestAnswer;
+use App\Models\TestAttempt;
+use App\Models\Transcription;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReviewController extends Controller
 {
@@ -75,7 +86,11 @@ class ReviewController extends Controller
         $user = $request->user();
 
         if ($user->role->value === 'teacher') {
-            $studentGroupTeacherId = $answer->testAttempt?->student?->currentGroup?->teacher_id;
+            /** @var TestAttempt|null $attempt */
+            $attempt = $answer->testAttempt;
+            /** @var Student|null $student */
+            $student = $attempt?->student;
+            $studentGroupTeacherId = $student?->currentGroup?->teacher_id;
             if ($studentGroupTeacherId !== $user->id) {
                 return $this->error('Unauthorized to view review for this student', 403);
             }
@@ -98,25 +113,30 @@ class ReviewController extends Controller
         ]);
     }
 
-    public function audio(Request $request, TestAnswer $answer)
+    public function audio(Request $request, TestAnswer $answer): BinaryFileResponse|JsonResponse
     {
         $user = $request->user();
 
         if ($user->role->value === 'teacher') {
-            $studentGroupTeacherId = $answer->testAttempt?->student?->currentGroup?->teacher_id;
+            /** @var TestAttempt|null $attempt */
+            $attempt = $answer->testAttempt;
+            /** @var Student|null $student */
+            $student = $attempt?->student;
+            $studentGroupTeacherId = $student?->currentGroup?->teacher_id;
             if ($studentGroupTeacherId !== $user->id) {
                 return $this->error('Unauthorized to access audio for this student', 403);
             }
         }
 
+        /** @var AnswerAudioFile|null $audioFile */
         $audioFile = $answer->audioFiles()->first();
         if (! $audioFile) {
             return $this->error('Audio file not found', 404);
         }
 
-        $filePath = storage_path('app/' . $audioFile->file_path);
+        $filePath = storage_path('app/'.$audioFile->file_path);
         if (! file_exists($filePath)) {
-            $filePath = storage_path('app/public/' . $audioFile->file_path);
+            $filePath = storage_path('app/public/'.$audioFile->file_path);
         }
 
         if (! file_exists($filePath)) {
@@ -125,16 +145,20 @@ class ReviewController extends Controller
 
         return response()->file($filePath, [
             'Content-Type' => $audioFile->mime_type ?: 'audio/mpeg',
-            'Content-Disposition' => 'inline; filename="' . $audioFile->original_name . '"',
+            'Content-Disposition' => 'inline; filename="'.$audioFile->original_name.'"',
         ]);
     }
 
-    public function updateTranscript(\App\Http\Requests\Teacher\Reviews\UpdateTranscriptRequest $request, TestAnswer $answer): JsonResponse
+    public function updateTranscript(UpdateTranscriptRequest $request, TestAnswer $answer): JsonResponse
     {
         $user = $request->user();
 
         if ($user->role->value === 'teacher') {
-            $studentGroupTeacherId = $answer->testAttempt?->student?->currentGroup?->teacher_id;
+            /** @var TestAttempt|null $attempt */
+            $attempt = $answer->testAttempt;
+            /** @var Student|null $student */
+            $student = $attempt?->student;
+            $studentGroupTeacherId = $student?->currentGroup?->teacher_id;
             if ($studentGroupTeacherId !== $user->id) {
                 return $this->error('Unauthorized to edit transcript for this student', 403);
             }
@@ -142,6 +166,7 @@ class ReviewController extends Controller
 
         $editedText = $request->validated('edited_text');
 
+        /** @var Transcription|null $transcription */
         $transcription = $answer->transcriptions()->latest()->first();
         if ($transcription) {
             $transcription->update([
@@ -164,27 +189,34 @@ class ReviewController extends Controller
         ]);
 
         return $this->success('Transcript updated successfully', [
-            'transcription' => $transcription ? $transcription->refresh() : null,
+            'transcription' => $transcription->refresh(),
             'final_transcript' => $editedText,
         ]);
     }
 
-    public function approve(\App\Http\Requests\Teacher\Reviews\ApproveValidationRequest $request, TestAnswer $answer): JsonResponse
+    public function approve(ApproveValidationRequest $request, TestAnswer $answer): JsonResponse
     {
         $user = $request->user();
 
         if ($user->role->value === 'teacher') {
-            $studentGroupTeacherId = $answer->testAttempt?->student?->currentGroup?->teacher_id;
+            /** @var TestAttempt|null $attempt */
+            $attempt = $answer->testAttempt;
+            /** @var Student|null $student */
+            $student = $attempt?->student;
+            $studentGroupTeacherId = $student?->currentGroup?->teacher_id;
             if ($studentGroupTeacherId !== $user->id) {
                 return $this->error('Unauthorized to validate review for this student', 403);
             }
         }
 
+        /** @var AiAssessment|null $aiAssessment */
         $aiAssessment = $answer->aiAssessments()->latest()->first();
-        $moralLevel = $aiAssessment?->moral_level ?? $answer->selectedOption?->indicative_level ?? 'Belum Ditentukan';
-        $indicators = $aiAssessment?->indicators_json ?? [];
+        /** @var MoralCaseOption|null $selectedOption */
+        $selectedOption = $answer->selectedOption;
+        $moralLevel = $aiAssessment ? $aiAssessment->moral_level : ($selectedOption ? $selectedOption->internal_value : 'Belum Ditentukan');
+        $indicators = $aiAssessment ? $aiAssessment->indicators_json : [];
 
-        $validation = \App\Models\TeacherValidation::query()->updateOrCreate(
+        $validation = TeacherValidation::query()->updateOrCreate(
             ['test_answer_id' => $answer->id],
             [
                 'ai_assessment_id' => $aiAssessment?->id,
@@ -203,21 +235,26 @@ class ReviewController extends Controller
         ]);
     }
 
-    public function override(\App\Http\Requests\Teacher\Reviews\OverrideValidationRequest $request, TestAnswer $answer): JsonResponse
+    public function override(OverrideValidationRequest $request, TestAnswer $answer): JsonResponse
     {
         $user = $request->user();
 
         if ($user->role->value === 'teacher') {
-            $studentGroupTeacherId = $answer->testAttempt?->student?->currentGroup?->teacher_id;
+            /** @var TestAttempt|null $attempt */
+            $attempt = $answer->testAttempt;
+            /** @var Student|null $student */
+            $student = $attempt?->student;
+            $studentGroupTeacherId = $student?->currentGroup?->teacher_id;
             if ($studentGroupTeacherId !== $user->id) {
                 return $this->error('Unauthorized to validate review for this student', 403);
             }
         }
 
+        /** @var AiAssessment|null $aiAssessment */
         $aiAssessment = $answer->aiAssessments()->latest()->first();
-        $indicators = $request->validated('final_indicators') ?? $aiAssessment?->indicators_json ?? [];
+        $indicators = $request->validated('final_indicators') ?: ($aiAssessment ? $aiAssessment->indicators_json : []);
 
-        $validation = \App\Models\TeacherValidation::query()->updateOrCreate(
+        $validation = TeacherValidation::query()->updateOrCreate(
             ['test_answer_id' => $answer->id],
             [
                 'ai_assessment_id' => $aiAssessment?->id,
@@ -227,7 +264,7 @@ class ReviewController extends Controller
                 'final_indicators_json' => $indicators,
                 'teacher_note' => $request->validated('teacher_note'),
                 'override_reason' => $request->validated('override_reason'),
-                'validated_at' => now(),
+                'validated_at' => $request->validated('validated_at') ?: now(),
             ]
         );
 

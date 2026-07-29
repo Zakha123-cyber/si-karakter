@@ -89,7 +89,7 @@ class GroupController extends Controller
     {
         $academicYear = AcademicYear::query()->where('is_active', true)->first();
 
-        if (!$academicYear) {
+        if (! $academicYear) {
             return $this->error('No active academic year found', 400);
         }
 

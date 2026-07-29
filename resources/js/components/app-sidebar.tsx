@@ -84,7 +84,7 @@ function getNavItems(role: string): NavItem[] {
                 href: '/admin/students',
                 icon: Users,
             },
-{
+            {
                 title: 'Kelompok',
                 href: '/admin/groups',
                 icon: BookMarked,

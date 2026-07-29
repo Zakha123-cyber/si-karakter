@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\TestAnswer;
 use App\Models\TestAttempt;
 use App\Models\TestPackage;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -210,7 +211,7 @@ class TestController extends Controller
         return redirect()->route('student.tests.index')->with('status', 'Jawaban berhasil dikirim.');
     }
 
-    private function studentForUser(?\App\Models\User $user): ?Student
+    private function studentForUser(?User $user): ?Student
     {
         if ($user === null) {
             return null;
@@ -280,7 +281,7 @@ class TestController extends Controller
                 'attempt_number' => $activeAttempt->attempt_number,
             ],
             'can_resume' => $hasInProgress,
-            'can_start' => !$hasInProgress && !$hasReachedLimit,
+            'can_start' => ! $hasInProgress && ! $hasReachedLimit,
         ];
     }
 }

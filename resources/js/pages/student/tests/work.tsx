@@ -88,7 +88,11 @@ export default function StudentTestWork({
         );
         form.setData('typed_reason', answerState.typed_reason ?? '');
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [current_case?.id, answerState.selected_option_id, answerState.typed_reason]);
+    }, [
+        current_case?.id,
+        answerState.selected_option_id,
+        answerState.typed_reason,
+    ]);
 
     useEffect(() => {
         if (!current_case) {

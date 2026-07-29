@@ -77,9 +77,7 @@ export default function StudentTestsIndex({ packages }: Props) {
                                     <span>
                                         Batas percobaan: {pkg.attempt_limit}
                                     </span>
-                                    <span>
-                                        Digunakan: {pkg.attempts_used}
-                                    </span>
+                                    <span>Digunakan: {pkg.attempts_used}</span>
                                     {pkg.active_attempt ? (
                                         <span>
                                             Aktif: percobaan{' '}

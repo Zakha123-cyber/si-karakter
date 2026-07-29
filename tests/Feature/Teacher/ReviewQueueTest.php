@@ -2,10 +2,8 @@
 
 use App\Models\AcademicYear;
 use App\Models\AiAssessment;
-use App\Models\CharacterIndicator;
 use App\Models\Group;
 use App\Models\MoralCase;
-use App\Models\MoralCaseOption;
 use App\Models\Student;
 use App\Models\TeacherValidation;
 use App\Models\TestAnswer;

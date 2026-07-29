@@ -43,7 +43,7 @@ jobs:
           php artisan key:generate --ansi
 
       - name: Generate Wayfinder Types
-        run: php artisan wayfinder:generate
+        run: php artisan wayfinder:generate --with-form
 
       - name: Run CI Checks
         run: composer ci:check

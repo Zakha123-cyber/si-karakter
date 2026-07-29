@@ -9,6 +9,7 @@ use App\Http\Requests\Teacher\Reviews\OverrideValidationRequest;
 use App\Http\Requests\Teacher\Reviews\UpdateTranscriptRequest;
 use App\Http\Resources\Teacher\ReviewDetailResource;
 use App\Http\Resources\Teacher\ReviewQueueResource;
+use App\Jobs\TranscribeAnswerJob;
 use App\Models\AiAssessment;
 use App\Models\AnswerAudioFile;
 use App\Models\MoralCaseOption;
@@ -192,6 +193,32 @@ class ReviewController extends Controller
             'transcription' => $transcription->refresh(),
             'final_transcript' => $editedText,
         ]);
+    }
+
+    public function retryTranscription(Request $request, TestAnswer $answer): JsonResponse
+    {
+        $user = $request->user();
+
+        if ($user->role->value === 'teacher') {
+            /** @var TestAttempt|null $attempt */
+            $attempt = $answer->testAttempt;
+            /** @var Student|null $student */
+            $student = $attempt?->student;
+            $studentGroupTeacherId = $student?->currentGroup?->teacher_id;
+            if ($studentGroupTeacherId !== $user->id) {
+                return $this->error('Unauthorized to retry transcription for this student', 403);
+            }
+        }
+
+        /** @var AnswerAudioFile|null $audioFile */
+        $audioFile = $answer->audioFiles()->first();
+        if (! $audioFile) {
+            return $this->error('No audio file found for this answer', 404);
+        }
+
+        TranscribeAnswerJob::dispatch($audioFile->id);
+
+        return $this->success('Transcription job has been queued for retry');
     }
 
     public function approve(ApproveValidationRequest $request, TestAnswer $answer): JsonResponse

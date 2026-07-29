@@ -98,18 +98,18 @@ Status:
 
 ## Phase 6 — Speech-to-Text
 
-- [ ] Buat interface STT.
-- [ ] Buat DTO hasil transkripsi.
-- [ ] Implement provider pertama.
+- [x] Buat interface STT.
+- [x] Buat DTO hasil transkripsi.
+- [x] Implement provider pertama.
 - [x] Migration audio files.
 - [x] Migration transcriptions.
-- [ ] Job transkripsi.
-- [ ] Retry policy.
-- [ ] Error logging.
-- [ ] Simpan raw response.
-- [ ] Endpoint retry.
-- [ ] Mock test provider.
-- [ ] Integration test.
+- [x] Job transkripsi.
+- [x] Retry policy.
+- [x] Error logging.
+- [x] Simpan raw response.
+- [x] Endpoint retry.
+- [x] Mock test provider.
+- [x] Integration test.
 
 ## Phase 7 — LLM Moral Assessment
 

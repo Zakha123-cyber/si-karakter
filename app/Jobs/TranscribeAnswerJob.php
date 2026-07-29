@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class TranscribeAnswerJob implements ShouldQueue
@@ -39,6 +40,10 @@ class TranscribeAnswerJob implements ShouldQueue
         $audioFile = AnswerAudioFile::query()->find($this->answerAudioFileId);
 
         if ($audioFile === null) {
+            Log::warning('TranscribeAnswerJob: audio file not found, skipping.', [
+                'answer_audio_file_id' => $this->answerAudioFileId,
+            ]);
+
             return;
         }
 
@@ -65,7 +70,22 @@ class TranscribeAnswerJob implements ShouldQueue
                 'raw_response_json' => $result->rawResponse,
                 'processed_at' => now(),
             ])->save();
+
+            Log::info('TranscribeAnswerJob: transcription completed.', [
+                'answer_audio_file_id' => $this->answerAudioFileId,
+                'test_answer_id' => $audioFile->test_answer_id,
+                'provider' => $result->provider,
+                'model' => $result->model,
+            ]);
         } catch (SpeechToTextException $exception) {
+            Log::error('TranscribeAnswerJob: transcription failed.', [
+                'answer_audio_file_id' => $this->answerAudioFileId,
+                'test_answer_id' => $audioFile->test_answer_id,
+                'attempt' => $this->attempts(),
+                'max_tries' => $this->tries,
+                'error' => $exception->getMessage(),
+            ]);
+
             $transcription->forceFill([
                 'status' => TranscriptionStatus::Failed->value,
                 'error_message' => $exception->getMessage(),
@@ -84,6 +104,12 @@ class TranscribeAnswerJob implements ShouldQueue
             return;
         }
 
+        Log::error('TranscribeAnswerJob: all retry attempts exhausted.', [
+            'answer_audio_file_id' => $this->answerAudioFileId,
+            'test_answer_id' => $audioFile->test_answer_id,
+            'error' => $exception?->getMessage(),
+        ]);
+
         Transcription::query()
             ->where('test_answer_id', $audioFile->test_answer_id)
             ->first()
@@ -94,3 +120,4 @@ class TranscribeAnswerJob implements ShouldQueue
             ])->save();
     }
 }
+

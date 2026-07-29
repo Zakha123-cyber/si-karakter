@@ -79,6 +79,7 @@ Route::middleware(['auth', 'active', 'role:teacher,admin'])->prefix('teacher')->
     Route::put('reviews/{answer}/transcript', [ReviewController::class, 'updateTranscript'])->name('reviews.transcript.update');
     Route::post('reviews/{answer}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
     Route::post('reviews/{answer}/override', [ReviewController::class, 'override'])->name('reviews.override');
+    Route::post('reviews/{answer}/retry-transcription', [ReviewController::class, 'retryTranscription'])->name('reviews.retry-transcription');
 });
 
 require __DIR__.'/settings.php';

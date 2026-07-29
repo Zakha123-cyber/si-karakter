@@ -171,7 +171,7 @@ export default function TeacherCharacterIndicatorsIndex({
 
         const toastId = toast.loading('Menyimpan perubahan indikator...');
 
-editForm.put(`/teacher/character-indicators/${editingIndicator.id}`, {
+        editForm.put(`/teacher/character-indicators/${editingIndicator.id}`, {
             preserveScroll: true,
             onSuccess: () => {
                 toast.success('Indikator berhasil diperbarui.', {

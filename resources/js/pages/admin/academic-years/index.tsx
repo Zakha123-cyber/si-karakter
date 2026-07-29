@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -53,7 +54,10 @@ type Props = {
     };
 };
 
-export default function AdminAcademicYearsIndex({ academic_years, filters }: Props) {
+export default function AdminAcademicYearsIndex({
+    academic_years,
+    filters,
+}: Props) {
     const { props } = usePage<{ flash?: { status?: string } }>();
     const [search, setSearch] = useState(filters.search);
     const [editingYear, setEditingYear] = useState<AcademicYear | null>(null);
@@ -74,7 +78,11 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
 
     const submitFilters = (event: FormEvent) => {
         event.preventDefault();
-        router.get('/admin/academic-years', { search }, { preserveState: true, replace: true });
+        router.get(
+            '/admin/academic-years',
+            { search },
+            { preserveState: true, replace: true },
+        );
     };
 
     const submitCreate = (event: FormEvent) => {
@@ -116,7 +124,9 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
         editForm.put(`/admin/academic-years/${editingYear.id}`, {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success('Tahun ajaran berhasil diperbarui.', { id: toastId });
+                toast.success('Tahun ajaran berhasil diperbarui.', {
+                    id: toastId,
+                });
                 cancelEdit();
             },
             onError: () => {
@@ -128,11 +138,17 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
     const activateYear = (year: AcademicYear) => {
         if (year.is_active) return;
         const toastId = toast.loading('Mengaktifkan tahun ajaran...');
-        router.patch(`/admin/academic-years/${year.id}/activate`, {}, {
-            preserveScroll: true,
-            onSuccess: () => toast.success('Tahun ajaran diaktifkan.', { id: toastId }),
-            onError: () => toast.error('Gagal mengaktifkan.', { id: toastId }),
-        });
+        router.patch(
+            `/admin/academic-years/${year.id}/activate`,
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () =>
+                    toast.success('Tahun ajaran diaktifkan.', { id: toastId }),
+                onError: () =>
+                    toast.error('Gagal mengaktifkan.', { id: toastId }),
+            },
+        );
     };
 
     const deleteYear = (year: AcademicYear) => {
@@ -144,10 +160,18 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                     const toastId = toast.loading('Menghapus...');
                     router.delete(`/admin/academic-years/${year.id}`, {
                         preserveScroll: true,
-                        onSuccess: () => toast.success('Tahun ajaran dihapus.', { id: toastId }),
+                        onSuccess: () =>
+                            toast.success('Tahun ajaran dihapus.', {
+                                id: toastId,
+                            }),
                         onError: (errors) => {
-                            const msg = errors?.error ?? errors?.message ?? 'Gagal menghapus.';
-                            toast.error(Array.isArray(msg) ? msg[0] : msg, { id: toastId });
+                            const msg =
+                                errors?.error ??
+                                errors?.message ??
+                                'Gagal menghapus.';
+                            toast.error(Array.isArray(msg) ? msg[0] : msg, {
+                                id: toastId,
+                            });
                         },
                     });
                 },
@@ -164,11 +188,14 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
             <div className="flex h-full flex-1 flex-col gap-6 p-4">
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-wrap items-center gap-3">
-                        <h1 className="text-2xl font-semibold tracking-normal">Tahun Ajaran</h1>
+                        <h1 className="text-2xl font-semibold tracking-normal">
+                            Tahun Ajaran
+                        </h1>
                         <Badge variant="secondary">Admin</Badge>
                     </div>
                     <p className="max-w-3xl text-sm text-muted-foreground">
-                        Kelola tahun ajaran untuk pengelompokan santri dan kegiatan akademik.
+                        Kelola tahun ajaran untuk pengelompokan santri dan
+                        kegiatan akademik.
                     </p>
                 </div>
 
@@ -183,24 +210,69 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                         <CardHeader>
                             <div className="flex items-center gap-2">
                                 <Plus className="size-5 text-muted-foreground" />
-                                <CardTitle className="text-base">Tambah Tahun Ajaran</CardTitle>
+                                <CardTitle className="text-base">
+                                    Tambah Tahun Ajaran
+                                </CardTitle>
                             </div>
-                            <CardDescription>Buat tahun ajaran baru.</CardDescription>
+                            <CardDescription>
+                                Buat tahun ajaran baru.
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={submitCreate} className="grid gap-4">
+                            <form
+                                onSubmit={submitCreate}
+                                className="grid gap-4"
+                            >
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Nama Tahun Ajaran</Label>
-                                    <Input id="name" value={createForm.data.name} onChange={(e) => createForm.setData('name', e.target.value)} placeholder="Misal: 2026/2027" />
+                                    <Label htmlFor="name">
+                                        Nama Tahun Ajaran
+                                    </Label>
+                                    <Input
+                                        id="name"
+                                        value={createForm.data.name}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'name',
+                                                e.target.value,
+                                            )
+                                        }
+                                        placeholder="Misal: 2026/2027"
+                                    />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="start_date">Tanggal Mulai</Label>
-                                    <Input id="start_date" type="date" value={createForm.data.start_date} onChange={(e) => createForm.setData('start_date', e.target.value)} />
+                                    <Label htmlFor="start_date">
+                                        Tanggal Mulai
+                                    </Label>
+                                    <Input
+                                        id="start_date"
+                                        type="date"
+                                        value={createForm.data.start_date}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'start_date',
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="end_date">Tanggal Selesai</Label>
-                                    <Input id="end_date" type="date" value={createForm.data.end_date} onChange={(e) => createForm.setData('end_date', e.target.value)} />
-                                    <InputError message={createForm.errors.end_date} />
+                                    <Label htmlFor="end_date">
+                                        Tanggal Selesai
+                                    </Label>
+                                    <Input
+                                        id="end_date"
+                                        type="date"
+                                        value={createForm.data.end_date}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'end_date',
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                    <InputError
+                                        message={createForm.errors.end_date}
+                                    />
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <input
@@ -208,11 +280,26 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                                         type="checkbox"
                                         className="size-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                         checked={createForm.data.is_active}
-                                        onChange={(e) => createForm.setData('is_active', e.target.checked)}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'is_active',
+                                                e.target.checked,
+                                            )
+                                        }
                                     />
-                                    <Label htmlFor="is_active" className="text-sm">Aktifkan sekarang</Label>
+                                    <Label
+                                        htmlFor="is_active"
+                                        className="text-sm"
+                                    >
+                                        Aktifkan sekarang
+                                    </Label>
                                 </div>
-                                <Button type="submit" disabled={createForm.processing}>Simpan</Button>
+                                <Button
+                                    type="submit"
+                                    disabled={createForm.processing}
+                                >
+                                    Simpan
+                                </Button>
                             </form>
                         </CardContent>
                     </Card>
@@ -221,51 +308,122 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                         <Card className="rounded-lg">
                             <CardHeader>
                                 <div className="flex items-center gap-2">
-                                    <CardTitle className="text-base">Daftar Tahun Ajaran</CardTitle>
+                                    <CardTitle className="text-base">
+                                        Daftar Tahun Ajaran
+                                    </CardTitle>
                                 </div>
-                                <CardDescription>{academic_years.from ?? 0}-{academic_years.to ?? 0} dari {academic_years.total}</CardDescription>
+                                <CardDescription>
+                                    {academic_years.from ?? 0}-
+                                    {academic_years.to ?? 0} dari{' '}
+                                    {academic_years.total}
+                                </CardDescription>
                             </CardHeader>
                             <CardContent className="grid gap-4">
-                                <form onSubmit={submitFilters} className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
-                                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari tahun ajaran..." />
-                                    <Button type="submit" variant="outline">Filter</Button>
+                                <form
+                                    onSubmit={submitFilters}
+                                    className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]"
+                                >
+                                    <Input
+                                        value={search}
+                                        onChange={(e) =>
+                                            setSearch(e.target.value)
+                                        }
+                                        placeholder="Cari tahun ajaran..."
+                                    />
+                                    <Button type="submit" variant="outline">
+                                        Filter
+                                    </Button>
                                 </form>
 
                                 <div className="overflow-x-auto rounded-md border">
                                     <table className="w-full min-w-[660px] text-sm">
                                         <thead className="bg-muted/50 text-left">
                                             <tr>
-                                                <th className="px-4 py-3 font-medium">Nama Tahun Ajaran</th>
-                                                <th className="px-4 py-3 font-medium">Periode</th>
-                                                <th className="px-4 py-3 font-medium">Status</th>
-                                                <th className="px-4 py-3 font-medium">Jumlah Kelompok</th>
-                                                <th className="px-4 py-3 text-right font-medium">Aksi</th>
+                                                <th className="px-4 py-3 font-medium">
+                                                    Nama Tahun Ajaran
+                                                </th>
+                                                <th className="px-4 py-3 font-medium">
+                                                    Periode
+                                                </th>
+                                                <th className="px-4 py-3 font-medium">
+                                                    Status
+                                                </th>
+                                                <th className="px-4 py-3 font-medium">
+                                                    Jumlah Kelompok
+                                                </th>
+                                                <th className="px-4 py-3 text-right font-medium">
+                                                    Aksi
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {academic_years.data.map((year) => (
-                                                <tr key={year.id} className="border-t">
-                                                    <td className="px-4 py-3 font-medium">{year.name}</td>
+                                                <tr
+                                                    key={year.id}
+                                                    className="border-t"
+                                                >
+                                                    <td className="px-4 py-3 font-medium">
+                                                        {year.name}
+                                                    </td>
                                                     <td className="px-4 py-3 text-muted-foreground">
-                                                        {year.start_date} - {year.end_date}
+                                                        {year.start_date} -{' '}
+                                                        {year.end_date}
                                                     </td>
                                                     <td className="px-4 py-3">
-                                                        <Badge variant={year.is_active ? 'secondary' : 'outline'}>
-                                                            {year.is_active ? 'Aktif' : 'Nonaktif'}
+                                                        <Badge
+                                                            variant={
+                                                                year.is_active
+                                                                    ? 'secondary'
+                                                                    : 'outline'
+                                                            }
+                                                        >
+                                                            {year.is_active
+                                                                ? 'Aktif'
+                                                                : 'Nonaktif'}
                                                         </Badge>
                                                     </td>
-                                                    <td className="px-4 py-3">{year.groups_count}</td>
+                                                    <td className="px-4 py-3">
+                                                        {year.groups_count}
+                                                    </td>
                                                     <td className="px-4 py-3">
                                                         <div className="flex justify-end gap-2">
-                                                            <Button type="button" size="sm" variant="outline" onClick={() => startEdit(year)}>
-                                                                <Pencil className="size-4" /> Edit
+                                                            <Button
+                                                                type="button"
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() =>
+                                                                    startEdit(
+                                                                        year,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Pencil className="size-4" />{' '}
+                                                                Edit
                                                             </Button>
                                                             {!year.is_active && (
-                                                                <Button type="button" size="sm" variant="outline" onClick={() => activateYear(year)}>
+                                                                <Button
+                                                                    type="button"
+                                                                    size="sm"
+                                                                    variant="outline"
+                                                                    onClick={() =>
+                                                                        activateYear(
+                                                                            year,
+                                                                        )
+                                                                    }
+                                                                >
                                                                     Aktifkan
                                                                 </Button>
                                                             )}
-                                                            <Button type="button" size="sm" variant="outline" onClick={() => deleteYear(year)}>
+                                                            <Button
+                                                                type="button"
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() =>
+                                                                    deleteYear(
+                                                                        year,
+                                                                    )
+                                                                }
+                                                            >
                                                                 <Trash2 className="size-4" />
                                                             </Button>
                                                         </div>
@@ -278,10 +436,47 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
 
                                 <div className="flex flex-wrap gap-2">
                                     {academic_years.links.map((link) => (
-                                        <Button key={`${link.label}-${link.url}`} type="button" size="sm" variant={link.active ? 'default' : 'outline'} disabled={!link.url} onClick={() => { if (link.url) router.visit(link.url, { preserveScroll: true }); }}>
-                                            {link.label === '&laquo; Previous' || link.label.toLowerCase().includes('previous') ? <><ChevronLeft className="size-4" /><span className="sr-only">Sebelumnya</span></>
-                                                : link.label === 'Next &raquo;' || link.label.toLowerCase().includes('next') ? <><ChevronRight className="size-4" /><span className="sr-only">Berikutnya</span></>
-                                                    : <span>{link.label}</span>}
+                                        <Button
+                                            key={`${link.label}-${link.url}`}
+                                            type="button"
+                                            size="sm"
+                                            variant={
+                                                link.active
+                                                    ? 'default'
+                                                    : 'outline'
+                                            }
+                                            disabled={!link.url}
+                                            onClick={() => {
+                                                if (link.url)
+                                                    router.visit(link.url, {
+                                                        preserveScroll: true,
+                                                    });
+                                            }}
+                                        >
+                                            {link.label ===
+                                                '&laquo; Previous' ||
+                                            link.label
+                                                .toLowerCase()
+                                                .includes('previous') ? (
+                                                <>
+                                                    <ChevronLeft className="size-4" />
+                                                    <span className="sr-only">
+                                                        Sebelumnya
+                                                    </span>
+                                                </>
+                                            ) : link.label === 'Next &raquo;' ||
+                                              link.label
+                                                  .toLowerCase()
+                                                  .includes('next') ? (
+                                                <>
+                                                    <ChevronRight className="size-4" />
+                                                    <span className="sr-only">
+                                                        Berikutnya
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <span>{link.label}</span>
+                                            )}
                                         </Button>
                                     ))}
                                 </div>
@@ -291,7 +486,12 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                 </div>
             </div>
 
-            <Sheet open={editingYear !== null} onOpenChange={(open) => { if (!open) cancelEdit(); }}>
+            <Sheet
+                open={editingYear !== null}
+                onOpenChange={(open) => {
+                    if (!open) cancelEdit();
+                }}
+            >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
                     <SheetHeader>
                         <div className="flex items-center gap-2 pr-8">
@@ -300,18 +500,49 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                         </div>
                         <SheetDescription>{editingYear?.name}</SheetDescription>
                     </SheetHeader>
-                    <form onSubmit={submitEdit} className="grid gap-4 px-4 pb-4">
+                    <form
+                        onSubmit={submitEdit}
+                        className="grid gap-4 px-4 pb-4"
+                    >
                         <div className="grid gap-2">
                             <Label htmlFor="edit_name">Nama Tahun Ajaran</Label>
-                            <Input id="edit_name" value={editForm.data.name} onChange={(e) => editForm.setData('name', e.target.value)} placeholder="Misal: 2026/2027" />
+                            <Input
+                                id="edit_name"
+                                value={editForm.data.name}
+                                onChange={(e) =>
+                                    editForm.setData('name', e.target.value)
+                                }
+                                placeholder="Misal: 2026/2027"
+                            />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="edit_start_date">Tanggal Mulai</Label>
-                            <Input id="edit_start_date" type="date" value={editForm.data.start_date} onChange={(e) => editForm.setData('start_date', e.target.value)} />
+                            <Label htmlFor="edit_start_date">
+                                Tanggal Mulai
+                            </Label>
+                            <Input
+                                id="edit_start_date"
+                                type="date"
+                                value={editForm.data.start_date}
+                                onChange={(e) =>
+                                    editForm.setData(
+                                        'start_date',
+                                        e.target.value,
+                                    )
+                                }
+                            />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="edit_end_date">Tanggal Selesai</Label>
-                            <Input id="edit_end_date" type="date" value={editForm.data.end_date} onChange={(e) => editForm.setData('end_date', e.target.value)} />
+                            <Label htmlFor="edit_end_date">
+                                Tanggal Selesai
+                            </Label>
+                            <Input
+                                id="edit_end_date"
+                                type="date"
+                                value={editForm.data.end_date}
+                                onChange={(e) =>
+                                    editForm.setData('end_date', e.target.value)
+                                }
+                            />
                             <InputError message={editForm.errors.end_date} />
                         </div>
                         <div className="flex items-center gap-3">
@@ -320,13 +551,31 @@ export default function AdminAcademicYearsIndex({ academic_years, filters }: Pro
                                 type="checkbox"
                                 className="size-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 checked={editForm.data.is_active}
-                                onChange={(e) => editForm.setData('is_active', e.target.checked)}
+                                onChange={(e) =>
+                                    editForm.setData(
+                                        'is_active',
+                                        e.target.checked,
+                                    )
+                                }
                             />
-                            <Label htmlFor="edit_is_active" className="text-sm">Aktif</Label>
+                            <Label htmlFor="edit_is_active" className="text-sm">
+                                Aktif
+                            </Label>
                         </div>
                         <div className="flex gap-2 pt-2">
-                            <Button type="submit" disabled={editForm.processing}>Simpan Perubahan</Button>
-                            <Button type="button" variant="outline" onClick={cancelEdit}>Batal</Button>
+                            <Button
+                                type="submit"
+                                disabled={editForm.processing}
+                            >
+                                Simpan Perubahan
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={cancelEdit}
+                            >
+                                Batal
+                            </Button>
                         </div>
                     </form>
                 </SheetContent>

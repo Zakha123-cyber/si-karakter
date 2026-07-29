@@ -7,7 +7,6 @@ use App\Models\AcademicYear;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -68,7 +67,7 @@ class AcademicYearController extends Controller
             'is_active' => ['sometimes', 'boolean'],
         ]);
 
-        if (($data['is_active'] ?? false) && !$academicYear->is_active) {
+        if (($data['is_active'] ?? false) && ! $academicYear->is_active) {
             AcademicYear::query()->where('is_active', true)->update(['is_active' => false]);
         }
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Teacher\CharacterIndicatorController;
 use App\Http\Controllers\Teacher\MoralCaseController;
+use App\Http\Controllers\Teacher\ReviewController;
 use App\Http\Controllers\Teacher\TestPackageController;
 use Illuminate\Support\Facades\Route;
 
@@ -69,6 +70,15 @@ Route::middleware(['auth', 'active', 'role:teacher'])->prefix('teacher')->name('
     Route::post('test-packages/{testPackage}/cases', [TestPackageController::class, 'assignCases'])->name('test-packages.cases');
     Route::post('test-packages/{testPackage}/publish', [TestPackageController::class, 'publish'])->name('test-packages.publish');
     Route::post('test-packages/{testPackage}/close', [TestPackageController::class, 'close'])->name('test-packages.close');
+});
+
+Route::middleware(['auth', 'active', 'role:teacher,admin'])->prefix('teacher')->name('teacher.')->group(function () {
+    Route::get('reviews', [ReviewController::class, 'index'])->name('reviews.index');
+    Route::get('reviews/{answer}', [ReviewController::class, 'show'])->name('reviews.show');
+    Route::get('reviews/{answer}/audio', [ReviewController::class, 'audio'])->name('reviews.audio');
+    Route::put('reviews/{answer}/transcript', [ReviewController::class, 'updateTranscript'])->name('reviews.transcript.update');
+    Route::post('reviews/{answer}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
+    Route::post('reviews/{answer}/override', [ReviewController::class, 'override'])->name('reviews.override');
 });
 
 require __DIR__.'/settings.php';

@@ -75,6 +75,7 @@ test('admin cannot delete group with students', function () {
 });
 
 test('admin can assign student to group', function () {
+    AcademicYear::factory()->create(['is_active' => true]);
     $group = Group::factory()->create();
     $student = Student::factory()->create();
 

@@ -1,5 +1,14 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { ChevronLeft, ChevronRight, Eye, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
+import {
+    ChevronLeft,
+    ChevronRight,
+    Eye,
+    Pencil,
+    Plus,
+    Search,
+    Trash2,
+    X,
+} from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -41,7 +50,11 @@ type StudentOpt = {
     student_code: string;
     user: { id: number; name: string } | null;
     current_group_id: number | null;
-    current_group: { id: number; name: string; academic_year_id: number } | null;
+    current_group: {
+        id: number;
+        name: string;
+        academic_year_id: number;
+    } | null;
 };
 
 type PaginationLink = {
@@ -106,22 +119,28 @@ function StudentCheckboxList({
         <div className="grid gap-2">
             <Label>Pilih Santri untuk Kelompok Ini</Label>
             <div className="relative">
-                <Search className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Search className="absolute top-1/2 left-2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <input
-                    className="h-9 w-full rounded-md border border-input bg-background pl-8 pr-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                    className="h-9 w-full rounded-md border border-input bg-background pr-3 pl-8 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
                     placeholder="Cari santri..."
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                 />
                 {q && (
-                    <button type="button" className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground" onClick={() => setQ('')}>
+                    <button
+                        type="button"
+                        className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        onClick={() => setQ('')}
+                    >
                         <X className="size-4" />
                     </button>
                 )}
             </div>
             <div className="max-h-48 overflow-y-auto rounded-md border p-1">
                 {filtered.length === 0 ? (
-                    <p className="p-2 text-xs text-muted-foreground">Tidak ada santri</p>
+                    <p className="p-2 text-xs text-muted-foreground">
+                        Tidak ada santri
+                    </p>
                 ) : (
                     filtered.map((s) => (
                         <label
@@ -135,9 +154,14 @@ function StudentCheckboxList({
                                 onChange={() => toggle(s.id)}
                             />
                             <span>{s.user!.name}</span>
-                            <span className="text-xs text-muted-foreground">({s.student_code})</span>
+                            <span className="text-xs text-muted-foreground">
+                                ({s.student_code})
+                            </span>
                             {s.current_group && (
-                                <Badge variant="outline" className="ml-auto text-xs">
+                                <Badge
+                                    variant="outline"
+                                    className="ml-auto text-xs"
+                                >
                                     {s.current_group.name}
                                 </Badge>
                             )}
@@ -149,10 +173,18 @@ function StudentCheckboxList({
     );
 }
 
-export default function AdminGroupsIndex({ groups, academic_years, teachers, students, filters }: Props) {
+export default function AdminGroupsIndex({
+    groups,
+    academic_years,
+    teachers,
+    students,
+    filters,
+}: Props) {
     const { props } = usePage<{ flash?: { status?: string } }>();
     const [search, setSearch] = useState(filters.search);
-    const [academicYearFilter, setAcademicYearFilter] = useState(String(filters.academic_year_id || ''));
+    const [academicYearFilter, setAcademicYearFilter] = useState(
+        String(filters.academic_year_id || ''),
+    );
     const [editingGroup, setEditingGroup] = useState<GroupRow | null>(null);
     const [viewGroup, setViewGroup] = useState<GroupRow | null>(null);
     const [assignGroup, setAssignGroup] = useState<GroupRow | null>(null);
@@ -181,7 +213,11 @@ export default function AdminGroupsIndex({ groups, academic_years, teachers, stu
 
     const submitFilters = (event: FormEvent) => {
         event.preventDefault();
-        router.get('/admin/groups', { search, academic_year_id: academicYearFilter }, { preserveState: true, replace: true });
+        router.get(
+            '/admin/groups',
+            { search, academic_year_id: academicYearFilter },
+            { preserveState: true, replace: true },
+        );
     };
 
     const submitCreate = (event: FormEvent) => {
@@ -193,7 +229,8 @@ export default function AdminGroupsIndex({ groups, academic_years, teachers, stu
                 toast.success('Kelompok berhasil dibuat.', { id: toastId });
                 createForm.reset();
             },
-            onError: () => toast.error('Periksa kembali form.', { id: toastId }),
+            onError: () =>
+                toast.error('Periksa kembali form.', { id: toastId }),
         });
     };
 
@@ -229,7 +266,8 @@ export default function AdminGroupsIndex({ groups, academic_years, teachers, stu
                 toast.success('Kelompok berhasil diperbarui.', { id: toastId });
                 cancelEdit();
             },
-            onError: () => toast.error('Periksa kembali form.', { id: toastId }),
+            onError: () =>
+                toast.error('Periksa kembali form.', { id: toastId }),
         });
     };
 
@@ -242,10 +280,16 @@ export default function AdminGroupsIndex({ groups, academic_years, teachers, stu
                     const toastId = toast.loading('Menghapus...');
                     router.delete(`/admin/groups/${group.id}`, {
                         preserveScroll: true,
-                        onSuccess: () => toast.success('Kelompok dihapus.', { id: toastId }),
+                        onSuccess: () =>
+                            toast.success('Kelompok dihapus.', { id: toastId }),
                         onError: (errors) => {
-                            const msg = errors?.error ?? errors?.message ?? 'Gagal menghapus.';
-                            toast.error(Array.isArray(msg) ? msg[0] : msg, { id: toastId });
+                            const msg =
+                                errors?.error ??
+                                errors?.message ??
+                                'Gagal menghapus.';
+                            toast.error(Array.isArray(msg) ? msg[0] : msg, {
+                                id: toastId,
+                            });
                         },
                     });
                 },
@@ -293,7 +337,9 @@ export default function AdminGroupsIndex({ groups, academic_years, teachers, stu
             <div className="flex h-full flex-1 flex-col gap-6 p-4">
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-wrap items-center gap-3">
-                        <h1 className="text-2xl font-semibold tracking-normal">Kelompok</h1>
+                        <h1 className="text-2xl font-semibold tracking-normal">
+                            Kelompok
+                        </h1>
                         <Badge variant="secondary">Admin</Badge>
                     </div>
                     <p className="max-w-3xl text-sm text-muted-foreground">
@@ -312,44 +358,124 @@ export default function AdminGroupsIndex({ groups, academic_years, teachers, stu
                         <CardHeader>
                             <div className="flex items-center gap-2">
                                 <Plus className="size-5 text-muted-foreground" />
-                                <CardTitle className="text-base">Tambah Kelompok</CardTitle>
+                                <CardTitle className="text-base">
+                                    Tambah Kelompok
+                                </CardTitle>
                             </div>
-                            <CardDescription>Buat kelompok baru.</CardDescription>
+                            <CardDescription>
+                                Buat kelompok baru.
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={submitCreate} className="grid gap-4">
+                            <form
+                                onSubmit={submitCreate}
+                                className="grid gap-4"
+                            >
                                 <div className="grid gap-2">
                                     <Label htmlFor="name">Nama Kelompok</Label>
-                                    <Input id="name" value={createForm.data.name} onChange={(e) => createForm.setData('name', e.target.value)} placeholder="Misal: Kelas 1A, Kelas 1B" />
-                                    <InputError message={createForm.errors.name} />
+                                    <Input
+                                        id="name"
+                                        value={createForm.data.name}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'name',
+                                                e.target.value,
+                                            )
+                                        }
+                                        placeholder="Misal: Kelas 1A, Kelas 1B"
+                                    />
+                                    <InputError
+                                        message={createForm.errors.name}
+                                    />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="academic_year_id">Tahun Ajaran</Label>
-                                    <select id="academic_year_id" className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={createForm.data.academic_year_id} onChange={(e) => createForm.setData('academic_year_id', e.target.value)}>
-                                        <option value="">Pilih tahun ajaran</option>
-                                        {academic_years.map((ay) => <option key={ay.id} value={ay.id}>{ay.name}{ay.is_active ? ' (Aktif)' : ''}</option>)}
+                                    <Label htmlFor="academic_year_id">
+                                        Tahun Ajaran
+                                    </Label>
+                                    <select
+                                        id="academic_year_id"
+                                        className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                        value={createForm.data.academic_year_id}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'academic_year_id',
+                                                e.target.value,
+                                            )
+                                        }
+                                    >
+                                        <option value="">
+                                            Pilih tahun ajaran
+                                        </option>
+                                        {academic_years.map((ay) => (
+                                            <option key={ay.id} value={ay.id}>
+                                                {ay.name}
+                                                {ay.is_active ? ' (Aktif)' : ''}
+                                            </option>
+                                        ))}
                                     </select>
-                                    <InputError message={createForm.errors.academic_year_id} />
+                                    <InputError
+                                        message={
+                                            createForm.errors.academic_year_id
+                                        }
+                                    />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="teacher_id">Ustadz Pendamping</Label>
-                                    <select id="teacher_id" className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={createForm.data.teacher_id} onChange={(e) => createForm.setData('teacher_id', e.target.value)}>
-                                        <option value="">Pilih ustadz pendamping</option>
-                                        {teachers.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                                    <Label htmlFor="teacher_id">
+                                        Ustadz Pendamping
+                                    </Label>
+                                    <select
+                                        id="teacher_id"
+                                        className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                        value={createForm.data.teacher_id}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'teacher_id',
+                                                e.target.value,
+                                            )
+                                        }
+                                    >
+                                        <option value="">
+                                            Pilih ustadz pendamping
+                                        </option>
+                                        {teachers.map((t) => (
+                                            <option key={t.id} value={t.id}>
+                                                {t.name}
+                                            </option>
+                                        ))}
                                     </select>
-                                    <InputError message={createForm.errors.teacher_id} />
+                                    <InputError
+                                        message={createForm.errors.teacher_id}
+                                    />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="description">Deskripsi Kelompok</Label>
-                                    <Input id="description" value={createForm.data.description} onChange={(e) => createForm.setData('description', e.target.value)} />
+                                    <Label htmlFor="description">
+                                        Deskripsi Kelompok
+                                    </Label>
+                                    <Input
+                                        id="description"
+                                        value={createForm.data.description}
+                                        onChange={(e) =>
+                                            createForm.setData(
+                                                'description',
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
                                 </div>
                                 <StudentCheckboxList
                                     students={students}
                                     selectedIds={createForm.data.student_ids}
-                                    onChange={(ids) => createForm.setData('student_ids', ids)}
+                                    onChange={(ids) =>
+                                        createForm.setData('student_ids', ids)
+                                    }
                                     showOnlyUnassigned
                                 />
-                                <Button type="submit" disabled={createForm.processing}>Simpan</Button>
+                                <Button
+                                    type="submit"
+                                    disabled={createForm.processing}
+                                >
+                                    Simpan
+                                </Button>
                             </form>
                         </CardContent>
                     </Card>
@@ -357,49 +483,139 @@ export default function AdminGroupsIndex({ groups, academic_years, teachers, stu
                     <div className="flex min-w-0 flex-col gap-4">
                         <Card className="rounded-lg">
                             <CardHeader>
-                                <CardTitle className="text-base">Daftar Kelompok</CardTitle>
-                                <CardDescription>{groups.from ?? 0}-{groups.to ?? 0} dari {groups.total}</CardDescription>
+                                <CardTitle className="text-base">
+                                    Daftar Kelompok
+                                </CardTitle>
+                                <CardDescription>
+                                    {groups.from ?? 0}-{groups.to ?? 0} dari{' '}
+                                    {groups.total}
+                                </CardDescription>
                             </CardHeader>
                             <CardContent className="grid gap-4">
-                                <form onSubmit={submitFilters} className="grid gap-3 md:grid-cols-[minmax(0,1fr)_200px_auto]">
-                                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari nama kelompok" />
-                                    <select className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={academicYearFilter} onChange={(e) => setAcademicYearFilter(e.target.value)}>
-                                        <option value="">Semua tahun ajaran</option>
-                                        {academic_years.map((ay) => <option key={ay.id} value={ay.id}>{ay.name}{ay.is_active ? ' (Aktif)' : ''}</option>)}
+                                <form
+                                    onSubmit={submitFilters}
+                                    className="grid gap-3 md:grid-cols-[minmax(0,1fr)_200px_auto]"
+                                >
+                                    <Input
+                                        value={search}
+                                        onChange={(e) =>
+                                            setSearch(e.target.value)
+                                        }
+                                        placeholder="Cari nama kelompok"
+                                    />
+                                    <select
+                                        className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                        value={academicYearFilter}
+                                        onChange={(e) =>
+                                            setAcademicYearFilter(
+                                                e.target.value,
+                                            )
+                                        }
+                                    >
+                                        <option value="">
+                                            Semua tahun ajaran
+                                        </option>
+                                        {academic_years.map((ay) => (
+                                            <option key={ay.id} value={ay.id}>
+                                                {ay.name}
+                                                {ay.is_active ? ' (Aktif)' : ''}
+                                            </option>
+                                        ))}
                                     </select>
-                                    <Button type="submit" variant="outline">Filter</Button>
+                                    <Button type="submit" variant="outline">
+                                        Filter
+                                    </Button>
                                 </form>
 
                                 <div className="overflow-x-auto rounded-md border">
                                     <table className="w-full min-w-[760px] text-sm">
                                         <thead className="bg-muted/50 text-left">
                                             <tr>
-                                                <th className="px-4 py-3 font-medium">Nama Kelompok</th>
-                                                <th className="px-4 py-3 font-medium">Tahun Ajaran</th>
-                                                <th className="px-4 py-3 font-medium">Ustadz Pendamping</th>
-                                                <th className="px-4 py-3 font-medium">Jumlah Santri</th>
-                                                <th className="px-4 py-3 text-right font-medium">Aksi</th>
+                                                <th className="px-4 py-3 font-medium">
+                                                    Nama Kelompok
+                                                </th>
+                                                <th className="px-4 py-3 font-medium">
+                                                    Tahun Ajaran
+                                                </th>
+                                                <th className="px-4 py-3 font-medium">
+                                                    Ustadz Pendamping
+                                                </th>
+                                                <th className="px-4 py-3 font-medium">
+                                                    Jumlah Santri
+                                                </th>
+                                                <th className="px-4 py-3 text-right font-medium">
+                                                    Aksi
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {groups.data.map((group) => (
-                                                <tr key={group.id} className="border-t">
-                                                    <td className="px-4 py-3 font-medium">{group.name}</td>
-                                                    <td className="px-4 py-3 text-muted-foreground">{group.academic_year?.name ?? '-'}</td>
-                                                    <td className="px-4 py-3 text-muted-foreground">{group.teacher?.name ?? '-'}</td>
-                                                    <td className="px-4 py-3">{group.students_count}</td>
+                                                <tr
+                                                    key={group.id}
+                                                    className="border-t"
+                                                >
+                                                    <td className="px-4 py-3 font-medium">
+                                                        {group.name}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-muted-foreground">
+                                                        {group.academic_year
+                                                            ?.name ?? '-'}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-muted-foreground">
+                                                        {group.teacher?.name ??
+                                                            '-'}
+                                                    </td>
+                                                    <td className="px-4 py-3">
+                                                        {group.students_count}
+                                                    </td>
                                                     <td className="px-4 py-3">
                                                         <div className="flex justify-end gap-2">
-                                                            <Button type="button" size="sm" variant="outline" onClick={() => startView(group)}>
+                                                            <Button
+                                                                type="button"
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() =>
+                                                                    startView(
+                                                                        group,
+                                                                    )
+                                                                }
+                                                            >
                                                                 <Eye className="size-4" />
                                                             </Button>
-                                                            <Button type="button" size="sm" variant="outline" onClick={() => startAssign(group)}>
-                                                                 + Santri
+                                                            <Button
+                                                                type="button"
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() =>
+                                                                    startAssign(
+                                                                        group,
+                                                                    )
+                                                                }
+                                                            >
+                                                                + Santri
                                                             </Button>
-                                                            <Button type="button" size="sm" variant="outline" onClick={() => startEdit(group)}>
+                                                            <Button
+                                                                type="button"
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() =>
+                                                                    startEdit(
+                                                                        group,
+                                                                    )
+                                                                }
+                                                            >
                                                                 <Pencil className="size-4" />
                                                             </Button>
-                                                            <Button type="button" size="sm" variant="outline" onClick={() => deleteGroup(group)}>
+                                                            <Button
+                                                                type="button"
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() =>
+                                                                    deleteGroup(
+                                                                        group,
+                                                                    )
+                                                                }
+                                                            >
                                                                 <Trash2 className="size-4" />
                                                             </Button>
                                                         </div>
@@ -412,10 +628,47 @@ export default function AdminGroupsIndex({ groups, academic_years, teachers, stu
 
                                 <div className="flex flex-wrap gap-2">
                                     {groups.links.map((link) => (
-                                        <Button key={`${link.label}-${link.url}`} type="button" size="sm" variant={link.active ? 'default' : 'outline'} disabled={!link.url} onClick={() => { if (link.url) router.visit(link.url, { preserveScroll: true }); }}>
-                                            {link.label === '&laquo; Previous' || link.label.toLowerCase().includes('previous') ? <><ChevronLeft className="size-4" /><span className="sr-only">Sebelumnya</span></>
-                                                : link.label === 'Next &raquo;' || link.label.toLowerCase().includes('next') ? <><ChevronRight className="size-4" /><span className="sr-only">Berikutnya</span></>
-                                                    : <span>{link.label}</span>}
+                                        <Button
+                                            key={`${link.label}-${link.url}`}
+                                            type="button"
+                                            size="sm"
+                                            variant={
+                                                link.active
+                                                    ? 'default'
+                                                    : 'outline'
+                                            }
+                                            disabled={!link.url}
+                                            onClick={() => {
+                                                if (link.url)
+                                                    router.visit(link.url, {
+                                                        preserveScroll: true,
+                                                    });
+                                            }}
+                                        >
+                                            {link.label ===
+                                                '&laquo; Previous' ||
+                                            link.label
+                                                .toLowerCase()
+                                                .includes('previous') ? (
+                                                <>
+                                                    <ChevronLeft className="size-4" />
+                                                    <span className="sr-only">
+                                                        Sebelumnya
+                                                    </span>
+                                                </>
+                                            ) : link.label === 'Next &raquo;' ||
+                                              link.label
+                                                  .toLowerCase()
+                                                  .includes('next') ? (
+                                                <>
+                                                    <ChevronRight className="size-4" />
+                                                    <span className="sr-only">
+                                                        Berikutnya
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <span>{link.label}</span>
+                                            )}
                                         </Button>
                                     ))}
                                 </div>
@@ -425,98 +678,223 @@ export default function AdminGroupsIndex({ groups, academic_years, teachers, stu
                 </div>
             </div>
 
-            <Sheet open={viewGroup !== null} onOpenChange={(open) => { if (!open) cancelView(); }}>
+            <Sheet
+                open={viewGroup !== null}
+                onOpenChange={(open) => {
+                    if (!open) cancelView();
+                }}
+            >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
                     <SheetHeader>
                         <SheetTitle>Santri di {viewGroup?.name}</SheetTitle>
                         <SheetDescription>
-                            {students.filter((s) => s.current_group_id === viewGroup?.id).length} santri terdaftar
+                            {
+                                students.filter(
+                                    (s) => s.current_group_id === viewGroup?.id,
+                                ).length
+                            }{' '}
+                            santri terdaftar
                         </SheetDescription>
                     </SheetHeader>
                     <div className="grid gap-2 px-4 pb-4">
                         {students
                             .filter((s) => s.current_group_id === viewGroup?.id)
                             .map((s) => (
-                                <div key={s.id} className="flex items-center gap-3 rounded-md border px-3 py-2 text-sm">
-                                    <div className="size-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground">
+                                <div
+                                    key={s.id}
+                                    className="flex items-center gap-3 rounded-md border px-3 py-2 text-sm"
+                                >
+                                    <div className="flex size-8 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
                                         {s.user?.name.charAt(0)}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <div className="font-medium truncate">{s.user?.name}</div>
-                                        <div className="text-xs text-muted-foreground">{s.student_code}</div>
+                                        <div className="truncate font-medium">
+                                            {s.user?.name}
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                            {s.student_code}
+                                        </div>
                                     </div>
-                                    <Badge variant={s.current_group_id === viewGroup?.id ? 'secondary' : 'outline'}>
-                                        {s.current_group_id === viewGroup?.id ? 'Aktif' : '-'}
+                                    <Badge
+                                        variant={
+                                            s.current_group_id === viewGroup?.id
+                                                ? 'secondary'
+                                                : 'outline'
+                                        }
+                                    >
+                                        {s.current_group_id === viewGroup?.id
+                                            ? 'Aktif'
+                                            : '-'}
                                     </Badge>
                                 </div>
                             ))}
-                        {students.filter((s) => s.current_group_id === viewGroup?.id).length === 0 && (
-                            <p className="text-sm text-muted-foreground py-4 text-center">Belum ada santri di kelompok ini.</p>
+                        {students.filter(
+                            (s) => s.current_group_id === viewGroup?.id,
+                        ).length === 0 && (
+                            <p className="py-4 text-center text-sm text-muted-foreground">
+                                Belum ada santri di kelompok ini.
+                            </p>
                         )}
                     </div>
                 </SheetContent>
             </Sheet>
 
-            <Sheet open={editingGroup !== null} onOpenChange={(open) => { if (!open) cancelEdit(); }}>
+            <Sheet
+                open={editingGroup !== null}
+                onOpenChange={(open) => {
+                    if (!open) cancelEdit();
+                }}
+            >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
                     <SheetHeader>
                         <SheetTitle>Edit Kelompok</SheetTitle>
-                        <SheetDescription>{editingGroup?.name}</SheetDescription>
+                        <SheetDescription>
+                            {editingGroup?.name}
+                        </SheetDescription>
                     </SheetHeader>
-                    <form onSubmit={submitEdit} className="grid gap-4 px-4 pb-4">
+                    <form
+                        onSubmit={submitEdit}
+                        className="grid gap-4 px-4 pb-4"
+                    >
                         <div className="grid gap-2">
                             <Label htmlFor="edit_name">Nama Kelompok</Label>
-                            <Input id="edit_name" value={editForm.data.name} onChange={(e) => editForm.setData('name', e.target.value)} />
+                            <Input
+                                id="edit_name"
+                                value={editForm.data.name}
+                                onChange={(e) =>
+                                    editForm.setData('name', e.target.value)
+                                }
+                            />
                             <InputError message={editForm.errors.name} />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="edit_academic_year_id">Tahun Ajaran</Label>
-                            <select id="edit_academic_year_id" className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={editForm.data.academic_year_id} onChange={(e) => editForm.setData('academic_year_id', e.target.value)}>
+                            <Label htmlFor="edit_academic_year_id">
+                                Tahun Ajaran
+                            </Label>
+                            <select
+                                id="edit_academic_year_id"
+                                className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                value={editForm.data.academic_year_id}
+                                onChange={(e) =>
+                                    editForm.setData(
+                                        'academic_year_id',
+                                        e.target.value,
+                                    )
+                                }
+                            >
                                 <option value="">Pilih</option>
-                                {academic_years.map((ay) => <option key={ay.id} value={ay.id}>{ay.name}{ay.is_active ? ' (Aktif)' : ''}</option>)}
+                                {academic_years.map((ay) => (
+                                    <option key={ay.id} value={ay.id}>
+                                        {ay.name}
+                                        {ay.is_active ? ' (Aktif)' : ''}
+                                    </option>
+                                ))}
                             </select>
-                            <InputError message={editForm.errors.academic_year_id} />
+                            <InputError
+                                message={editForm.errors.academic_year_id}
+                            />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="edit_teacher_id">Ustadz</Label>
-                            <select id="edit_teacher_id" className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50" value={editForm.data.teacher_id} onChange={(e) => editForm.setData('teacher_id', e.target.value)}>
-                                <option value="">Pilih ustadz pendamping</option>
-                                {teachers.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                            <select
+                                id="edit_teacher_id"
+                                className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                value={editForm.data.teacher_id}
+                                onChange={(e) =>
+                                    editForm.setData(
+                                        'teacher_id',
+                                        e.target.value,
+                                    )
+                                }
+                            >
+                                <option value="">
+                                    Pilih ustadz pendamping
+                                </option>
+                                {teachers.map((t) => (
+                                    <option key={t.id} value={t.id}>
+                                        {t.name}
+                                    </option>
+                                ))}
                             </select>
                             <InputError message={editForm.errors.teacher_id} />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="edit_description">Deskripsi Kelompok</Label>
-                            <Input id="edit_description" value={editForm.data.description} onChange={(e) => editForm.setData('description', e.target.value)} />
+                            <Label htmlFor="edit_description">
+                                Deskripsi Kelompok
+                            </Label>
+                            <Input
+                                id="edit_description"
+                                value={editForm.data.description}
+                                onChange={(e) =>
+                                    editForm.setData(
+                                        'description',
+                                        e.target.value,
+                                    )
+                                }
+                            />
                         </div>
                         <StudentCheckboxList
                             students={students}
                             selectedIds={editForm.data.student_ids}
-                            onChange={(ids) => editForm.setData('student_ids', ids)}
+                            onChange={(ids) =>
+                                editForm.setData('student_ids', ids)
+                            }
                         />
                         <div className="flex gap-2 pt-2">
-                            <Button type="submit" disabled={editForm.processing}>Simpan</Button>
-                            <Button type="button" variant="outline" onClick={cancelEdit}>Batal</Button>
+                            <Button
+                                type="submit"
+                                disabled={editForm.processing}
+                            >
+                                Simpan
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={cancelEdit}
+                            >
+                                Batal
+                            </Button>
                         </div>
                     </form>
                 </SheetContent>
             </Sheet>
 
-            <Sheet open={assignGroup !== null} onOpenChange={(open) => { if (!open) cancelAssign(); }}>
+            <Sheet
+                open={assignGroup !== null}
+                onOpenChange={(open) => {
+                    if (!open) cancelAssign();
+                }}
+            >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
                     <SheetHeader>
                         <SheetTitle>Atur Santri</SheetTitle>
                         <SheetDescription>{assignGroup?.name}</SheetDescription>
                     </SheetHeader>
-                    <form onSubmit={submitAssign} className="grid gap-4 px-4 pb-4">
+                    <form
+                        onSubmit={submitAssign}
+                        className="grid gap-4 px-4 pb-4"
+                    >
                         <StudentCheckboxList
                             students={students}
                             selectedIds={assignForm.data.student_ids}
-                            onChange={(ids) => assignForm.setData('student_ids', ids)}
+                            onChange={(ids) =>
+                                assignForm.setData('student_ids', ids)
+                            }
                         />
                         <div className="flex gap-2 pt-2">
-                            <Button type="submit" disabled={assignForm.processing}>Simpan</Button>
-                            <Button type="button" variant="outline" onClick={cancelAssign}>Batal</Button>
+                            <Button
+                                type="submit"
+                                disabled={assignForm.processing}
+                            >
+                                Simpan
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={cancelAssign}
+                            >
+                                Batal
+                            </Button>
                         </div>
                     </form>
                 </SheetContent>

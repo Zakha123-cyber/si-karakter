@@ -322,7 +322,8 @@ export default function TeacherMoralCasesIndex({
                             preserveScroll: true,
                             onSuccess: () =>
                                 toast.success('Pilihan berhasil dihapus.'),
-                            onError: (errors) => toast.error(firstError(errors)),
+                            onError: (errors) =>
+                                toast.error(firstError(errors)),
                         },
                     );
                 },
@@ -729,7 +730,10 @@ export default function TeacherMoralCasesIndex({
                         </SheetDescription>
                     </SheetHeader>
 
-                    <form onSubmit={submitCase} className="grid gap-4 px-4 pb-4">
+                    <form
+                        onSubmit={submitCase}
+                        className="grid gap-4 px-4 pb-4"
+                    >
                         <div className="grid gap-2">
                             <Label htmlFor="title">Judul</Label>
                             <Input
@@ -974,7 +978,9 @@ export default function TeacherMoralCasesIndex({
                                 </div>
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="option_text">Teks Pilihan</Label>
+                                <Label htmlFor="option_text">
+                                    Teks Pilihan
+                                </Label>
                                 <textarea
                                     id="option_text"
                                     className="min-h-28 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
@@ -1189,7 +1195,10 @@ export default function TeacherMoralCasesIndex({
                         </SheetDescription>
                     </SheetHeader>
 
-                    <form onSubmit={submitMedia} className="grid gap-4 px-4 pb-4">
+                    <form
+                        onSubmit={submitMedia}
+                        className="grid gap-4 px-4 pb-4"
+                    >
                         <div className="grid gap-2">
                             <Label htmlFor="media_type">Jenis Media</Label>
                             <select
@@ -1228,8 +1237,8 @@ export default function TeacherMoralCasesIndex({
                             />
                             <InputError message={mediaForm.errors.media} />
                             <p className="text-xs text-muted-foreground">
-                                Gambar maksimal 5 MB. Audio maksimal 10 MB.
-                                File disimpan di storage private.
+                                Gambar maksimal 5 MB. Audio maksimal 10 MB. File
+                                disimpan di storage private.
                             </p>
                         </div>
 
@@ -1309,9 +1318,7 @@ function SummaryCard({
                     {icon}
                 </div>
                 <div>
-                    <div className="text-sm text-muted-foreground">
-                        {label}
-                    </div>
+                    <div className="text-sm text-muted-foreground">{label}</div>
                     <div className="text-xl font-semibold">{value}</div>
                 </div>
             </CardContent>

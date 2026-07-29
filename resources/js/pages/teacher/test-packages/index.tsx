@@ -105,8 +105,9 @@ export default function TeacherTestPackagesIndex({
 }: Props) {
     const [search, setSearch] = useState(filters.search);
     const [status, setStatus] = useState(filters.status);
-    const [editingPackage, setEditingPackage] =
-        useState<TestPackageRow | null>(null);
+    const [editingPackage, setEditingPackage] = useState<TestPackageRow | null>(
+        null,
+    );
     const [isPackageSheetOpen, setIsPackageSheetOpen] = useState(false);
     const [groupPackage, setGroupPackage] = useState<TestPackageRow | null>(
         null,
@@ -277,7 +278,8 @@ export default function TeacherTestPackagesIndex({
                             preserveScroll: true,
                             onSuccess: () =>
                                 toast.success('Paket berhasil dipublikasikan.'),
-                            onError: (errors) => toast.error(firstError(errors)),
+                            onError: (errors) =>
+                                toast.error(firstError(errors)),
                         },
                     );
                 },
@@ -302,7 +304,8 @@ export default function TeacherTestPackagesIndex({
                         {
                             preserveScroll: true,
                             onSuccess: () => toast.success('Paket ditutup.'),
-                            onError: (errors) => toast.error(firstError(errors)),
+                            onError: (errors) =>
+                                toast.error(firstError(errors)),
                         },
                     );
                 },
@@ -487,15 +490,21 @@ export default function TeacherTestPackagesIndex({
                                             <td className="px-4 py-3">
                                                 <div className="flex flex-wrap gap-2">
                                                     <Badge variant="outline">
-                                                        {testPackage.groups_count}{' '}
+                                                        {
+                                                            testPackage.groups_count
+                                                        }{' '}
                                                         kelompok
                                                     </Badge>
                                                     <Badge variant="outline">
-                                                        {testPackage.cases_count}{' '}
+                                                        {
+                                                            testPackage.cases_count
+                                                        }{' '}
                                                         kasus
                                                     </Badge>
                                                     <Badge variant="outline">
-                                                        {testPackage.attempt_limit}{' '}
+                                                        {
+                                                            testPackage.attempt_limit
+                                                        }{' '}
                                                         percobaan
                                                     </Badge>
                                                 </div>
@@ -981,9 +990,7 @@ function SummaryCard({
                     {icon}
                 </div>
                 <div>
-                    <div className="text-sm text-muted-foreground">
-                        {label}
-                    </div>
+                    <div className="text-sm text-muted-foreground">{label}</div>
                     <div className="text-xl font-semibold">{value}</div>
                 </div>
             </CardContent>
@@ -999,7 +1006,9 @@ function statusLabel(status: TestPackageStatus) {
     }[status];
 }
 
-function statusVariant(status: TestPackageStatus): 'destructive' | 'secondary' | 'outline' {
+function statusVariant(
+    status: TestPackageStatus,
+): 'destructive' | 'secondary' | 'outline' {
     if (status === 'closed') {
         return 'destructive';
     }

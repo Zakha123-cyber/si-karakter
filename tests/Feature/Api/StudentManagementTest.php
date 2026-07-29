@@ -2,6 +2,7 @@
 
 use App\Models\AcademicYear;
 use App\Models\Group;
+use App\Models\GroupStudentHistory;
 use App\Models\Student;
 use App\Models\User;
 
@@ -92,7 +93,7 @@ test('admin can view student group timeline', function () {
     $group = Group::factory()->create(['academic_year_id' => $academicYear->id]);
     $student = Student::factory()->create(['current_group_id' => $group->id]);
 
-    \App\Models\GroupStudentHistory::factory()->create([
+    GroupStudentHistory::factory()->create([
         'student_id' => $student->id,
         'group_id' => $group->id,
         'academic_year_id' => $academicYear->id,

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1\Concerns;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 trait RespondsWithApiResponse
 {
@@ -11,6 +13,12 @@ trait RespondsWithApiResponse
      */
     protected function success(string $message, mixed $data = [], int $code = 200): JsonResponse
     {
+        if ($data instanceof ResourceCollection) {
+            $data = $data->response()->getData(true);
+        } elseif ($data instanceof JsonResource) {
+            $data = $data->resolve();
+        }
+
         return response()->json([
             'success' => true,
             'message' => $message,

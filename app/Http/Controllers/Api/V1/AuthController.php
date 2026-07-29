@@ -25,15 +25,15 @@ class AuthController extends Controller
             ->first();
 
         if (! $user || ! $this->credentialMatches($user, $request->string('password')->toString())) {
-            return $this->error('Invalid credentials', [
+            return $this->error('Invalid credentials', 422, [
                 'username' => ['Username or password is invalid.'],
-            ], 422);
+            ]);
         }
 
         if (! $user->is_active) {
-            return $this->error('Account is inactive', [
+            return $this->error('Account is inactive', 403, [
                 'username' => ['This account is inactive.'],
-            ], 403);
+            ]);
         }
 
         Auth::guard('web')->login($user, $request->boolean('remember'));

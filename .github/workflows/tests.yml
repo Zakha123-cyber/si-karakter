@@ -35,12 +35,18 @@ jobs:
         run: composer install --no-interaction --prefer-dist --no-progress
 
       - name: Install Node Dependencies
-        run: npm ci
+        run: npm install
 
       - name: Prepare Application
         run: |
           cp .env.example .env
           php artisan key:generate --ansi
+
+      - name: Generate Wayfinder Types
+        run: php artisan wayfinder:generate --with-form
+
+      - name: Build Frontend Assets
+        run: npm run build
 
       - name: Run CI Checks
         run: composer ci:check

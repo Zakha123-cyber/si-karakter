@@ -186,7 +186,7 @@ class GroupController extends Controller
 
         $newIds = array_unique(array_filter(($data['student_ids'] ?? [])));
 
-        DB::transaction(function () use ($data, $group, $newIds) {
+        DB::transaction(function () use ($group, $newIds) {
             $currentIds = $group->students()->pluck('id')->toArray();
 
             $toRemove = array_diff($currentIds, $newIds);

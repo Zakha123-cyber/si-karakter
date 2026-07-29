@@ -12,17 +12,18 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class TestAnswerFactory extends Factory
 {
-    protected $model = TestAnswer::class;
-
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         return [
             'test_attempt_id' => TestAttempt::factory(),
             'moral_case_id' => MoralCase::factory(),
             'selected_option_id' => null,
-            'typed_reason' => fake()->sentence(),
-            'final_transcript' => fake()->sentence(),
-            'answer_status' => 'submitted',
+            'typed_reason' => null,
+            'final_transcript' => null,
+            'answer_status' => 'draft',
         ];
     }
 }

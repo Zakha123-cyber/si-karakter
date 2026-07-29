@@ -8,6 +8,7 @@ use App\Http\Requests\Api\V1\Groups\AssignStudentRequest;
 use App\Http\Requests\Api\V1\Groups\StoreGroupRequest;
 use App\Http\Requests\Api\V1\Groups\UpdateGroupRequest;
 use App\Http\Resources\Academic\GroupResource;
+use App\Http\Resources\Academic\StudentResource;
 use App\Models\AcademicYear;
 use App\Models\Group;
 use App\Models\GroupStudentHistory;
@@ -54,11 +55,12 @@ class GroupController extends Controller
 
     public function show(Group $group): JsonResponse
     {
-        $group->load(['academicYear', 'teacher']);
+        $group->load(['academicYear', 'teacher', 'students']);
         $group->loadCount('students');
 
         return $this->success('Group retrieved', [
             'group' => new GroupResource($group),
+            'students' => StudentResource::collection($group->students),
         ]);
     }
 
@@ -91,7 +93,7 @@ class GroupController extends Controller
             return $this->error('No active academic year found', 400);
         }
 
-        $studentIds = $request->validated('student_ids');
+        $studentIds = $request->validated('student_ids') ?? [$request->validated('student_id')];
 
         DB::transaction(function () use ($studentIds, $group, $academicYear) {
             foreach ($studentIds as $studentId) {

@@ -11,6 +11,12 @@ trait RespondsWithApiResponse
      */
     protected function success(string $message, mixed $data = [], int $code = 200): JsonResponse
     {
+        if ($data instanceof \Illuminate\Http\Resources\Json\ResourceCollection) {
+            $data = $data->response()->getData(true);
+        } elseif ($data instanceof \Illuminate\Http\Resources\Json\JsonResource) {
+            $data = $data->resolve();
+        }
+
         return response()->json([
             'success' => true,
             'message' => $message,

@@ -131,18 +131,18 @@ Status:
 ## Phase 8 — Teacher Validation
 
 - [x] Migration teacher validations.
-- [ ] Queue review list.
-- [ ] Detail review.
-- [ ] Audio player.
-- [ ] Tampilan transkripsi asli.
-- [ ] Edit transkripsi.
-- [ ] Tampilan rekomendasi AI.
-- [ ] Approve.
-- [ ] Override.
-- [ ] Wajib alasan override.
-- [ ] Audit perubahan.
-- [ ] Test authorization kelompok.
-- [ ] Test approval/override.
+- [x] Queue review list.
+- [x] Detail review.
+- [x] Audio player.
+- [x] Tampilan transkripsi asli.
+- [x] Edit transkripsi.
+- [x] Tampilan rekomendasi AI.
+- [x] Approve.
+- [x] Override.
+- [x] Wajib alasan override.
+- [x] Audit perubahan.
+- [x] Test authorization kelompok.
+- [x] Test approval/override.
 
 ## Phase 9 — Daily Observation
 

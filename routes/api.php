@@ -20,10 +20,6 @@ Route::prefix('v1')->middleware('web')->group(function () {
             Route::apiResource('users', UserController::class)->except(['destroy']);
             Route::patch('users/{user}/status', [UserController::class, 'updateStatus'])->name('users.status');
             Route::post('users/{user}/reset-credential', [UserController::class, 'resetCredential'])->name('users.reset-credential');
-        });
-
-        Route::middleware('role:teacher')->group(function () {
-            Route::apiResource('character-indicators', ApiCharacterIndicatorController::class);
 
             Route::apiResource('academic-years', AcademicYearController::class);
             Route::patch('academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
@@ -35,6 +31,19 @@ Route::prefix('v1')->middleware('web')->group(function () {
             Route::apiResource('students', StudentController::class)->except(['destroy']);
             Route::patch('students/{student}/status', [StudentController::class, 'updateStatus'])->name('students.status');
             Route::get('students/{student}/timeline', [StudentController::class, 'timeline'])->name('students.timeline');
+        });
+
+        Route::middleware('role:teacher')->group(function () {
+            Route::apiResource('character-indicators', ApiCharacterIndicatorController::class);
+        });
+
+        Route::middleware('role:teacher,admin')->prefix('teacher')->group(function () {
+            Route::get('reviews', [\App\Http\Controllers\Api\V1\Teacher\ReviewController::class, 'index'])->name('api.teacher.reviews.index');
+            Route::get('reviews/{answer}', [\App\Http\Controllers\Api\V1\Teacher\ReviewController::class, 'show'])->name('api.teacher.reviews.show');
+            Route::get('reviews/{answer}/audio', [\App\Http\Controllers\Api\V1\Teacher\ReviewController::class, 'audio'])->name('api.teacher.reviews.audio');
+            Route::put('reviews/{answer}/transcript', [\App\Http\Controllers\Api\V1\Teacher\ReviewController::class, 'updateTranscript'])->name('api.teacher.reviews.transcript.update');
+            Route::post('reviews/{answer}/approve', [\App\Http\Controllers\Api\V1\Teacher\ReviewController::class, 'approve'])->name('api.teacher.reviews.approve');
+            Route::post('reviews/{answer}/override', [\App\Http\Controllers\Api\V1\Teacher\ReviewController::class, 'override'])->name('api.teacher.reviews.override');
         });
     });
 });

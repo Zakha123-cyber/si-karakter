@@ -112,7 +112,7 @@ function getNavItems(role: string): NavItem[] {
             },
             {
                 title: 'Review',
-                href: '/dashboard',
+                href: '/teacher/reviews',
                 icon: ClipboardCheck,
             },
             {

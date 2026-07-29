@@ -14,8 +14,9 @@ class AssignStudentRequest extends BaseApiRequest
     public function rules(): array
     {
         return [
-            'student_ids' => ['required', 'array', 'min:1'],
-            'student_ids.*' => ['required', 'integer', 'exists:students,id'],
+            'student_ids' => ['required_without:student_id', 'array', 'min:1'],
+            'student_ids.*' => ['integer', 'exists:students,id'],
+            'student_id' => ['required_without:student_ids', 'integer', 'exists:students,id'],
         ];
     }
 }

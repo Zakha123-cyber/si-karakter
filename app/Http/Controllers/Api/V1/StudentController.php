@@ -53,10 +53,11 @@ class StudentController extends Controller
 
     public function show(Student $student): JsonResponse
     {
-        $student->load(['user', 'currentGroup']);
+        $student->load(['user', 'currentGroup', 'groupStudentHistories.group', 'groupStudentHistories.academicYear']);
 
         return $this->success('Student retrieved', [
             'student' => new StudentResource($student),
+            'timeline' => GroupStudentHistoryResource::collection($student->groupStudentHistories),
         ]);
     }
 
@@ -89,7 +90,7 @@ class StudentController extends Controller
             ->get();
 
         return $this->success('Student group history retrieved', [
-            'histories' => GroupStudentHistoryResource::collection($histories),
+            'timeline' => GroupStudentHistoryResource::collection($histories),
         ]);
     }
 }

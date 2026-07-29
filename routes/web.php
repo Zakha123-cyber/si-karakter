@@ -71,4 +71,13 @@ Route::middleware(['auth', 'active', 'role:teacher'])->prefix('teacher')->name('
     Route::post('test-packages/{testPackage}/close', [TestPackageController::class, 'close'])->name('test-packages.close');
 });
 
+Route::middleware(['auth', 'active', 'role:teacher,admin'])->prefix('teacher')->name('teacher.')->group(function () {
+    Route::get('reviews', [\App\Http\Controllers\Teacher\ReviewController::class, 'index'])->name('reviews.index');
+    Route::get('reviews/{answer}', [\App\Http\Controllers\Teacher\ReviewController::class, 'show'])->name('reviews.show');
+    Route::get('reviews/{answer}/audio', [\App\Http\Controllers\Teacher\ReviewController::class, 'audio'])->name('reviews.audio');
+    Route::put('reviews/{answer}/transcript', [\App\Http\Controllers\Teacher\ReviewController::class, 'updateTranscript'])->name('reviews.transcript.update');
+    Route::post('reviews/{answer}/approve', [\App\Http\Controllers\Teacher\ReviewController::class, 'approve'])->name('reviews.approve');
+    Route::post('reviews/{answer}/override', [\App\Http\Controllers\Teacher\ReviewController::class, 'override'])->name('reviews.override');
+});
+
 require __DIR__.'/settings.php';

@@ -84,49 +84,49 @@ Status:
 - [x] Buat attempt.
 - [x] Validasi attempt limit.
 - [x] Halaman cerita per kasus.
-- [X] Text-to-speech atau pemutaran audio cerita.
+- [x] Text-to-speech atau pemutaran audio cerita.
 - [x] Pilihan jawaban dinamis.
 - [x] Input alasan teks.
-- [X] UI rekaman suara.
+- [x] UI rekaman suara.
 - [x] Upload audio.
-- [X] Audio preview.
+- [x] Audio preview.
 - [x] Autosave.
 - [x] Progress indicator.
 - [x] Submit attempt.
-- [X] Lock jawaban setelah submit.
+- [x] Lock jawaban setelah submit.
 - [x] Test student flow.
 
 ## Phase 6 — Speech-to-Text
 
-- [ ] Buat interface STT.
-- [ ] Buat DTO hasil transkripsi.
-- [ ] Implement provider pertama.
+- [x] Buat interface STT.
+- [x] Buat DTO hasil transkripsi.
+- [x] Implement provider pertama.
 - [x] Migration audio files.
 - [x] Migration transcriptions.
-- [ ] Job transkripsi.
-- [ ] Retry policy.
-- [ ] Error logging.
-- [ ] Simpan raw response.
-- [ ] Endpoint retry.
-- [ ] Mock test provider.
-- [ ] Integration test.
+- [x] Job transkripsi.
+- [x] Retry policy.
+- [x] Error logging.
+- [x] Simpan raw response.
+- [x] Endpoint retry.
+- [x] Mock test provider.
+- [x] Integration test.
 
 ## Phase 7 — LLM Moral Assessment
 
-- [ ] Buat interface assessment.
-- [ ] Buat DTO input/output.
-- [ ] Definisikan JSON schema.
-- [ ] Buat prompt v1.
+- [x] Buat interface assessment.
+- [x] Buat DTO input/output.
+- [x] Definisikan JSON schema.
+- [x] Buat prompt v1.
 - [x] Migration AI assessments.
-- [ ] Implement provider pertama.
-- [ ] Job klasifikasi.
-- [ ] Validasi output.
-- [ ] Simpan raw response.
-- [ ] Simpan prompt version.
-- [ ] Retry policy.
-- [ ] Test invalid JSON.
-- [ ] Test timeout/rate limit.
-- [ ] Integration test.
+- [x] Implement provider pertama.
+- [x] Job klasifikasi.
+- [x] Validasi output.
+- [x] Simpan raw response.
+- [x] Simpan prompt version.
+- [x] Retry policy.
+- [x] Test invalid JSON.
+- [x] Test timeout/rate limit.
+- [x] Integration test.
 
 ## Phase 8 — Teacher Validation
 
@@ -228,6 +228,7 @@ Status:
 
 ## Phase 15 — Analytics Dashboard
 
+- [x] Halaman admin hasil pengerjaan test.
 - [ ] Admin dashboard.
 - [ ] Teacher dashboard.
 - [ ] Student dashboard.

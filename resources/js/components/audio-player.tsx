@@ -60,7 +60,9 @@ export function AudioPlayer({
             audio
                 .play()
                 .then(() => setIsPlaying(true))
-                .catch((err: unknown) => console.warn('Audio playback prevented:', err));
+                .catch((err: unknown) =>
+                    console.warn('Audio playback prevented:', err),
+                );
         }
     };
 

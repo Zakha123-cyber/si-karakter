@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use App\Enums\AssessmentStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +31,7 @@ class AiAssessment extends Model
             'warning_signals_json' => 'array',
             'indicators_json' => 'array',
             'raw_response_json' => 'array',
+            'status' => AssessmentStatus::class,
             'processed_at' => 'datetime',
         ];
     }

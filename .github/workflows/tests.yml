@@ -45,5 +45,8 @@ jobs:
       - name: Generate Wayfinder Types
         run: php artisan wayfinder:generate --with-form
 
+      - name: Build Frontend Assets
+        run: npm run build
+
       - name: Run CI Checks
         run: composer ci:check

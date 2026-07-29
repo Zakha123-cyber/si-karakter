@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\CharacterIndicatorController as ApiCharacterIndi
 use App\Http\Controllers\Api\V1\GroupController;
 use App\Http\Controllers\Api\V1\StudentController;
 use App\Http\Controllers\Api\V1\Teacher\ReviewController;
+use App\Http\Controllers\Api\V1\Teacher\ScoringConfigurationController as ApiScoringConfigurationController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,7 @@ Route::prefix('v1')->middleware('web')->group(function () {
 
         Route::middleware('role:teacher')->group(function () {
             Route::apiResource('character-indicators', ApiCharacterIndicatorController::class);
+            Route::apiResource('scoring-configurations', ApiScoringConfigurationController::class);
         });
 
         Route::middleware('role:teacher,admin')->prefix('teacher')->group(function () {

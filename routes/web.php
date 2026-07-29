@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/student.php';
 
-Route::inertia('/', 'welcome')->name('home');
+Route::redirect('/', '/login');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');

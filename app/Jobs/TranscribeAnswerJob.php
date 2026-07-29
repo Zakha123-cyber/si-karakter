@@ -77,6 +77,8 @@ class TranscribeAnswerJob implements ShouldQueue
                 'provider' => $result->provider,
                 'model' => $result->model,
             ]);
+
+            AiAssessmentJob::dispatch($audioFile->test_answer_id);
         } catch (SpeechToTextException $exception) {
             Log::error('TranscribeAnswerJob: transcription failed.', [
                 'answer_audio_file_id' => $this->answerAudioFileId,

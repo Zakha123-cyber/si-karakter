@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Enums\TestPackageStatus;
 use App\Enums\TranscriptionStatus;
 use App\Http\Controllers\Controller;
+use App\Jobs\AiAssessmentJob;
 use App\Jobs\TranscribeAnswerJob;
 use App\Models\Student;
 use App\Models\TestAnswer;
@@ -223,6 +224,16 @@ class TestController extends Controller
             'submitted_at' => now(),
             'completed_at' => now(),
         ])->save();
+
+        TestAnswer::query()
+            ->where('test_attempt_id', $testAttempt->id)
+            ->where(function ($query) {
+                $query->whereNotNull('typed_reason')
+                    ->orWhereNotNull('final_transcript')
+                    ->orWhereHas('transcriptions', fn ($q) => $q->where('status', 'completed'));
+            })
+            ->whereDoesntHave('aiAssessments', fn ($q) => $q->whereIn('status', ['processing', 'completed']))
+            ->each(fn (TestAnswer $answer) => AiAssessmentJob::dispatch($answer->id));
 
         return redirect()->route('student.tests.index')->with('status', 'Jawaban berhasil dikirim.');
     }

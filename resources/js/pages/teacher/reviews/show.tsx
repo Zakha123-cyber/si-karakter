@@ -271,9 +271,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                 <h1 className="text-2xl font-semibold tracking-normal">
                                     Detail Review Jawaban Santri
                                 </h1>
-                                <Badge variant="secondary">
-                                    #{review.id}
-                                </Badge>
+                                <Badge variant="secondary">#{review.id}</Badge>
                             </div>
                             <p className="text-sm text-muted-foreground">
                                 {review.test_package.title} — dikirim{' '}
@@ -284,19 +282,28 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
 
                     <div>
                         {review.validation.status === 'approved' && (
-                            <Badge variant="default" className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 py-1 px-3">
+                            <Badge
+                                variant="default"
+                                className="gap-1.5 bg-emerald-600 px-3 py-1 text-white hover:bg-emerald-700"
+                            >
                                 <CheckCircle2 className="size-4" />
                                 Status: Disetujui (Approved)
                             </Badge>
                         )}
                         {review.validation.status === 'overridden' && (
-                            <Badge variant="default" className="bg-amber-600 hover:bg-amber-700 text-white gap-1.5 py-1 px-3">
+                            <Badge
+                                variant="default"
+                                className="gap-1.5 bg-amber-600 px-3 py-1 text-white hover:bg-amber-700"
+                            >
                                 <ShieldAlert className="size-4" />
                                 Status: Dioverride
                             </Badge>
                         )}
                         {review.validation.status === 'pending_review' && (
-                            <Badge variant="secondary" className="gap-1.5 py-1 px-3">
+                            <Badge
+                                variant="secondary"
+                                className="gap-1.5 px-3 py-1"
+                            >
                                 <Clock className="size-4" />
                                 Status: Belum Direview
                             </Badge>
@@ -318,21 +325,28 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                 {review.student.name}
                             </div>
                             <div className="text-muted-foreground">
-                                NIS: {review.student.student_code} • Kelompok: {review.group.name}
+                                NIS: {review.student.student_code} • Kelompok:{' '}
+                                {review.group.name}
                             </div>
                             <div className="text-muted-foreground">
-                                Username: @{review.student.username ?? review.student.student_code?.toLowerCase()}
+                                Username: @
+                                {review.student.username ??
+                                    review.student.student_code?.toLowerCase()}
                             </div>
                         </CardContent>
                     </Card>
 
                     <Card className="rounded-lg">
                         <CardHeader>
-                            <CardTitle className="text-base">Jawaban & Pilihan</CardTitle>
+                            <CardTitle className="text-base">
+                                Jawaban & Pilihan
+                            </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-semibold">
-                                {review.selected_option ? `Pilihan ${review.selected_option.label}` : 'Belum memilih'}
+                                {review.selected_option
+                                    ? `Pilihan ${review.selected_option.label}`
+                                    : 'Belum memilih'}
                             </div>
                             <p className="text-xs text-muted-foreground">
                                 Status: {review.answer_status}
@@ -342,11 +356,19 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
 
                     <Card className="rounded-lg">
                         <CardHeader>
-                            <CardTitle className="text-base">STT & AI</CardTitle>
+                            <CardTitle className="text-base">
+                                STT & AI
+                            </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-semibold">
-                                {review.transcription ? (review.transcription.confidence ? formatPercent(review.transcription.confidence) : '100%') : '0%'}
+                                {review.transcription
+                                    ? review.transcription.confidence
+                                        ? formatPercent(
+                                              review.transcription.confidence,
+                                          )
+                                        : '100%'
+                                    : '0%'}
                             </div>
                             <p className="text-xs text-muted-foreground">
                                 Keyakinan transkripsi / AI
@@ -391,7 +413,8 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                     </div>
                                     {review.moral_case.options.map((opt) => {
                                         const isSelected =
-                                            review.selected_option?.id === opt.id;
+                                            review.selected_option?.id ===
+                                            opt.id;
                                         return (
                                             <div
                                                 key={opt.id}
@@ -444,12 +467,18 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                         {review.audio ? (
                                             <AudioPlayer
                                                 src={`/teacher/reviews/${review.id}/audio`}
-                                                originalName={review.audio.original_name}
-                                                durationSeconds={review.audio.duration_seconds}
+                                                originalName={
+                                                    review.audio.original_name
+                                                }
+                                                durationSeconds={
+                                                    review.audio
+                                                        .duration_seconds
+                                                }
                                             />
                                         ) : (
                                             <p className="rounded-md bg-muted/40 p-3 text-sm text-muted-foreground">
-                                                Tidak ada rekaman audio file untuk jawaban ini.
+                                                Tidak ada rekaman audio file
+                                                untuk jawaban ini.
                                             </p>
                                         )}
                                     </div>
@@ -464,7 +493,8 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                         </div>
                                         {review.transcription ? (
                                             <Badge variant="outline">
-                                                {review.transcription.provider} • {review.transcription.model}
+                                                {review.transcription.provider}{' '}
+                                                • {review.transcription.model}
                                             </Badge>
                                         ) : null}
                                     </div>
@@ -475,19 +505,28 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                 <div>
                                                     Status:{' '}
                                                     <span className="font-semibold text-foreground">
-                                                        {review.transcription.status}
+                                                        {
+                                                            review.transcription
+                                                                .status
+                                                        }
                                                     </span>
                                                 </div>
                                                 <div>
                                                     Confidence:{' '}
                                                     <span className="font-semibold text-foreground">
-                                                        {formatPercent(review.transcription.confidence)}
+                                                        {formatPercent(
+                                                            review.transcription
+                                                                .confidence,
+                                                        )}
                                                     </span>
                                                 </div>
                                                 <div className="sm:col-span-2">
                                                     Diproses:{' '}
                                                     <span className="font-semibold text-foreground">
-                                                        {formatDateTime(review.transcription.processed_at)}
+                                                        {formatDateTime(
+                                                            review.transcription
+                                                                .processed_at,
+                                                        )}
                                                     </span>
                                                 </div>
                                             </div>
@@ -498,52 +537,78 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                         Transkrip asli
                                                     </div>
                                                     <div className="flex items-center gap-2">
-                                                        {(review.transcription?.original_text || review.final_transcript) && (
+                                                        {(review.transcription
+                                                            ?.original_text ||
+                                                            review.final_transcript) && (
                                                             <button
                                                                 type="button"
                                                                 onClick={() => {
-                                                                    const text = review.transcription?.original_text || review.final_transcript;
+                                                                    const text =
+                                                                        review
+                                                                            .transcription
+                                                                            ?.original_text ||
+                                                                        review.final_transcript;
                                                                     if (text) {
-                                                                        navigator.clipboard.writeText(text);
-                                                                        alert('Teks transkripsi berhasil disalin!');
+                                                                        navigator.clipboard.writeText(
+                                                                            text,
+                                                                        );
+                                                                        alert(
+                                                                            'Teks transkripsi berhasil disalin!',
+                                                                        );
                                                                     }
                                                                 }}
-                                                                className="inline-flex items-center gap-1 rounded bg-background px-2 py-0.5 text-[10px] font-medium border text-muted-foreground hover:bg-muted"
+                                                                className="inline-flex items-center gap-1 rounded border bg-background px-2 py-0.5 text-[10px] font-medium text-muted-foreground hover:bg-muted"
                                                             >
                                                                 Salin
                                                             </button>
                                                         )}
                                                         <button
                                                             type="button"
-                                                            onClick={() => setIsEditingTranscript(!isEditingTranscript)}
+                                                            onClick={() =>
+                                                                setIsEditingTranscript(
+                                                                    !isEditingTranscript,
+                                                                )
+                                                            }
                                                             className="inline-flex items-center gap-1 rounded bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground hover:bg-primary/90"
                                                         >
                                                             <Edit3 className="size-3" />
-                                                            {isEditingTranscript ? 'Batal' : 'Edit'}
+                                                            {isEditingTranscript
+                                                                ? 'Batal'
+                                                                : 'Edit'}
                                                         </button>
                                                     </div>
                                                 </div>
                                                 <p className="mt-1 text-sm leading-6">
-                                                    {review.transcription.original_text || review.final_transcript || (
-                                                        <span className="text-muted-foreground italic">
-                                                            Belum ada teks transkrip asli.
-                                                        </span>
-                                                    )}
+                                                    {review.transcription
+                                                        .original_text ||
+                                                        review.final_transcript || (
+                                                            <span className="text-muted-foreground italic">
+                                                                Belum ada teks
+                                                                transkrip asli.
+                                                            </span>
+                                                        )}
                                                 </p>
                                             </div>
 
                                             {isEditingTranscript && (
                                                 <form
-                                                    onSubmit={handleSaveTranscript}
-                                                    className="mt-3 rounded-md border border-primary/40 bg-primary/5 p-3 space-y-2"
+                                                    onSubmit={
+                                                        handleSaveTranscript
+                                                    }
+                                                    className="mt-3 space-y-2 rounded-md border border-primary/40 bg-primary/5 p-3"
                                                 >
                                                     <div className="flex items-center justify-between">
                                                         <span className="text-xs font-bold text-primary">
-                                                            Edit / Perbaiki Teks Transkripsi
+                                                            Edit / Perbaiki Teks
+                                                            Transkripsi
                                                         </span>
                                                         <button
                                                             type="button"
-                                                            onClick={() => setIsEditingTranscript(false)}
+                                                            onClick={() =>
+                                                                setIsEditingTranscript(
+                                                                    false,
+                                                                )
+                                                            }
                                                             className="text-muted-foreground hover:text-foreground"
                                                         >
                                                             <X className="size-4" />
@@ -551,14 +616,23 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                     </div>
                                                     <textarea
                                                         rows={3}
-                                                        value={transcriptData.edited_text}
-                                                        onChange={(e) => setTranscriptData('edited_text', e.target.value)}
+                                                        value={
+                                                            transcriptData.edited_text
+                                                        }
+                                                        onChange={(e) =>
+                                                            setTranscriptData(
+                                                                'edited_text',
+                                                                e.target.value,
+                                                            )
+                                                        }
                                                         placeholder="Tuliskan teks transkripsi perbaikan di sini..."
                                                         className="w-full rounded-md border bg-background p-2.5 text-xs text-foreground outline-none focus:ring-1 focus:ring-primary"
                                                     />
                                                     {transcriptErrors.edited_text && (
                                                         <p className="text-[11px] text-destructive">
-                                                            {transcriptErrors.edited_text}
+                                                            {
+                                                                transcriptErrors.edited_text
+                                                            }
                                                         </p>
                                                     )}
                                                     <div className="flex justify-end gap-2">
@@ -566,36 +640,51 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                             type="button"
                                                             variant="outline"
                                                             size="sm"
-                                                            onClick={() => setIsEditingTranscript(false)}
+                                                            onClick={() =>
+                                                                setIsEditingTranscript(
+                                                                    false,
+                                                                )
+                                                            }
                                                         >
                                                             Batal
                                                         </Button>
                                                         <Button
                                                             type="submit"
                                                             size="sm"
-                                                            disabled={isSavingTranscript}
+                                                            disabled={
+                                                                isSavingTranscript
+                                                            }
                                                         >
-                                                            <Save className="size-3.5 mr-1" />
-                                                            {isSavingTranscript ? 'Menyimpan...' : 'Simpan Perbaikan'}
+                                                            <Save className="mr-1 size-3.5" />
+                                                            {isSavingTranscript
+                                                                ? 'Menyimpan...'
+                                                                : 'Simpan Perbaikan'}
                                                         </Button>
                                                     </div>
                                                 </form>
                                             )}
 
-                                            {review.transcription.edited_text && !isEditingTranscript && (
-                                                <div className="rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-900 dark:bg-amber-950/20">
-                                                    <div className="text-xs font-semibold text-amber-700 dark:text-amber-300">
-                                                        Transkrip hasil edit ustadz
+                                            {review.transcription.edited_text &&
+                                                !isEditingTranscript && (
+                                                    <div className="rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-900 dark:bg-amber-950/20">
+                                                        <div className="text-xs font-semibold text-amber-700 dark:text-amber-300">
+                                                            Transkrip hasil edit
+                                                            ustadz
+                                                        </div>
+                                                        <p className="mt-1 text-sm leading-6 text-amber-900 dark:text-amber-100">
+                                                            {
+                                                                review
+                                                                    .transcription
+                                                                    .edited_text
+                                                            }
+                                                        </p>
                                                     </div>
-                                                    <p className="mt-1 text-sm leading-6 text-amber-900 dark:text-amber-100">
-                                                        {review.transcription.edited_text}
-                                                    </p>
-                                                </div>
-                                            )}
+                                                )}
                                         </div>
                                     ) : (
                                         <p className="mt-3 rounded-md bg-muted/40 p-3 text-sm text-muted-foreground">
-                                            Belum ada record transkripsi untuk audio ini.
+                                            Belum ada record transkripsi untuk
+                                            audio ini.
                                         </p>
                                     )}
                                 </div>
@@ -608,7 +697,10 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                             Rekomendasi AI Assessment
                                         </div>
                                         {review.ai_assessment && (
-                                            <Badge variant="outline" className="text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-900">
+                                            <Badge
+                                                variant="outline"
+                                                className="border-teal-200 text-teal-600 dark:border-teal-900 dark:text-teal-400"
+                                            >
                                                 AI Assessment
                                             </Badge>
                                         )}
@@ -617,20 +709,34 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                     {review.ai_assessment ? (
                                         <div className="mt-3 space-y-3 text-sm">
                                             <div>
-                                                <span className="text-xs text-muted-foreground font-medium">
-                                                    Rekomendasi Tingkat Moral (Kohlberg):
+                                                <span className="text-xs font-medium text-muted-foreground">
+                                                    Rekomendasi Tingkat Moral
+                                                    (Kohlberg):
                                                 </span>
                                                 <div className="mt-1.5 rounded-lg bg-emerald-600 p-3 text-center text-white shadow-sm">
-                                                    <span className="block text-xs opacity-90">Tingkat Penilaian LLM</span>
-                                                    <span className="block text-base font-extrabold">{review.ai_assessment.moral_level}</span>
+                                                    <span className="block text-xs opacity-90">
+                                                        Tingkat Penilaian LLM
+                                                    </span>
+                                                    <span className="block text-base font-extrabold">
+                                                        {
+                                                            review.ai_assessment
+                                                                .moral_level
+                                                        }
+                                                    </span>
                                                 </div>
                                             </div>
 
-                                            <div className="rounded-md border p-3 bg-muted/20 space-y-1.5">
+                                            <div className="space-y-1.5 rounded-md border bg-muted/20 p-3">
                                                 <div className="flex justify-between text-xs font-semibold">
-                                                    <span>Tingkat Keyakinan (Confidence)</span>
+                                                    <span>
+                                                        Tingkat Keyakinan
+                                                        (Confidence)
+                                                    </span>
                                                     <span className="text-teal-600 dark:text-teal-400">
-                                                        {formatPercent(review.ai_assessment.confidence)}
+                                                        {formatPercent(
+                                                            review.ai_assessment
+                                                                .confidence,
+                                                        )}
                                                     </span>
                                                 </div>
                                                 <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -644,62 +750,133 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                             </div>
 
                                             <div>
-                                                <span className="text-xs font-medium text-muted-foreground">Ringkasan Penalaran AI:</span>
+                                                <span className="text-xs font-medium text-muted-foreground">
+                                                    Ringkasan Penalaran AI:
+                                                </span>
                                                 <p className="mt-1 rounded-md bg-muted/40 p-3 text-xs leading-relaxed text-foreground">
-                                                    {review.ai_assessment.reasoning_summary}
+                                                    {
+                                                        review.ai_assessment
+                                                            .reasoning_summary
+                                                    }
                                                 </p>
                                             </div>
 
-                                            {review.ai_assessment.suggested_intervention && (
+                                            {review.ai_assessment
+                                                .suggested_intervention && (
                                                 <div>
-                                                    <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">Saran Intervensi Pedagogis:</span>
+                                                    <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                                                        Saran Intervensi
+                                                        Pedagogis:
+                                                    </span>
                                                     <p className="mt-1 rounded-md border border-emerald-200 bg-emerald-50/70 p-3 text-xs text-emerald-950 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200">
-                                                        {review.ai_assessment.suggested_intervention}
+                                                        {
+                                                            review.ai_assessment
+                                                                .suggested_intervention
+                                                        }
                                                     </p>
                                                 </div>
                                             )}
 
-                                            {review.ai_assessment.warning_signals && review.ai_assessment.warning_signals.length > 0 && (
-                                                <div>
-                                                    <span className="text-xs font-medium text-amber-700 dark:text-amber-300">Sinyal Peringatan (Warning Signals):</span>
-                                                    <div className="mt-1 flex flex-wrap gap-1.5">
-                                                        {review.ai_assessment.warning_signals.map((signal, idx) => (
-                                                            <Badge key={idx} variant="outline" className="border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
-                                                                <ShieldAlert className="size-3 mr-1 text-amber-600" />
-                                                                {typeof signal === 'string' ? signal : JSON.stringify(signal)}
-                                                            </Badge>
-                                                        ))}
+                                            {review.ai_assessment
+                                                .warning_signals &&
+                                                review.ai_assessment
+                                                    .warning_signals.length >
+                                                    0 && (
+                                                    <div>
+                                                        <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
+                                                            Sinyal Peringatan
+                                                            (Warning Signals):
+                                                        </span>
+                                                        <div className="mt-1 flex flex-wrap gap-1.5">
+                                                            {review.ai_assessment.warning_signals.map(
+                                                                (
+                                                                    signal,
+                                                                    idx,
+                                                                ) => (
+                                                                    <Badge
+                                                                        key={
+                                                                            idx
+                                                                        }
+                                                                        variant="outline"
+                                                                        className="border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200"
+                                                                    >
+                                                                        <ShieldAlert className="mr-1 size-3 text-amber-600" />
+                                                                        {typeof signal ===
+                                                                        'string'
+                                                                            ? signal
+                                                                            : JSON.stringify(
+                                                                                  signal,
+                                                                              )}
+                                                                    </Badge>
+                                                                ),
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
+                                                )}
 
-                                            {review.ai_assessment.indicators && review.ai_assessment.indicators.length > 0 && (
-                                                <div>
-                                                    <span className="text-xs font-medium text-muted-foreground">Skor Indikator Karakter Teridentifikasi:</span>
-                                                    <div className="mt-1 space-y-1">
-                                                        {review.ai_assessment.indicators.map((ind: any, idx: number) => (
-                                                            <div key={idx} className="flex items-center justify-between rounded-md border bg-background px-3 py-1.5 text-xs">
-                                                                <span>{ind.indicator_name || ind.name || ind.code || (ind.indicator_id ? `Indikator #${ind.indicator_id}` : `Indikator ${idx + 1}`)}</span>
-                                                                <span className="font-bold text-teal-600 dark:text-teal-400">
-                                                                    Skor: {ind.score}
-                                                                </span>
-                                                            </div>
-                                                        ))}
+                                            {review.ai_assessment.indicators &&
+                                                review.ai_assessment.indicators
+                                                    .length > 0 && (
+                                                    <div>
+                                                        <span className="text-xs font-medium text-muted-foreground">
+                                                            Skor Indikator
+                                                            Karakter
+                                                            Teridentifikasi:
+                                                        </span>
+                                                        <div className="mt-1 space-y-1">
+                                                            {review.ai_assessment.indicators.map(
+                                                                (
+                                                                    ind: any,
+                                                                    idx: number,
+                                                                ) => (
+                                                                    <div
+                                                                        key={
+                                                                            idx
+                                                                        }
+                                                                        className="flex items-center justify-between rounded-md border bg-background px-3 py-1.5 text-xs"
+                                                                    >
+                                                                        <span>
+                                                                            {ind.indicator_name ||
+                                                                                ind.name ||
+                                                                                ind.code ||
+                                                                                (ind.indicator_id
+                                                                                    ? `Indikator #${ind.indicator_id}`
+                                                                                    : `Indikator ${idx + 1}`)}
+                                                                        </span>
+                                                                        <span className="font-bold text-teal-600 dark:text-teal-400">
+                                                                            Skor:{' '}
+                                                                            {
+                                                                                ind.score
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                ),
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
+                                                )}
 
                                             <div className="pt-1">
                                                 <button
                                                     type="button"
-                                                    onClick={() => setShowRawResponseJson(!showRawResponseJson)}
+                                                    onClick={() =>
+                                                        setShowRawResponseJson(
+                                                            !showRawResponseJson,
+                                                        )
+                                                    }
                                                     className="text-xs font-semibold text-teal-600 hover:underline dark:text-teal-400"
                                                 >
-                                                    {showRawResponseJson ? 'Sembunyikan Raw JSON AI' : 'Lihat Raw JSON AI Response'}
+                                                    {showRawResponseJson
+                                                        ? 'Sembunyikan Raw JSON AI'
+                                                        : 'Lihat Raw JSON AI Response'}
                                                 </button>
                                                 {showRawResponseJson && (
                                                     <pre className="mt-2 max-h-48 overflow-auto rounded bg-slate-950 p-3 font-mono text-[10px] text-emerald-400">
-                                                        {JSON.stringify(review.ai_assessment, null, 2)}
+                                                        {JSON.stringify(
+                                                            review.ai_assessment,
+                                                            null,
+                                                            2,
+                                                        )}
                                                     </pre>
                                                 )}
                                             </div>
@@ -712,13 +889,16 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                 </div>
 
                                 {/* Validasi & Keputusan Ustadz */}
-                                <div className="rounded-md border p-4 space-y-3">
-                                    <div className="text-sm font-medium">Validasi & Keputusan Ustadz</div>
+                                <div className="space-y-3 rounded-md border p-4">
+                                    <div className="text-sm font-medium">
+                                        Validasi & Keputusan Ustadz
+                                    </div>
 
                                     {review.validation.decision && (
                                         <div
                                             className={`rounded-md p-3 text-xs ${
-                                                review.validation.decision === 'approved'
+                                                review.validation.decision ===
+                                                'approved'
                                                     ? 'border border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200'
                                                     : 'border border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200'
                                             }`}
@@ -726,33 +906,53 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                             <div className="flex items-center justify-between font-bold">
                                                 <span>
                                                     Keputusan Validasi:{' '}
-                                                    {review.validation.decision === 'approved' ? 'Disetujui' : 'Dioverride'}
+                                                    {review.validation
+                                                        .decision === 'approved'
+                                                        ? 'Disetujui'
+                                                        : 'Dioverride'}
                                                 </span>
                                                 <span className="text-[10px] opacity-75">
-                                                    {review.validation.validated_at || ''}
+                                                    {review.validation
+                                                        .validated_at || ''}
                                                 </span>
                                             </div>
                                             <p className="mt-1 font-semibold">
-                                                Level Akhir: {review.validation.final_moral_level}
+                                                Level Akhir:{' '}
+                                                {
+                                                    review.validation
+                                                        .final_moral_level
+                                                }
                                             </p>
-                                            {review.validation.override_reason && (
+                                            {review.validation
+                                                .override_reason && (
                                                 <p className="mt-1 text-[11px] italic">
-                                                    Alasan Override: &quot;{review.validation.override_reason}&quot;
+                                                    Alasan Override: &quot;
+                                                    {
+                                                        review.validation
+                                                            .override_reason
+                                                    }
+                                                    &quot;
                                                 </p>
                                             )}
                                             {review.validation.teacher_note && (
                                                 <p className="mt-1 text-[11px]">
-                                                    Catatan: {review.validation.teacher_note}
+                                                    Catatan:{' '}
+                                                    {
+                                                        review.validation
+                                                            .teacher_note
+                                                    }
                                                 </p>
                                             )}
                                         </div>
                                     )}
 
                                     {/* Tabs */}
-                                    <div className="flex rounded-md border p-1 bg-muted/40">
+                                    <div className="flex rounded-md border bg-muted/40 p-1">
                                         <button
                                             type="button"
-                                            onClick={() => setActionTab('approve')}
+                                            onClick={() =>
+                                                setActionTab('approve')
+                                            }
                                             className={`flex-1 rounded-sm py-1.5 text-xs font-semibold transition ${
                                                 actionTab === 'approve'
                                                     ? 'bg-background text-foreground shadow-sm'
@@ -763,7 +963,9 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={() => setActionTab('override')}
+                                            onClick={() =>
+                                                setActionTab('override')
+                                            }
                                             className={`flex-1 rounded-sm py-1.5 text-xs font-semibold transition ${
                                                 actionTab === 'override'
                                                     ? 'bg-background text-foreground shadow-sm'
@@ -776,21 +978,38 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
 
                                     {/* Form Approve */}
                                     {actionTab === 'approve' && (
-                                        <form onSubmit={handleApproveSubmit} className="space-y-3 pt-1">
+                                        <form
+                                            onSubmit={handleApproveSubmit}
+                                            className="space-y-3 pt-1"
+                                        >
                                             <p className="text-xs text-muted-foreground">
                                                 Menyetujui rekomendasi AI level{' '}
                                                 <span className="font-bold text-emerald-600">
-                                                    {review.ai_assessment?.moral_level || review.selected_option?.internal_value || 'Tahap 3'}
+                                                    {review.ai_assessment
+                                                        ?.moral_level ||
+                                                        review.selected_option
+                                                            ?.internal_value ||
+                                                        'Tahap 3'}
                                                 </span>{' '}
                                                 sebagai hasil akhir santri.
                                             </p>
 
                                             <div>
-                                                <label className="text-xs font-medium">Catatan Ustadz (Opsional):</label>
+                                                <label className="text-xs font-medium">
+                                                    Catatan Ustadz (Opsional):
+                                                </label>
                                                 <textarea
                                                     rows={2}
-                                                    value={approveForm.data.teacher_note}
-                                                    onChange={(e) => approveForm.setData('teacher_note', e.target.value)}
+                                                    value={
+                                                        approveForm.data
+                                                            .teacher_note
+                                                    }
+                                                    onChange={(e) =>
+                                                        approveForm.setData(
+                                                            'teacher_note',
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                     placeholder="Tambahkan catatan hasil pengamatan..."
                                                     className="mt-1 w-full rounded-md border bg-background p-2 text-xs outline-none focus:ring-1 focus:ring-primary"
                                                 />
@@ -798,63 +1017,129 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
 
                                             <Button
                                                 type="submit"
-                                                disabled={approveForm.processing}
-                                                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                                                disabled={
+                                                    approveForm.processing
+                                                }
+                                                className="w-full bg-emerald-600 text-white hover:bg-emerald-700"
                                             >
-                                                <CheckCircle2 className="size-4 mr-1.5" />
-                                                {approveForm.processing ? 'Menyimpan...' : 'Setujui Rekomendasi AI'}
+                                                <CheckCircle2 className="mr-1.5 size-4" />
+                                                {approveForm.processing
+                                                    ? 'Menyimpan...'
+                                                    : 'Setujui Rekomendasi AI'}
                                             </Button>
                                         </form>
                                     )}
 
                                     {/* Form Override */}
                                     {actionTab === 'override' && (
-                                        <form onSubmit={handleOverrideSubmit} className="space-y-3 pt-1">
+                                        <form
+                                            onSubmit={handleOverrideSubmit}
+                                            className="space-y-3 pt-1"
+                                        >
                                             <div>
-                                                <label className="text-xs font-medium">Pilih Tingkat Moral Akhir (Kohlberg):</label>
+                                                <label className="text-xs font-medium">
+                                                    Pilih Tingkat Moral Akhir
+                                                    (Kohlberg):
+                                                </label>
                                                 <select
-                                                    value={overrideForm.data.final_moral_level}
-                                                    onChange={(e) => overrideForm.setData('final_moral_level', e.target.value)}
+                                                    value={
+                                                        overrideForm.data
+                                                            .final_moral_level
+                                                    }
+                                                    onChange={(e) =>
+                                                        overrideForm.setData(
+                                                            'final_moral_level',
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                     className="mt-1 w-full rounded-md border bg-background p-2 text-xs font-medium outline-none focus:ring-1 focus:ring-amber-500"
                                                 >
-                                                    <option value="Tahap 1: Kepatuhan dan Hukuman">Tahap 1: Kepatuhan dan Hukuman</option>
-                                                    <option value="Tahap 2: Individualisme dan Pertukaran">Tahap 2: Individualisme dan Pertukaran</option>
-                                                    <option value="Tahap 3: Orientasi Anak Manis">Tahap 3: Orientasi Anak Manis</option>
-                                                    <option value="Tahap 4: Menjaga Ketertiban Sosial">Tahap 4: Menjaga Ketertiban Sosial</option>
-                                                    <option value="Tahap 5: Kontrak Sosial dan Hak Individu">Tahap 5: Kontrak Sosial dan Hak Individu</option>
-                                                    <option value="Tahap 6: Prinsip Etika Universal">Tahap 6: Prinsip Etika Universal</option>
+                                                    <option value="Tahap 1: Kepatuhan dan Hukuman">
+                                                        Tahap 1: Kepatuhan dan
+                                                        Hukuman
+                                                    </option>
+                                                    <option value="Tahap 2: Individualisme dan Pertukaran">
+                                                        Tahap 2: Individualisme
+                                                        dan Pertukaran
+                                                    </option>
+                                                    <option value="Tahap 3: Orientasi Anak Manis">
+                                                        Tahap 3: Orientasi Anak
+                                                        Manis
+                                                    </option>
+                                                    <option value="Tahap 4: Menjaga Ketertiban Sosial">
+                                                        Tahap 4: Menjaga
+                                                        Ketertiban Sosial
+                                                    </option>
+                                                    <option value="Tahap 5: Kontrak Sosial dan Hak Individu">
+                                                        Tahap 5: Kontrak Sosial
+                                                        dan Hak Individu
+                                                    </option>
+                                                    <option value="Tahap 6: Prinsip Etika Universal">
+                                                        Tahap 6: Prinsip Etika
+                                                        Universal
+                                                    </option>
                                                 </select>
-                                                {overrideForm.errors.final_moral_level && (
+                                                {overrideForm.errors
+                                                    .final_moral_level && (
                                                     <p className="mt-1 text-[11px] text-destructive">
-                                                        {overrideForm.errors.final_moral_level}
+                                                        {
+                                                            overrideForm.errors
+                                                                .final_moral_level
+                                                        }
                                                     </p>
                                                 )}
                                             </div>
 
                                             <div>
                                                 <label className="text-xs font-medium text-amber-700 dark:text-amber-300">
-                                                    Alasan Override (Wajib Diisi): <span className="text-destructive">*</span>
+                                                    Alasan Override (Wajib
+                                                    Diisi):{' '}
+                                                    <span className="text-destructive">
+                                                        *
+                                                    </span>
                                                 </label>
                                                 <textarea
                                                     rows={3}
-                                                    value={overrideForm.data.override_reason}
-                                                    onChange={(e) => overrideForm.setData('override_reason', e.target.value)}
+                                                    value={
+                                                        overrideForm.data
+                                                            .override_reason
+                                                    }
+                                                    onChange={(e) =>
+                                                        overrideForm.setData(
+                                                            'override_reason',
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                     placeholder="Jelaskan alasan Anda mengubah hasil penilaian AI..."
                                                     className="mt-1 w-full rounded-md border border-amber-300 bg-amber-50/50 p-2 text-xs outline-none focus:ring-1 focus:ring-amber-500 dark:border-amber-900 dark:bg-amber-950/20"
                                                 />
-                                                {overrideForm.errors.override_reason && (
+                                                {overrideForm.errors
+                                                    .override_reason && (
                                                     <p className="mt-1 text-[11px] text-destructive">
-                                                        {overrideForm.errors.override_reason}
+                                                        {
+                                                            overrideForm.errors
+                                                                .override_reason
+                                                        }
                                                     </p>
                                                 )}
                                             </div>
 
                                             <div>
-                                                <label className="text-xs font-medium">Catatan Tambahan (Opsional):</label>
+                                                <label className="text-xs font-medium">
+                                                    Catatan Tambahan (Opsional):
+                                                </label>
                                                 <textarea
                                                     rows={2}
-                                                    value={overrideForm.data.teacher_note}
-                                                    onChange={(e) => overrideForm.setData('teacher_note', e.target.value)}
+                                                    value={
+                                                        overrideForm.data
+                                                            .teacher_note
+                                                    }
+                                                    onChange={(e) =>
+                                                        overrideForm.setData(
+                                                            'teacher_note',
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                     placeholder="Tambahkan catatan pendampingan..."
                                                     className="mt-1 w-full rounded-md border bg-background p-2 text-xs outline-none focus:ring-1 focus:ring-amber-500"
                                                 />
@@ -862,41 +1147,71 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
 
                                             <Button
                                                 type="submit"
-                                                disabled={overrideForm.processing}
-                                                className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+                                                disabled={
+                                                    overrideForm.processing
+                                                }
+                                                className="w-full bg-amber-600 text-white hover:bg-amber-700"
                                             >
-                                                <ShieldAlert className="size-4 mr-1.5" />
-                                                {overrideForm.processing ? 'Menyimpan...' : 'Simpan Override Penilaian'}
+                                                <ShieldAlert className="mr-1.5 size-4" />
+                                                {overrideForm.processing
+                                                    ? 'Menyimpan...'
+                                                    : 'Simpan Override Penilaian'}
                                             </Button>
                                         </form>
                                     )}
                                 </div>
 
                                 {/* Audit Perubahan */}
-                                {review.audit_trail && review.audit_trail.length > 0 && (
-                                    <div className="rounded-md border p-4 space-y-3">
-                                        <div className="flex items-center gap-2 text-sm font-medium">
-                                            <Clock className="size-4 text-muted-foreground" />
-                                            Audit Perubahan & Riwayat Pemrosesan
-                                        </div>
+                                {review.audit_trail &&
+                                    review.audit_trail.length > 0 && (
+                                        <div className="space-y-3 rounded-md border p-4">
+                                            <div className="flex items-center gap-2 text-sm font-medium">
+                                                <Clock className="size-4 text-muted-foreground" />
+                                                Audit Perubahan & Riwayat
+                                                Pemrosesan
+                                            </div>
 
-                                        <div className="relative mt-2 space-y-3 before:absolute before:inset-0 before:left-2 before:w-0.5 before:bg-border">
-                                            {review.audit_trail.map((item, idx) => (
-                                                <div key={idx} className="relative flex gap-3 pl-6">
-                                                    <div className="absolute top-1 left-0.5 h-3.5 w-3.5 rounded-full border-2 border-background bg-primary" />
-                                                    <div className="flex flex-col text-xs">
-                                                        <div className="flex flex-wrap items-center gap-1.5">
-                                                            <span className="font-bold text-foreground">{item.event}</span>
-                                                            <Badge variant="outline" className="text-[10px] px-1 py-0">{item.actor}</Badge>
-                                                            <span className="text-[10px] text-muted-foreground">{item.timestamp}</span>
+                                            <div className="relative mt-2 space-y-3 before:absolute before:inset-0 before:left-2 before:w-0.5 before:bg-border">
+                                                {review.audit_trail.map(
+                                                    (item, idx) => (
+                                                        <div
+                                                            key={idx}
+                                                            className="relative flex gap-3 pl-6"
+                                                        >
+                                                            <div className="absolute top-1 left-0.5 h-3.5 w-3.5 rounded-full border-2 border-background bg-primary" />
+                                                            <div className="flex flex-col text-xs">
+                                                                <div className="flex flex-wrap items-center gap-1.5">
+                                                                    <span className="font-bold text-foreground">
+                                                                        {
+                                                                            item.event
+                                                                        }
+                                                                    </span>
+                                                                    <Badge
+                                                                        variant="outline"
+                                                                        className="px-1 py-0 text-[10px]"
+                                                                    >
+                                                                        {
+                                                                            item.actor
+                                                                        }
+                                                                    </Badge>
+                                                                    <span className="text-[10px] text-muted-foreground">
+                                                                        {
+                                                                            item.timestamp
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                                <p className="mt-0.5 text-muted-foreground">
+                                                                    {
+                                                                        item.description
+                                                                    }
+                                                                </p>
+                                                            </div>
                                                         </div>
-                                                        <p className="mt-0.5 text-muted-foreground">{item.description}</p>
-                                                    </div>
-                                                </div>
-                                            ))}
+                                                    ),
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
                             </div>
                         </CardContent>
                     </Card>

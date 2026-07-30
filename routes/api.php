@@ -47,6 +47,7 @@ Route::prefix('v1')->middleware('web')->group(function () {
             Route::put('reviews/{answer}/transcript', [ReviewController::class, 'updateTranscript'])->name('api.teacher.reviews.transcript.update');
             Route::post('reviews/{answer}/approve', [ReviewController::class, 'approve'])->name('api.teacher.reviews.approve');
             Route::post('reviews/{answer}/override', [ReviewController::class, 'override'])->name('api.teacher.reviews.override');
+            Route::post('reviews/{answer}/retry-transcription', [ReviewController::class, 'retryTranscription'])->name('api.teacher.reviews.retry-transcription');
         });
     });
 });

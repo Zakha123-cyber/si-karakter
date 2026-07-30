@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Teacher;
 
+use App\Enums\TranscriptionStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Teacher\Reviews\ApproveValidationRequest;
 use App\Http\Requests\Teacher\Reviews\OverrideValidationRequest;
 use App\Http\Requests\Teacher\Reviews\UpdateTranscriptRequest;
 use App\Http\Resources\Teacher\ReviewDetailResource;
 use App\Http\Resources\Teacher\ReviewQueueResource;
+use App\Jobs\TranscribeAnswerJob;
 use App\Models\AiAssessment;
 use App\Models\AnswerAudioFile;
 use App\Models\Group;
@@ -18,6 +20,7 @@ use App\Models\TestAnswer;
 use App\Models\TestAttempt;
 use App\Models\TestPackage;
 use App\Models\Transcription;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -282,5 +285,57 @@ class ReviewController extends Controller
         );
 
         return back()->with('success', 'Penilaian berhasil dioverride dengan catatan perbaikan.');
+    }
+
+    public function retryTranscription(Request $request, TestAnswer $answer): RedirectResponse|JsonResponse
+    {
+        $user = $request->user();
+        $isInertiaRequest = $request->headers->has('X-Inertia');
+
+        if ($user->role->value !== 'teacher') {
+            if (! $isInertiaRequest) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only teachers can retry transcription',
+                ], 403);
+            }
+
+            abort(403, 'Only teachers can retry transcription.');
+        }
+
+        /** @var AnswerAudioFile|null $audioFile */
+        $audioFile = $answer->audioFiles()->first();
+        if (! $audioFile) {
+            if (! $isInertiaRequest) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No audio file found for this answer',
+                ], 422);
+            }
+
+            return back()->with('error', 'Tidak ada file audio untuk jawaban ini.');
+        }
+
+        Transcription::query()->updateOrCreate(
+            ['test_answer_id' => $answer->id],
+            [
+                'provider' => config('speech.provider'),
+                'model' => config('speech.groq.model'),
+                'status' => TranscriptionStatus::Pending->value,
+                'error_message' => null,
+                'processed_at' => null,
+            ],
+        );
+
+        TranscribeAnswerJob::dispatch($audioFile->id);
+
+        if (! $isInertiaRequest) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Transcription job has been queued for retry',
+            ]);
+        }
+
+        return back()->with('success', 'Job transkripsi ulang berhasil diantrekan.');
     }
 }

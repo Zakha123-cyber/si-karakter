@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Teacher;
 
+use App\Enums\TranscriptionStatus;
 use App\Http\Controllers\Api\V1\Concerns\RespondsWithApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Teacher\Reviews\ApproveValidationRequest;
@@ -9,6 +10,7 @@ use App\Http\Requests\Teacher\Reviews\OverrideValidationRequest;
 use App\Http\Requests\Teacher\Reviews\UpdateTranscriptRequest;
 use App\Http\Resources\Teacher\ReviewDetailResource;
 use App\Http\Resources\Teacher\ReviewQueueResource;
+use App\Jobs\TranscribeAnswerJob;
 use App\Models\AiAssessment;
 use App\Models\AnswerAudioFile;
 use App\Models\MoralCaseOption;
@@ -192,6 +194,36 @@ class ReviewController extends Controller
             'transcription' => $transcription->refresh(),
             'final_transcript' => $editedText,
         ]);
+    }
+
+    public function retryTranscription(Request $request, TestAnswer $answer): JsonResponse
+    {
+        $user = $request->user();
+
+        if ($user->role->value !== 'teacher') {
+            return $this->error('Only teachers can retry transcription', 403);
+        }
+
+        /** @var AnswerAudioFile|null $audioFile */
+        $audioFile = $answer->audioFiles()->first();
+        if (! $audioFile) {
+            return $this->error('No audio file found for this answer', 422);
+        }
+
+        Transcription::query()->updateOrCreate(
+            ['test_answer_id' => $answer->id],
+            [
+                'provider' => config('speech.provider'),
+                'model' => config('speech.groq.model'),
+                'status' => TranscriptionStatus::Pending->value,
+                'error_message' => null,
+                'processed_at' => null,
+            ],
+        );
+
+        TranscribeAnswerJob::dispatch($audioFile->id);
+
+        return $this->success('Transcription job has been queued for retry');
     }
 
     public function approve(ApproveValidationRequest $request, TestAnswer $answer): JsonResponse

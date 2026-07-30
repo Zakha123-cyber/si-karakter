@@ -32,6 +32,11 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->app->singleton(
+            \Laravel\Fortify\Contracts\LogoutResponse::class,
+            \App\Http\Responses\LogoutResponse::class,
+        );
+
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();

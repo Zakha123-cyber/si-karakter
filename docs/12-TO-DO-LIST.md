@@ -168,8 +168,8 @@ Status:
 - [x] Service perhitungan tes.
 - [x] Service perhitungan observasi.
 - [x] Service skor gabungan.
-- [ ] Manual adjustment.
-- [ ] Wajib alasan adjustment.
+- [x] Manual adjustment.
+- [x] Wajib alasan adjustment.
 - [ ] Snapshot per periode.
 - [ ] Unit test perhitungan.
 

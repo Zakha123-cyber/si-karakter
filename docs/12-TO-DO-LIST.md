@@ -167,7 +167,7 @@ Status:
 - [x] CRUD konfigurasi bobot (kewenangan Ustadz, lihat D-018).
 - [x] Service perhitungan tes.
 - [x] Service perhitungan observasi.
-- [ ] Service skor gabungan.
+- [x] Service skor gabungan.
 - [ ] Manual adjustment.
 - [ ] Wajib alasan adjustment.
 - [ ] Snapshot per periode.

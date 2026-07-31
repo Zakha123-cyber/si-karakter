@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\ScoringConfiguration;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateScoringConfigurationRequest extends FormRequest
 {

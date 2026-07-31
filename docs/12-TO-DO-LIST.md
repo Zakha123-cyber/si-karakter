@@ -166,7 +166,7 @@ Status:
 - [x] Default weight 60/40.
 - [x] CRUD konfigurasi bobot (kewenangan Ustadz, lihat D-018).
 - [x] Service perhitungan tes.
-- [ ] Service perhitungan observasi.
+- [x] Service perhitungan observasi.
 - [ ] Service skor gabungan.
 - [ ] Manual adjustment.
 - [ ] Wajib alasan adjustment.

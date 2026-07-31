@@ -9,6 +9,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /** @mixin ScoringConfiguration */
 class ScoringConfigurationResource extends JsonResource
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         return [
@@ -17,7 +20,7 @@ class ScoringConfigurationResource extends JsonResource
             'test_weight' => $this->test_weight,
             'observation_weight' => $this->observation_weight,
             'is_active' => $this->is_active,
-            'effective_from' => $this->effective_from?->toDateString(),
+            'effective_from' => $this->effective_from->toDateString(),
             'effective_until' => $this->effective_until?->toDateString(),
             'created_by' => $this->created_by,
             'creator' => $this->whenLoaded('creator', fn () => [

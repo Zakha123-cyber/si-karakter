@@ -165,7 +165,7 @@ Status:
 - [x] Migration score snapshots.
 - [x] Default weight 60/40.
 - [x] CRUD konfigurasi bobot (kewenangan Ustadz, lihat D-018).
-- [ ] Service perhitungan tes.
+- [x] Service perhitungan tes.
 - [ ] Service perhitungan observasi.
 - [ ] Service skor gabungan.
 - [ ] Manual adjustment.

@@ -170,8 +170,8 @@ Status:
 - [x] Service skor gabungan.
 - [x] Manual adjustment.
 - [x] Wajib alasan adjustment.
-- [ ] Snapshot per periode.
-- [ ] Unit test perhitungan.
+- [x] Snapshot per periode.
+- [x] Unit test perhitungan.
 
 ## Phase 11 — Early Warning
 

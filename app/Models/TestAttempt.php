@@ -23,6 +23,9 @@ class TestAttempt extends Model
         return $this->belongsTo(Student::class);
     }
 
+    /**
+     * @return HasMany<TestAnswer, $this>
+     */
     public function answers(): HasMany
     {
         return $this->hasMany(TestAnswer::class);

@@ -163,15 +163,15 @@ Status:
 
 - [x] Migration scoring configurations.
 - [x] Migration score snapshots.
-- [ ] Default weight 60/40.
-- [ ] CRUD konfigurasi bobot (kewenangan Ustadz, lihat D-018).
-- [ ] Service perhitungan tes.
-- [ ] Service perhitungan observasi.
-- [ ] Service skor gabungan.
-- [ ] Manual adjustment.
-- [ ] Wajib alasan adjustment.
-- [ ] Snapshot per periode.
-- [ ] Unit test perhitungan.
+- [x] Default weight 60/40.
+- [x] CRUD konfigurasi bobot (kewenangan Ustadz, lihat D-018).
+- [x] Service perhitungan tes.
+- [x] Service perhitungan observasi.
+- [x] Service skor gabungan.
+- [x] Manual adjustment.
+- [x] Wajib alasan adjustment.
+- [x] Snapshot per periode.
+- [x] Unit test perhitungan.
 
 ## Phase 11 — Early Warning
 

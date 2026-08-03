@@ -53,6 +53,14 @@ class Student extends Model
     }
 
     /**
+     * @return HasMany<ObservationEntry, $this>
+     */
+    public function observationEntries(): HasMany
+    {
+        return $this->hasMany(ObservationEntry::class);
+    }
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array

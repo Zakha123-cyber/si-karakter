@@ -247,12 +247,6 @@ parameters:
 			path: app/Models/ObservationEntry.php
 
 		-
-			message: '#^Method App\\Models\\ObservationEntry\:\:items\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/ObservationEntry.php
-
-		-
 			message: '#^Method App\\Models\\ObservationEntry\:\:student\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
 			identifier: missingType.generics
 			count: 1
@@ -263,12 +257,6 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: app/Models/ObservationEntry.php
-
-		-
-			message: '#^Method App\\Models\\ObservationItem\:\:characterIndicator\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/ObservationItem.php
 
 		-
 			message: '#^Method App\\Models\\ObservationItem\:\:observationEntry\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
@@ -415,12 +403,6 @@ parameters:
 			path: app/Models/TestAnswer.php
 
 		-
-			message: '#^Method App\\Models\\TestAnswer\:\:teacherValidations\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/TestAnswer.php
-
-		-
 			message: '#^Method App\\Models\\TestAnswer\:\:testAttempt\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
 			identifier: missingType.generics
 			count: 1
@@ -434,12 +416,6 @@ parameters:
 
 		-
 			message: '#^Class App\\Models\\TestAttempt uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/TestAttempt.php
-
-		-
-			message: '#^Method App\\Models\\TestAttempt\:\:answers\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
 			identifier: missingType.generics
 			count: 1
 			path: app/Models/TestAttempt.php

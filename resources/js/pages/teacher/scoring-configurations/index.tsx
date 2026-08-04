@@ -1,8 +1,8 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { Pencil, Plus, Scale, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import type { FormEvent } from 'react';
 import { toast } from 'sonner';
+import type { FormEvent } from 'react';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

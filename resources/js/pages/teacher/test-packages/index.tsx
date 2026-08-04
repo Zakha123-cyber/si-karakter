@@ -6,6 +6,7 @@ import {
     ChevronRight,
     ClipboardList,
     FileStack,
+    Filter,
     Pencil,
     Plus,
     Search,
@@ -17,7 +18,6 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import type { FormEvent, ReactNode } from 'react';
 import InputError from '@/components/input-error';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -344,32 +344,43 @@ export default function TeacherTestPackagesIndex({
             <Head title="Paket Tes" />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4">
-                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                    <div className="flex flex-col gap-2">
-                        <div className="flex flex-wrap items-center gap-3">
-                            <h1 className="text-2xl font-semibold tracking-normal">
+                {/* Hero Gradient Banner */}
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 p-6 text-white shadow-xl md:rounded-[28px] md:p-8">
+                    <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                        <div className="max-w-2xl">
+                            <span className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-medium backdrop-blur-md">
+                                Phase 4 — Teacher Test Packages
+                            </span>
+                            <h1 className="mt-3 text-2xl font-bold tracking-tight md:text-3xl">
                                 Paket Tes
                             </h1>
-                            <Badge variant="secondary">Phase 4</Badge>
+                            <p className="mt-2 text-sm text-emerald-100 md:text-base">
+                                Kelola paket dilema moral, periode aktif, target
+                                kelompok, dan daftar kasus yang akan dikerjakan
+                                santri.
+                            </p>
                         </div>
-                        <p className="max-w-3xl text-sm text-muted-foreground">
-                            Kelola paket dilema moral, periode aktif, target
-                            kelompok, dan daftar kasus yang akan dikerjakan
-                            santri.
-                        </p>
-                    </div>
 
-                    <Button type="button" onClick={openCreate}>
-                        <Plus className="size-4" />
-                        Tambah Paket
-                    </Button>
+                        <Button
+                            type="button"
+                            onClick={openCreate}
+                            className="inline-flex shrink-0 self-start items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-emerald-800 shadow-md transition-all hover:bg-emerald-50 hover:shadow-lg md:self-center"
+                        >
+                            <Plus className="size-4" />
+                            Tambah Paket
+                        </Button>
+                    </div>
+                    {/* Decorative Background Glows */}
+                    <div className="pointer-events-none absolute -right-10 -top-10 size-60 rounded-full bg-white/10 blur-2xl" />
+                    <div className="pointer-events-none absolute -bottom-10 right-20 size-40 rounded-full bg-teal-500/20 blur-xl" />
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-3">
                     <SummaryCard
                         icon={<FileStack className="size-5" />}
                         label="Total Paket"
                         value={packages.total}
+                        color="emerald"
                     />
                     <SummaryCard
                         icon={<Send className="size-5" />}
@@ -380,6 +391,7 @@ export default function TeacherTestPackagesIndex({
                                     testPackage.status === 'published',
                             ).length
                         }
+                        color="blue"
                     />
                     <SummaryCard
                         icon={<Archive className="size-5" />}
@@ -390,36 +402,46 @@ export default function TeacherTestPackagesIndex({
                                     testPackage.status === 'closed',
                             ).length
                         }
+                        color="amber"
                     />
                 </div>
 
-                <Card className="rounded-lg">
-                    <CardHeader>
-                        <div className="flex items-center gap-2">
-                            <Search className="size-5 text-muted-foreground" />
-                            <CardTitle className="text-base">
-                                Daftar Paket
-                            </CardTitle>
+                <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <CardHeader className="border-b border-slate-100 px-6 py-5 dark:border-slate-800">
+                        <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400">
+                                    <Search className="size-4" />
+                                </div>
+                                <div>
+                                    <CardTitle className="text-lg font-bold text-slate-800 dark:text-white">
+                                        Daftar Paket
+                                    </CardTitle>
+                                    <CardDescription className="text-xs text-slate-500">
+                                        Menampilkan {packages.from ?? 0}-{packages.to ?? 0} dari {packages.total} paket tes
+                                    </CardDescription>
+                                </div>
+                            </div>
                         </div>
-                        <CardDescription>
-                            {packages.from ?? 0}-{packages.to ?? 0} dari{' '}
-                            {packages.total} paket tes
-                        </CardDescription>
                     </CardHeader>
-                    <CardContent className="grid gap-4">
+                    <CardContent className="grid gap-6 p-6">
                         <form
                             onSubmit={submitFilters}
-                            className="grid gap-3 md:grid-cols-[minmax(0,1fr)_180px_auto]"
+                            className="grid gap-3 md:grid-cols-[minmax(0,1fr)_200px_auto]"
                         >
-                            <Input
-                                value={search}
-                                onChange={(event) =>
-                                    setSearch(event.target.value)
-                                }
-                                placeholder="Cari judul atau deskripsi"
-                            />
+                            <div className="relative">
+                                <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+                                <Input
+                                    value={search}
+                                    onChange={(event) =>
+                                        setSearch(event.target.value)
+                                    }
+                                    placeholder="Cari judul atau deskripsi paket..."
+                                    className="h-10 rounded-xl border-slate-200 bg-slate-50 pl-10 pr-4 text-sm transition-all focus:border-emerald-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                                />
+                            </div>
                             <select
-                                className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                className="h-10 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-sm text-slate-700 transition-all focus:border-emerald-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                                 value={status}
                                 onChange={(event) =>
                                     setStatus(event.target.value)
@@ -432,28 +454,32 @@ export default function TeacherTestPackagesIndex({
                                     </option>
                                 ))}
                             </select>
-                            <Button type="submit" variant="outline">
+                            <Button
+                                type="submit"
+                                className="h-10 rounded-xl bg-slate-800 px-5 text-sm font-medium text-white shadow-sm hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600"
+                            >
+                                <Filter className="mr-2 size-4" />
                                 Filter
                             </Button>
                         </form>
 
-                        <div className="overflow-x-auto rounded-md border">
+                        <div className="overflow-x-auto rounded-xl border border-slate-100 dark:border-slate-800">
                             <table className="w-full min-w-[920px] text-sm">
-                                <thead className="bg-muted/50 text-left">
+                                <thead className="border-b border-slate-100 bg-slate-50/80 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-400">
                                     <tr>
-                                        <th className="px-4 py-3 font-medium">
+                                        <th className="px-6 py-4">
                                             Paket
                                         </th>
-                                        <th className="px-4 py-3 font-medium">
+                                        <th className="px-6 py-4">
                                             Periode
                                         </th>
-                                        <th className="px-4 py-3 font-medium">
+                                        <th className="px-6 py-4">
                                             Isi
                                         </th>
-                                        <th className="px-4 py-3 font-medium">
+                                        <th className="px-6 py-4">
                                             Status
                                         </th>
-                                        <th className="px-4 py-3 text-right font-medium">
+                                        <th className="px-6 py-4 text-right">
                                             Action
                                         </th>
                                     </tr>
@@ -462,70 +488,61 @@ export default function TeacherTestPackagesIndex({
                                     {packages.data.map((testPackage) => (
                                         <tr
                                             key={testPackage.id}
-                                            className="border-t"
+                                            className="border-t border-slate-100 transition-colors hover:bg-emerald-50/30 dark:border-slate-800/60 dark:hover:bg-slate-800/40"
                                         >
-                                            <td className="px-4 py-3">
-                                                <div className="font-medium">
+                                            <td className="px-6 py-4">
+                                                <div className="font-semibold text-slate-800 transition-colors hover:text-emerald-600 dark:text-white">
                                                     {testPackage.title}
                                                 </div>
-                                                <div className="text-muted-foreground">
+                                                <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                                                     {testPackage.description ||
                                                         testPackage.slug}
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3 text-muted-foreground">
+                                            <td className="px-6 py-4 text-xs text-slate-600 dark:text-slate-300">
                                                 <div>
-                                                    Mulai:{' '}
+                                                    <span className="font-medium text-slate-400">Mulai:</span>{' '}
                                                     {formatDateTime(
                                                         testPackage.start_at,
                                                     )}
                                                 </div>
-                                                <div>
-                                                    Selesai:{' '}
+                                                <div className="mt-0.5">
+                                                    <span className="font-medium text-slate-400">Selesai:</span>{' '}
                                                     {formatDateTime(
                                                         testPackage.end_at,
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex flex-wrap gap-2">
-                                                    <Badge variant="outline">
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700 dark:border-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-300">
                                                         {
                                                             testPackage.groups_count
                                                         }{' '}
                                                         kelompok
-                                                    </Badge>
-                                                    <Badge variant="outline">
+                                                    </span>
+                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-700 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
                                                         {
                                                             testPackage.cases_count
                                                         }{' '}
                                                         kasus
-                                                    </Badge>
-                                                    <Badge variant="outline">
+                                                    </span>
+                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700 dark:border-purple-800 dark:bg-purple-950/40 dark:text-purple-300">
                                                         {
                                                             testPackage.attempt_limit
                                                         }{' '}
                                                         percobaan
-                                                    </Badge>
+                                                    </span>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3">
-                                                <Badge
-                                                    variant={statusVariant(
-                                                        testPackage.status,
-                                                    )}
-                                                >
-                                                    {statusLabel(
-                                                        testPackage.status,
-                                                    )}
-                                                </Badge>
+                                            <td className="px-6 py-4">
+                                                {renderStatusBadge(testPackage.status)}
                                             </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex flex-wrap justify-end gap-2">
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-wrap justify-end gap-1.5">
                                                     <Button
                                                         type="button"
                                                         size="sm"
-                                                        variant="outline"
                                                         onClick={() =>
                                                             openEdit(
                                                                 testPackage,
@@ -535,14 +552,14 @@ export default function TeacherTestPackagesIndex({
                                                             testPackage.status ===
                                                             'closed'
                                                         }
+                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
                                                     >
-                                                        <Pencil className="size-4" />
+                                                        <Pencil className="size-3.5" />
                                                         Edit
                                                     </Button>
                                                     <Button
                                                         type="button"
                                                         size="sm"
-                                                        variant="outline"
                                                         onClick={() =>
                                                             openGroups(
                                                                 testPackage,
@@ -552,14 +569,14 @@ export default function TeacherTestPackagesIndex({
                                                             testPackage.status ===
                                                             'closed'
                                                         }
+                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
                                                     >
-                                                        <Users className="size-4" />
+                                                        <Users className="size-3.5" />
                                                         Kelompok
                                                     </Button>
                                                     <Button
                                                         type="button"
                                                         size="sm"
-                                                        variant="outline"
                                                         onClick={() =>
                                                             openCases(
                                                                 testPackage,
@@ -569,8 +586,9 @@ export default function TeacherTestPackagesIndex({
                                                             testPackage.status ===
                                                             'closed'
                                                         }
+                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-teal-200 hover:bg-teal-50 hover:text-teal-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
                                                     >
-                                                        <Boxes className="size-4" />
+                                                        <Boxes className="size-3.5" />
                                                         Kasus
                                                     </Button>
                                                     {testPackage.status ===
@@ -578,21 +596,20 @@ export default function TeacherTestPackagesIndex({
                                                         <Button
                                                             type="button"
                                                             size="sm"
-                                                            variant="outline"
                                                             onClick={() =>
                                                                 closePackage(
                                                                     testPackage,
                                                                 )
                                                             }
+                                                            className="h-8 rounded-lg bg-amber-600 px-2.5 text-xs font-medium text-white shadow-2xs transition-all hover:bg-amber-700"
                                                         >
-                                                            <Archive className="size-4" />
+                                                            <Archive className="size-3.5" />
                                                             Close
                                                         </Button>
                                                     ) : (
                                                         <Button
                                                             type="button"
                                                             size="sm"
-                                                            variant="outline"
                                                             onClick={() =>
                                                                 publishPackage(
                                                                     testPackage,
@@ -602,15 +619,15 @@ export default function TeacherTestPackagesIndex({
                                                                 testPackage.status ===
                                                                 'closed'
                                                             }
+                                                            className="h-8 rounded-lg bg-emerald-600 px-2.5 text-xs font-medium text-white shadow-2xs transition-all hover:bg-emerald-700"
                                                         >
-                                                            <Send className="size-4" />
+                                                            <Send className="size-3.5" />
                                                             Publish
                                                         </Button>
                                                     )}
                                                     <Button
                                                         type="button"
                                                         size="sm"
-                                                        variant="outline"
                                                         onClick={() =>
                                                             deletePackage(
                                                                 testPackage,
@@ -620,8 +637,9 @@ export default function TeacherTestPackagesIndex({
                                                             testPackage.status !==
                                                             'draft'
                                                         }
+                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-rose-600 shadow-2xs transition-all hover:border-rose-200 hover:bg-rose-50 dark:border-slate-700 dark:bg-slate-800"
                                                     >
-                                                        <Trash2 className="size-4" />
+                                                        <Trash2 className="size-3.5" />
                                                         Hapus
                                                     </Button>
                                                 </div>
@@ -633,32 +651,39 @@ export default function TeacherTestPackagesIndex({
                         </div>
 
                         {packages.data.length === 0 && (
-                            <div className="rounded-md border border-dashed p-8 text-center text-sm text-muted-foreground">
+                            <div className="rounded-xl border border-dashed border-slate-200 p-12 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
                                 Belum ada paket tes untuk filter ini.
                             </div>
                         )}
 
-                        <div className="flex flex-wrap gap-2">
-                            {packages.links.map((link) => (
-                                <Button
-                                    key={`${link.label}-${link.url}`}
-                                    type="button"
-                                    size="sm"
-                                    variant={
-                                        link.active ? 'default' : 'outline'
-                                    }
-                                    disabled={!link.url}
-                                    onClick={() => {
-                                        if (link.url) {
-                                            router.visit(link.url, {
-                                                preserveScroll: true,
-                                            });
+                        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-4 dark:border-slate-800">
+                            <div className="text-xs text-slate-500">
+                                Total {packages.total} paket tes
+                            </div>
+                            <div className="flex flex-wrap gap-1.5">
+                                {packages.links.map((link) => (
+                                    <Button
+                                        key={`${link.label}-${link.url}`}
+                                        type="button"
+                                        size="sm"
+                                        disabled={!link.url}
+                                        onClick={() => {
+                                            if (link.url) {
+                                                router.visit(link.url, {
+                                                    preserveScroll: true,
+                                                });
+                                            }
+                                        }}
+                                        className={
+                                            link.active
+                                                ? 'h-8 rounded-lg bg-emerald-600 px-3 text-xs font-semibold text-white shadow-xs hover:bg-emerald-700'
+                                                : 'h-8 rounded-lg border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
                                         }
-                                    }}
-                                >
-                                    <PaginationLabel label={link.label} />
-                                </Button>
-                            ))}
+                                    >
+                                        <PaginationLabel label={link.label} />
+                                    </Button>
+                                ))}
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
@@ -978,20 +1003,37 @@ function SummaryCard({
     icon,
     label,
     value,
+    color = 'emerald',
 }: {
     icon: ReactNode;
     label: string;
     value: number;
+    color?: 'emerald' | 'blue' | 'amber';
 }) {
+    const colorMap = {
+        emerald:
+            'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900',
+        blue:
+            'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900',
+        amber:
+            'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900',
+    };
+
     return (
-        <Card className="rounded-lg">
-            <CardContent className="flex items-center gap-3 p-4">
-                <div className="flex size-10 items-center justify-center rounded-md bg-muted text-muted-foreground">
+        <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+            <CardContent className="flex items-center gap-4 p-5">
+                <div
+                    className={`flex size-12 shrink-0 items-center justify-center rounded-xl border ${colorMap[color]}`}
+                >
                     {icon}
                 </div>
                 <div>
-                    <div className="text-sm text-muted-foreground">{label}</div>
-                    <div className="text-xl font-semibold">{value}</div>
+                    <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-400">
+                        {label}
+                    </div>
+                    <div className="mt-1 text-2xl font-bold text-slate-800 dark:text-white">
+                        {value}
+                    </div>
                 </div>
             </CardContent>
         </Card>
@@ -1006,18 +1048,31 @@ function statusLabel(status: TestPackageStatus) {
     }[status];
 }
 
-function statusVariant(
-    status: TestPackageStatus,
-): 'destructive' | 'secondary' | 'outline' {
-    if (status === 'closed') {
-        return 'destructive';
-    }
-
+function renderStatusBadge(status: TestPackageStatus) {
     if (status === 'published') {
-        return 'secondary';
+        return (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300">
+                <Send className="size-3 text-emerald-600" />
+                Published
+            </span>
+        );
     }
 
-    return 'outline';
+    if (status === 'draft') {
+        return (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-300">
+                <Pencil className="size-3 text-amber-600" />
+                Draft
+            </span>
+        );
+    }
+
+    return (
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+            <Archive className="size-3 text-slate-500" />
+            Closed
+        </span>
+    );
 }
 
 function formatDateTime(value: string | null) {

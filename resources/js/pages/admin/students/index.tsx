@@ -1,8 +1,8 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight, Pencil, Plus, Trash2 } from 'lucide-react';
-import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import type { FormEvent } from 'react';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -151,7 +151,11 @@ export default function AdminStudentsIndex({
 
     const submitEdit = (event: FormEvent) => {
         event.preventDefault();
-        if (!editingStudent) return;
+
+        if (!editingStudent) {
+return;
+}
+
         const toastId = toast.loading('Menyimpan perubahan...');
         editForm.put(`/admin/students/${editingStudent.id}`, {
             preserveScroll: true,
@@ -532,10 +536,11 @@ export default function AdminStudentsIndex({
                                             }
                                             disabled={!link.url}
                                             onClick={() => {
-                                                if (link.url)
-                                                    router.visit(link.url, {
+                                                if (link.url) {
+router.visit(link.url, {
                                                         preserveScroll: true,
                                                     });
+}
                                             }}
                                         >
                                             {link.label ===
@@ -574,7 +579,9 @@ export default function AdminStudentsIndex({
             <Sheet
                 open={editingStudent !== null}
                 onOpenChange={(open) => {
-                    if (!open) cancelEdit();
+                    if (!open) {
+cancelEdit();
+}
                 }}
             >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">

@@ -4,6 +4,7 @@ import {
     ChevronLeft,
     ChevronRight,
     FileAudio,
+    Filter,
     ImageUp,
     ListChecks,
     Pencil,
@@ -421,31 +422,43 @@ export default function TeacherMoralCasesIndex({
             <Head title="Kasus Moral" />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4">
-                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                    <div className="flex flex-col gap-2">
-                        <div className="flex flex-wrap items-center gap-3">
-                            <h1 className="text-2xl font-semibold tracking-normal">
-                                Kasus Moral
+                {/* Hero Gradient Banner */}
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 p-6 text-white shadow-xl md:rounded-[28px] md:p-8">
+                    <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                        <div className="max-w-2xl">
+                            <span className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-medium backdrop-blur-md">
+                                Phase 4 — Moral Dilemma Cases
+                            </span>
+                            <h1 className="mt-3 text-2xl font-bold tracking-tight md:text-3xl">
+                                Kasus Dilema Moral
                             </h1>
-                            <Badge variant="secondary">Ustadz</Badge>
+                            <p className="mt-2 text-sm text-emerald-100 md:text-base">
+                                Kelola cerita dilema moral, pilihan jawaban,
+                                indikator karakter, dan media pendukung untuk
+                                paket tes santri.
+                            </p>
                         </div>
-                        <p className="max-w-3xl text-sm text-muted-foreground">
-                            Kelola cerita dilema, pilihan jawaban, indikator
-                            karakter, dan media pendukung untuk paket tes.
-                        </p>
-                    </div>
 
-                    <Button type="button" onClick={openCreate}>
-                        <Plus className="size-4" />
-                        Tambah Kasus
-                    </Button>
+                        <Button
+                            type="button"
+                            onClick={openCreate}
+                            className="inline-flex shrink-0 self-start items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-emerald-800 shadow-md transition-all hover:bg-emerald-50 hover:shadow-lg md:self-center"
+                        >
+                            <Plus className="size-4" />
+                            Tambah Kasus
+                        </Button>
+                    </div>
+                    {/* Decorative Background Glows */}
+                    <div className="pointer-events-none absolute -right-10 -top-10 size-60 rounded-full bg-white/10 blur-2xl" />
+                    <div className="pointer-events-none absolute -bottom-10 right-20 size-40 rounded-full bg-teal-500/20 blur-xl" />
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-4">
+                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
                     <SummaryCard
                         icon={<BookOpenCheck className="size-5" />}
                         label="Total Kasus"
                         value={moralCases.total}
+                        color="emerald"
                     />
                     <SummaryCard
                         icon={<ToggleLeft className="size-5" />}
@@ -454,6 +467,7 @@ export default function TeacherMoralCasesIndex({
                             moralCases.data.filter((item) => item.is_active)
                                 .length
                         }
+                        color="blue"
                     />
                     <SummaryCard
                         icon={<ListChecks className="size-5" />}
@@ -462,6 +476,7 @@ export default function TeacherMoralCasesIndex({
                             (total, item) => total + item.options_count,
                             0,
                         )}
+                        color="purple"
                     />
                     <SummaryCard
                         icon={<SlidersHorizontal className="size-5" />}
@@ -470,36 +485,46 @@ export default function TeacherMoralCasesIndex({
                             (total, item) => total + item.indicators_count,
                             0,
                         )}
+                        color="amber"
                     />
                 </div>
 
-                <Card className="rounded-lg">
-                    <CardHeader>
-                        <div className="flex items-center gap-2">
-                            <Search className="size-5 text-muted-foreground" />
-                            <CardTitle className="text-base">
-                                Daftar Kasus
-                            </CardTitle>
+                <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <CardHeader className="border-b border-slate-100 px-6 py-5 dark:border-slate-800">
+                        <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400">
+                                    <Search className="size-4" />
+                                </div>
+                                <div>
+                                    <CardTitle className="text-lg font-bold text-slate-800 dark:text-white">
+                                        Daftar Kasus
+                                    </CardTitle>
+                                    <CardDescription className="text-xs text-slate-500">
+                                        Menampilkan {moralCases.from ?? 0}-{moralCases.to ?? 0} dari {moralCases.total} kasus moral
+                                    </CardDescription>
+                                </div>
+                            </div>
                         </div>
-                        <CardDescription>
-                            {moralCases.from ?? 0}-{moralCases.to ?? 0} dari{' '}
-                            {moralCases.total} kasus moral
-                        </CardDescription>
                     </CardHeader>
-                    <CardContent className="grid gap-4">
+                    <CardContent className="grid gap-6 p-6">
                         <form
                             onSubmit={submitFilters}
-                            className="grid gap-3 md:grid-cols-[minmax(0,1fr)_180px_auto]"
+                            className="grid gap-3 md:grid-cols-[minmax(0,1fr)_200px_auto]"
                         >
-                            <Input
-                                value={search}
-                                onChange={(event) =>
-                                    setSearch(event.target.value)
-                                }
-                                placeholder="Cari judul atau cerita"
-                            />
+                            <div className="relative">
+                                <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+                                <Input
+                                    value={search}
+                                    onChange={(event) =>
+                                        setSearch(event.target.value)
+                                    }
+                                    placeholder="Cari judul atau cerita kasus..."
+                                    className="h-10 rounded-xl border-slate-200 bg-slate-50 pl-10 pr-4 text-sm transition-all focus:border-emerald-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                                />
+                            </div>
                             <select
-                                className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                className="h-10 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-sm text-slate-700 transition-all focus:border-emerald-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                                 value={active}
                                 onChange={(event) =>
                                     setActive(event.target.value)
@@ -509,28 +534,32 @@ export default function TeacherMoralCasesIndex({
                                 <option value="1">Aktif</option>
                                 <option value="0">Nonaktif</option>
                             </select>
-                            <Button type="submit" variant="outline">
+                            <Button
+                                type="submit"
+                                className="h-10 rounded-xl bg-slate-800 px-5 text-sm font-medium text-white shadow-sm hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600"
+                            >
+                                <Filter className="mr-2 size-4" />
                                 Filter
                             </Button>
                         </form>
 
-                        <div className="overflow-x-auto rounded-md border">
+                        <div className="overflow-x-auto rounded-xl border border-slate-100 dark:border-slate-800">
                             <table className="w-full min-w-[980px] text-sm">
-                                <thead className="bg-muted/50 text-left">
+                                <thead className="border-b border-slate-100 bg-slate-50/80 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-400">
                                     <tr>
-                                        <th className="px-4 py-3 font-medium">
+                                        <th className="px-6 py-4">
                                             Kasus
                                         </th>
-                                        <th className="px-4 py-3 font-medium">
+                                        <th className="px-6 py-4">
                                             Konten
                                         </th>
-                                        <th className="px-4 py-3 font-medium">
+                                        <th className="px-6 py-4">
                                             Media
                                         </th>
-                                        <th className="px-4 py-3 font-medium">
+                                        <th className="px-6 py-4">
                                             Status
                                         </th>
-                                        <th className="px-4 py-3 text-right font-medium">
+                                        <th className="px-6 py-4 text-right">
                                             Action
                                         </th>
                                     </tr>
@@ -539,38 +568,38 @@ export default function TeacherMoralCasesIndex({
                                     {moralCases.data.map((moralCase) => (
                                         <tr
                                             key={moralCase.id}
-                                            className="border-t"
+                                            className="border-t border-slate-100 transition-colors hover:bg-emerald-50/30 dark:border-slate-800/60 dark:hover:bg-slate-800/40"
                                         >
-                                            <td className="px-4 py-3">
-                                                <div className="font-medium">
+                                            <td className="px-6 py-4">
+                                                <div className="font-semibold text-slate-800 transition-colors hover:text-emerald-600 dark:text-white">
                                                     {moralCase.title}
                                                 </div>
-                                                <div className="line-clamp-2 max-w-xl text-muted-foreground">
+                                                <div className="mt-1 line-clamp-2 max-w-xl text-xs text-slate-500 dark:text-slate-400">
                                                     {moralCase.story}
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex flex-wrap gap-2">
-                                                    <Badge variant="outline">
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700 dark:border-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-300">
                                                         Urutan{' '}
                                                         {moralCase.sort_order}
-                                                    </Badge>
-                                                    <Badge variant="outline">
+                                                    </span>
+                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-700 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
                                                         {
                                                             moralCase.options_count
                                                         }{' '}
                                                         pilihan
-                                                    </Badge>
-                                                    <Badge variant="outline">
+                                                    </span>
+                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700 dark:border-purple-800 dark:bg-purple-950/40 dark:text-purple-300">
                                                         {
                                                             moralCase.indicators_count
                                                         }{' '}
                                                         indikator
-                                                    </Badge>
+                                                    </span>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex flex-wrap gap-2">
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-wrap gap-1.5">
                                                     <MediaBadge
                                                         active={
                                                             moralCase.image_path !==
@@ -587,73 +616,71 @@ export default function TeacherMoralCasesIndex({
                                                     />
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3">
-                                                <Badge
-                                                    variant={
-                                                        moralCase.is_active
-                                                            ? 'secondary'
-                                                            : 'destructive'
-                                                    }
-                                                >
-                                                    {moralCase.is_active
-                                                        ? 'Aktif'
-                                                        : 'Nonaktif'}
-                                                </Badge>
+                                            <td className="px-6 py-4">
+                                                {moralCase.is_active ? (
+                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300">
+                                                        <ToggleLeft className="size-3 text-emerald-600" />
+                                                        Aktif
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                                                        Nonaktif
+                                                    </span>
+                                                )}
                                             </td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex flex-wrap justify-end gap-2">
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-wrap justify-end gap-1.5">
                                                     <Button
                                                         type="button"
                                                         size="sm"
-                                                        variant="outline"
                                                         onClick={() =>
                                                             openEdit(moralCase)
                                                         }
+                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
                                                     >
-                                                        <Pencil className="size-4" />
+                                                        <Pencil className="size-3.5" />
                                                         Edit
                                                     </Button>
                                                     <Button
                                                         type="button"
                                                         size="sm"
-                                                        variant="outline"
                                                         onClick={() =>
                                                             openOptions(
                                                                 moralCase,
                                                             )
                                                         }
+                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-teal-200 hover:bg-teal-50 hover:text-teal-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
                                                     >
-                                                        <ListChecks className="size-4" />
+                                                        <ListChecks className="size-3.5" />
                                                         Pilihan
                                                     </Button>
                                                     <Button
                                                         type="button"
                                                         size="sm"
-                                                        variant="outline"
                                                         onClick={() =>
                                                             openIndicators(
                                                                 moralCase,
                                                             )
                                                         }
+                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-amber-200 hover:bg-amber-50 hover:text-amber-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
                                                     >
-                                                        <SlidersHorizontal className="size-4" />
+                                                        <SlidersHorizontal className="size-3.5" />
                                                         Indikator
                                                     </Button>
                                                     <Button
                                                         type="button"
                                                         size="sm"
-                                                        variant="outline"
                                                         onClick={() =>
                                                             openMedia(moralCase)
                                                         }
+                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
                                                     >
-                                                        <ImageUp className="size-4" />
+                                                        <ImageUp className="size-3.5" />
                                                         Media
                                                     </Button>
                                                     <Button
                                                         type="button"
                                                         size="sm"
-                                                        variant="outline"
                                                         onClick={() =>
                                                             deleteCase(
                                                                 moralCase,
@@ -663,8 +690,9 @@ export default function TeacherMoralCasesIndex({
                                                             moralCase.test_packages_count >
                                                             0
                                                         }
+                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-rose-600 shadow-2xs transition-all hover:border-rose-200 hover:bg-rose-50 dark:border-slate-700 dark:bg-slate-800"
                                                     >
-                                                        <Trash2 className="size-4" />
+                                                        <Trash2 className="size-3.5" />
                                                         Hapus
                                                     </Button>
                                                 </div>
@@ -676,32 +704,39 @@ export default function TeacherMoralCasesIndex({
                         </div>
 
                         {moralCases.data.length === 0 && (
-                            <div className="rounded-md border border-dashed p-8 text-center text-sm text-muted-foreground">
+                            <div className="rounded-xl border border-dashed border-slate-200 p-12 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
                                 Belum ada kasus moral untuk filter ini.
                             </div>
                         )}
 
-                        <div className="flex flex-wrap gap-2">
-                            {moralCases.links.map((link) => (
-                                <Button
-                                    key={`${link.label}-${link.url}`}
-                                    type="button"
-                                    size="sm"
-                                    variant={
-                                        link.active ? 'default' : 'outline'
-                                    }
-                                    disabled={!link.url}
-                                    onClick={() => {
-                                        if (link.url) {
-                                            router.visit(link.url, {
-                                                preserveScroll: true,
-                                            });
+                        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-4 dark:border-slate-800">
+                            <div className="text-xs text-slate-500">
+                                Total {moralCases.total} kasus moral
+                            </div>
+                            <div className="flex flex-wrap gap-1.5">
+                                {moralCases.links.map((link) => (
+                                    <Button
+                                        key={`${link.label}-${link.url}`}
+                                        type="button"
+                                        size="sm"
+                                        disabled={!link.url}
+                                        onClick={() => {
+                                            if (link.url) {
+                                                router.visit(link.url, {
+                                                    preserveScroll: true,
+                                                });
+                                            }
+                                        }}
+                                        className={
+                                            link.active
+                                                ? 'h-8 rounded-lg bg-emerald-600 px-3 text-xs font-semibold text-white shadow-xs hover:bg-emerald-700'
+                                                : 'h-8 rounded-lg border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
                                         }
-                                    }}
-                                >
-                                    <PaginationLabel label={link.label} />
-                                </Button>
-                            ))}
+                                    >
+                                        <PaginationLabel label={link.label} />
+                                    </Button>
+                                ))}
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
@@ -1306,20 +1341,39 @@ function SummaryCard({
     icon,
     label,
     value,
+    color = 'emerald',
 }: {
     icon: ReactNode;
     label: string;
     value: number;
+    color?: 'emerald' | 'blue' | 'purple' | 'amber';
 }) {
+    const colorMap = {
+        emerald:
+            'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900',
+        blue:
+            'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900',
+        purple:
+            'bg-purple-50 text-purple-600 border-purple-100 dark:bg-purple-950/40 dark:text-purple-400 dark:border-purple-900',
+        amber:
+            'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900',
+    };
+
     return (
-        <Card className="rounded-lg">
-            <CardContent className="flex items-center gap-3 p-4">
-                <div className="flex size-10 items-center justify-center rounded-md bg-muted text-muted-foreground">
+        <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+            <CardContent className="flex items-center gap-4 p-5">
+                <div
+                    className={`flex size-12 shrink-0 items-center justify-center rounded-xl border ${colorMap[color]}`}
+                >
                     {icon}
                 </div>
                 <div>
-                    <div className="text-sm text-muted-foreground">{label}</div>
-                    <div className="text-xl font-semibold">{value}</div>
+                    <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-400">
+                        {label}
+                    </div>
+                    <div className="mt-1 text-2xl font-bold text-slate-800 dark:text-white">
+                        {value}
+                    </div>
                 </div>
             </CardContent>
         </Card>
@@ -1327,10 +1381,18 @@ function SummaryCard({
 }
 
 function MediaBadge({ active, label }: { active: boolean; label: string }) {
+    if (active) {
+        return (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
+                {label}: Ada
+            </span>
+        );
+    }
+
     return (
-        <Badge variant={active ? 'secondary' : 'outline'}>
-            {label}: {active ? 'Ada' : 'Kosong'}
-        </Badge>
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+            {label}: Kosong
+        </span>
     );
 }
 

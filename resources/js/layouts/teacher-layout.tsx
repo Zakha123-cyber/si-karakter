@@ -1,24 +1,41 @@
 import { Link, usePage } from '@inertiajs/react';
-import { AudioLines, Menu, X } from 'lucide-react';
+import { ClipboardCheck, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import type { Auth } from '@/types';
 
-type StudentLayoutProps = {
+type TeacherLayoutProps = {
     children?: React.ReactNode;
+    breadcrumbs?: any;
 };
 
-const NAV_ITEMS = [
-    { emoji: '🏠', label: 'Beranda', href: '/student/dashboard' },
-    { emoji: '🎬', label: 'Bioskop Teladan', href: '/student/tests' },
-    { emoji: '🛤', label: 'Pilih Jalanmu', href: '/student/tests' },
-    { emoji: '🛡️', label: 'Simulasi Berani Menolak', href: '/student/tests' },
-    { emoji: '🌳', label: 'Pohon Kebaikan', href: '/student/dashboard' },
-    { emoji: '🏆', label: 'Misi Harian', href: '/student/dashboard' },
-    { emoji: '🎁', label: 'Hadiah', href: '/student/dashboard' },
-    { emoji: '⚙️', label: 'Pengaturan', href: '/student/dashboard' },
+const getNavItems = (role?: string) => [
+    { emoji: '🏠', label: 'Beranda', href: '/dashboard' },
+    { emoji: '📋', label: 'Review Asesmen', href: '/teacher/reviews' },
+    { emoji: '📦', label: 'Paket Tes Moral', href: '/teacher/test-packages' },
+    { emoji: '🧭', label: 'Kasus Dilema', href: '/teacher/moral-cases' },
+    {
+        emoji: '🌱',
+        label: 'Indikator Karakter',
+        href: '/teacher/character-indicators',
+    },
+    {
+        emoji: '⚖️',
+        label: 'Konfigurasi Scoring',
+        href: '/teacher/scoring-configurations',
+    },
+    ...(role === 'admin'
+        ? [
+              {
+                  emoji: '👥',
+                  label: 'Manajemen User',
+                  href: '/admin/users',
+              },
+          ]
+        : []),
+    { emoji: '⚙️', label: 'Pengaturan', href: '/settings/profile' },
 ];
 
-export default function StudentLayout({ children }: StudentLayoutProps) {
+export default function TeacherLayout({ children }: TeacherLayoutProps) {
     const { auth } = usePage<{ auth: Auth }>().props;
     const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -48,7 +65,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
                 <span className="text-lg font-extrabold text-[#0f766e]">
                     TeladanKu
                 </span>
-                <Avatar name={user?.name ?? 'S'} />
+                <Avatar name={user?.name ?? 'U'} />
             </div>
 
             {/* Mobile drawer */}
@@ -77,13 +94,16 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
 }
 
 function SidebarContent() {
-    const { url } = usePage();
+    const { url, props } = usePage<{ auth: Auth }>();
+    const user = props.auth.user;
+    const role = user?.role ?? 'teacher';
+    const navItems = getNavItems(role);
 
     return (
         <>
             {/* Logo */}
             <div className="mb-6 flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-sky-400 text-xl">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-xl text-white shadow-sm">
                     🌱
                 </div>
                 <div>
@@ -91,15 +111,20 @@ function SidebarContent() {
                         TeladanKu
                     </div>
                     <div className="text-[11px] font-medium text-slate-400">
-                        Belajar Baik, Hati Makin Baik
+                        {role === 'admin'
+                            ? 'Portal Admin Sistem'
+                            : 'Portal Pembinaan Akhlak'}
                     </div>
                 </div>
             </div>
 
             {/* Nav */}
             <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
-                {NAV_ITEMS.map((item) => {
-                    const isActive = url === item.href;
+                {navItems.map((item) => {
+                    const isActive =
+                        url === item.href ||
+                        (item.href !== '/dashboard' &&
+                            url.startsWith(item.href));
 
                     return (
                         <Link
@@ -118,32 +143,50 @@ function SidebarContent() {
                         </Link>
                     );
                 })}
+
+                <Link
+                    href="/logout"
+                    method="post"
+                    as="button"
+                    className="mt-2 flex w-full items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-semibold text-rose-500 hover:bg-rose-50 transition-colors"
+                >
+                    <span className="text-lg leading-none">🚪</span>
+                    Keluar
+                </Link>
             </nav>
 
-            {/* Mascot + voice */}
-            <div className="mt-4 rounded-3xl bg-gradient-to-br from-emerald-50 to-sky-50 p-4">
+            {/* Mascot + Assistant Card matching Student Dashboard */}
+            <div className="mt-4 rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 p-4">
                 <div className="mb-2 flex justify-center">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-emerald-300 to-sky-300 text-3xl shadow-inner">
-                        🧕
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-3xl shadow-inner text-white">
+                        👳‍♂️
                     </div>
                 </div>
-                <p className="text-center text-xs font-semibold text-emerald-700">
-                    Aisha siap membantu!
+                <p className="text-center text-xs font-extrabold text-emerald-700">
+                    {role === 'admin' ? 'Admin TeladanKu' : 'Ustadz Pembimbing'}
                 </p>
-                <button className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-white py-2.5 text-xs font-bold text-emerald-600 shadow-sm transition-transform hover:scale-[1.02]">
-                    <AudioLines className="size-4" />
-                    Panduan Suara
-                </button>
+                <p className="mt-0.5 text-center text-[11px] font-medium text-emerald-600">
+                    {role === 'admin'
+                        ? 'Siap mengelola sistem!'
+                        : 'Siap membina santri!'}
+                </p>
+                <Link
+                    href="/teacher/reviews"
+                    className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-white py-2.5 text-xs font-bold text-emerald-600 shadow-sm transition-transform hover:scale-[1.02]"
+                >
+                    <ClipboardCheck className="size-4" />
+                    Antrian Review
+                </Link>
             </div>
         </>
     );
 }
 
 function Avatar({ name }: { name: string }) {
-    const initial = name?.trim().charAt(0)?.toUpperCase() ?? 'S';
+    const initial = name?.trim().charAt(0)?.toUpperCase() ?? 'U';
 
     return (
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-sky-400 text-base font-bold text-white shadow-sm">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-base font-bold text-white shadow-sm">
             {initial}
         </div>
     );

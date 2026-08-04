@@ -438,6 +438,7 @@ function MovieCard({ content }: { content: Content }) {
     const minutes = content.duration_seconds
         ? Math.round(content.duration_seconds / 60)
         : null;
+
     return (
         <div className="group overflow-hidden rounded-[24px] bg-sky-50 transition-transform duration-200 group-hover:-translate-y-1">
             <div className="relative flex h-28 items-center justify-center bg-gradient-to-br from-sky-200 to-sky-300">
@@ -500,6 +501,7 @@ function ScenarioCard({ scenario }: { scenario: Scenario }) {
 
 function TreeIllustration({ progress }: { progress: number }) {
     const leafCount = progress > 80 ? 6 : progress > 50 ? 5 : progress > 25 ? 4 : 3;
+
     return (
         <div className="relative mx-auto mt-6 flex h-32 w-40 items-end justify-center">
             <div className="absolute bottom-0 h-3 w-16 rounded-full bg-emerald-800" />

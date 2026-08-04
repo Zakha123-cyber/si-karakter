@@ -1,8 +1,8 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight, Pencil, Plus, Trash2 } from 'lucide-react';
-import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import type { FormEvent } from 'react';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -119,7 +119,11 @@ export default function AdminAcademicYearsIndex({
 
     const submitEdit = (event: FormEvent) => {
         event.preventDefault();
-        if (!editingYear) return;
+
+        if (!editingYear) {
+return;
+}
+
         const toastId = toast.loading('Menyimpan perubahan...');
         editForm.put(`/admin/academic-years/${editingYear.id}`, {
             preserveScroll: true,
@@ -136,7 +140,10 @@ export default function AdminAcademicYearsIndex({
     };
 
     const activateYear = (year: AcademicYear) => {
-        if (year.is_active) return;
+        if (year.is_active) {
+return;
+}
+
         const toastId = toast.loading('Mengaktifkan tahun ajaran...');
         router.patch(
             `/admin/academic-years/${year.id}/activate`,
@@ -447,10 +454,11 @@ export default function AdminAcademicYearsIndex({
                                             }
                                             disabled={!link.url}
                                             onClick={() => {
-                                                if (link.url)
-                                                    router.visit(link.url, {
+                                                if (link.url) {
+router.visit(link.url, {
                                                         preserveScroll: true,
                                                     });
+}
                                             }}
                                         >
                                             {link.label ===
@@ -489,7 +497,9 @@ export default function AdminAcademicYearsIndex({
             <Sheet
                 open={editingYear !== null}
                 onOpenChange={(open) => {
-                    if (!open) cancelEdit();
+                    if (!open) {
+cancelEdit();
+}
                 }}
             >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">

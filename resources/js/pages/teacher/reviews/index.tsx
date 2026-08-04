@@ -1,5 +1,3 @@
-import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import {
     AudioLines,
@@ -13,17 +11,6 @@ import {
     User,
 } from 'lucide-react';
 import { useState } from 'react';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-    },
-    {
-        title: 'Validasi & Review',
-        href: '/teacher/reviews',
-    },
-];
 
 interface ReviewItem {
     id: number;
@@ -135,6 +122,7 @@ export default function ReviewQueueIndex({
                 </span>
             );
         }
+
         if (validationStatus === 'overridden') {
             return (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-600 dark:text-amber-400">
@@ -143,6 +131,7 @@ export default function ReviewQueueIndex({
                 </span>
             );
         }
+
         return (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400">
                 <Clock className="h-3.5 w-3.5" />
@@ -152,7 +141,7 @@ export default function ReviewQueueIndex({
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <>
             <Head title="Antrean Review Validasi Ustadz" />
 
             <div className="flex flex-col gap-6 p-4 md:p-6">
@@ -352,6 +341,6 @@ export default function ReviewQueueIndex({
                     )}
                 </div>
             </div>
-        </AppLayout>
+        </>
     );
 }

@@ -9,9 +9,9 @@ import {
     Trash2,
     X,
 } from 'lucide-react';
-import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import type { FormEvent } from 'react';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -98,8 +98,14 @@ function StudentCheckboxList({
     const [q, setQ] = useState('');
 
     const filtered = students.filter((s) => {
-        if (showOnlyUnassigned && s.current_group_id) return false;
-        if (!s.user) return false;
+        if (showOnlyUnassigned && s.current_group_id) {
+return false;
+}
+
+        if (!s.user) {
+return false;
+}
+
         return (
             !q ||
             s.user.name.toLowerCase().includes(q.toLowerCase()) ||
@@ -258,7 +264,11 @@ export default function AdminGroupsIndex({
 
     const submitEdit = (event: FormEvent) => {
         event.preventDefault();
-        if (!editingGroup) return;
+
+        if (!editingGroup) {
+return;
+}
+
         const toastId = toast.loading('Menyimpan perubahan...');
         editForm.put(`/admin/groups/${editingGroup.id}`, {
             preserveScroll: true,
@@ -315,7 +325,11 @@ export default function AdminGroupsIndex({
 
     const submitAssign = (event: FormEvent) => {
         event.preventDefault();
-        if (!assignGroup) return;
+
+        if (!assignGroup) {
+return;
+}
+
         const toastId = toast.loading('Menyimpan...');
         assignForm.post(`/admin/groups/${assignGroup.id}/students`, {
             preserveScroll: true,
@@ -639,10 +653,11 @@ export default function AdminGroupsIndex({
                                             }
                                             disabled={!link.url}
                                             onClick={() => {
-                                                if (link.url)
-                                                    router.visit(link.url, {
+                                                if (link.url) {
+router.visit(link.url, {
                                                         preserveScroll: true,
                                                     });
+}
                                             }}
                                         >
                                             {link.label ===
@@ -681,7 +696,9 @@ export default function AdminGroupsIndex({
             <Sheet
                 open={viewGroup !== null}
                 onOpenChange={(open) => {
-                    if (!open) cancelView();
+                    if (!open) {
+cancelView();
+}
                 }}
             >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
@@ -742,7 +759,9 @@ export default function AdminGroupsIndex({
             <Sheet
                 open={editingGroup !== null}
                 onOpenChange={(open) => {
-                    if (!open) cancelEdit();
+                    if (!open) {
+cancelEdit();
+}
                 }}
             >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
@@ -862,7 +881,9 @@ export default function AdminGroupsIndex({
             <Sheet
                 open={assignGroup !== null}
                 onOpenChange={(open) => {
-                    if (!open) cancelAssign();
+                    if (!open) {
+cancelAssign();
+}
                 }}
             >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">

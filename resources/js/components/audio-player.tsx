@@ -31,7 +31,10 @@ export function AudioPlayer({
 
     useEffect(() => {
         const audio = audioRef.current;
-        if (!audio) return;
+
+        if (!audio) {
+return;
+}
 
         const updateTime = () => setCurrentTime(audio.currentTime);
         const updateDuration = () =>
@@ -51,7 +54,10 @@ export function AudioPlayer({
 
     const togglePlay = () => {
         const audio = audioRef.current;
-        if (!audio) return;
+
+        if (!audio) {
+return;
+}
 
         if (isPlaying) {
             audio.pause();
@@ -68,7 +74,10 @@ export function AudioPlayer({
 
     const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
         const audio = audioRef.current;
-        if (!audio) return;
+
+        if (!audio) {
+return;
+}
 
         const newTime = parseFloat(e.target.value);
         audio.currentTime = newTime;
@@ -77,7 +86,10 @@ export function AudioPlayer({
 
     const handleSpeedChange = (rate: number) => {
         const audio = audioRef.current;
-        if (!audio) return;
+
+        if (!audio) {
+return;
+}
 
         audio.playbackRate = rate;
         setPlaybackRate(rate);
@@ -85,7 +97,10 @@ export function AudioPlayer({
 
     const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const audio = audioRef.current;
-        if (!audio) return;
+
+        if (!audio) {
+return;
+}
 
         const newVol = parseFloat(e.target.value);
         audio.volume = newVol;
@@ -95,7 +110,10 @@ export function AudioPlayer({
 
     const toggleMute = () => {
         const audio = audioRef.current;
-        if (!audio) return;
+
+        if (!audio) {
+return;
+}
 
         if (isMuted) {
             audio.muted = false;
@@ -107,9 +125,13 @@ export function AudioPlayer({
     };
 
     const formatTime = (timeInSec: number) => {
-        if (isNaN(timeInSec) || timeInSec < 0) return '00:00';
+        if (isNaN(timeInSec) || timeInSec < 0) {
+return '00:00';
+}
+
         const mins = Math.floor(timeInSec / 60);
         const secs = Math.floor(timeInSec % 60);
+
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 

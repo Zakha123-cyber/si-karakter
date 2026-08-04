@@ -1,14 +1,3 @@
-import { AudioPlayer } from '@/components/audio-player';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
-import { dashboard } from '@/routes';
 import { Head, Link } from '@inertiajs/react';
 import {
     ArrowLeft,
@@ -22,6 +11,17 @@ import {
     ShieldAlert,
     User,
 } from 'lucide-react';
+import { AudioPlayer } from '@/components/audio-player';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+import { dashboard } from '@/routes';
 
 type MoralCaseOption = {
     id: number;
@@ -147,7 +147,9 @@ const statusVariant: Record<
 };
 
 function formatDateTime(value: string | null) {
-    if (!value) return '-';
+    if (!value) {
+return '-';
+}
 
     return new Intl.DateTimeFormat('id-ID', {
         dateStyle: 'medium',
@@ -156,7 +158,9 @@ function formatDateTime(value: string | null) {
 }
 
 function formatPercent(value: number | null) {
-    if (value === null || Number.isNaN(value)) return '-';
+    if (value === null || Number.isNaN(value)) {
+return '-';
+}
 
     return `${(value * 100).toFixed(1)}%`;
 }

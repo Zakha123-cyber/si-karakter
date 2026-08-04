@@ -43,6 +43,9 @@ class TestAnswer extends Model
         return $this->hasMany(AiAssessment::class);
     }
 
+    /**
+     * @return HasMany<TeacherValidation, $this>
+     */
     public function teacherValidations(): HasMany
     {
         return $this->hasMany(TeacherValidation::class);

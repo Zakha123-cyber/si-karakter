@@ -5,9 +5,11 @@ use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\TestResultController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Teacher\CharacterIndicatorController;
 use App\Http\Controllers\Teacher\MoralCaseController;
 use App\Http\Controllers\Teacher\ReviewController;
+use App\Http\Controllers\Teacher\ScoringConfigurationController;
 use App\Http\Controllers\Teacher\TestPackageController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,7 +18,7 @@ require __DIR__.'/student.php';
 Route::redirect('/', '/login')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', DashboardController::class)->name('dashboard');
 });
 
 Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -57,6 +59,8 @@ Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->name('admi
 Route::middleware(['auth', 'active', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {
     Route::resource('character-indicators', CharacterIndicatorController::class)->except(['create', 'edit', 'show']);
     Route::patch('character-indicators/{character_indicator}/status', [CharacterIndicatorController::class, 'updateStatus'])->name('character-indicators.status');
+
+    Route::resource('scoring-configurations', ScoringConfigurationController::class)->except(['create', 'edit', 'show']);
 
     Route::get('moral-cases', [MoralCaseController::class, 'index'])->name('moral-cases.index');
     Route::post('moral-cases', [MoralCaseController::class, 'store'])->name('moral-cases.store');

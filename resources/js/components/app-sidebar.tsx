@@ -8,6 +8,7 @@ import {
     FileSearch,
     FileText,
     LayoutGrid,
+    Scale,
     Tag,
     TreePine,
     UserCheck,
@@ -115,6 +116,11 @@ function getNavItems(role: string): NavItem[] {
                 title: 'Indikator Karakter',
                 href: '/teacher/character-indicators',
                 icon: Tag,
+            },
+            {
+                title: 'Bobot Penilaian',
+                href: '/teacher/scoring-configurations',
+                icon: Scale,
             },
             {
                 title: 'Review',

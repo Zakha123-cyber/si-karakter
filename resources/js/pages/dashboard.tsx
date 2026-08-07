@@ -1,6 +1,9 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
     BookOpen,
+    CalendarDays,
+    ClipboardCheck,
+    FileText,
     ChevronRight,
     Clock,
     ShieldCheck,

@@ -122,6 +122,7 @@ class AiAssessmentJob implements ShouldQueue
 
     private function resolveService(): MoralAssessmentService
     {
+        return app(MoralAssessmentService::class);
         $provider = config('ai.provider', 'fake');
 
         return match ($provider) {

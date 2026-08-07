@@ -118,6 +118,17 @@ class StudentController extends Controller
 
     public function destroy(Student $student): RedirectResponse
     {
+        $hasHistory = $student->testAttempts()->exists()
+            || $student->observationEntries()->exists()
+            || $student->goodnessPointTransactions()->exists()
+            || $student->warnings()->exists();
+
+        if ($hasHistory) {
+            return back()->withErrors([
+                'student' => 'Santri memiliki riwayat tes, observasi, reward, atau peringatan sehingga tidak dapat dihapus. Nonaktifkan status santri jika tidak lagi digunakan.',
+            ]);
+        }
+
         DB::transaction(function () use ($student) {
             $student->groupStudentHistories()->delete();
             $student->delete();

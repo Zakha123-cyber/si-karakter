@@ -75,7 +75,7 @@ class MoralCaseController extends Controller
     {
         $moralCase->forceFill([
             ...$request->validated(),
-            'is_active' => $request->boolean('is_active'),
+            'is_active' => $request->boolean('is_active', $moralCase->is_active),
         ])->save();
 
         return back()->with('status', 'Kasus moral berhasil diperbarui.');
@@ -112,7 +112,7 @@ class MoralCaseController extends Controller
 
         $option->forceFill([
             ...$request->validated(),
-            'is_active' => $request->boolean('is_active'),
+            'is_active' => $request->boolean('is_active', $option->is_active),
         ])->save();
 
         return back()->with('status', 'Pilihan kasus berhasil diperbarui.');

@@ -66,7 +66,7 @@ class TestReviewSeeder extends Seeder
             $student = Student::query()->create([
                 'user_id' => $sUser->id,
                 'student_code' => 'STU-00'.($idx + 1),
-                'gender' => $idx === 2 ? 'F' : 'M',
+                'gender' => $idx === 2 ? 'female' : 'male',
                 'birth_date' => '2017-05-12',
                 'current_group_id' => $group->id,
                 'status' => 'active',
@@ -86,7 +86,7 @@ class TestReviewSeeder extends Seeder
             ?? CharacterIndicator::query()->create([
                 'code' => 'IND-001',
                 'name' => 'Kejujuran',
-                'domain' => 'Moral',
+                'category' => 'moral_reasoning',
                 'description' => 'Sikap berkata dan bertindak jujur.',
             ]);
 
@@ -101,7 +101,7 @@ class TestReviewSeeder extends Seeder
             'moral_case_id' => $moralCase->id,
             'label' => 'A',
             'text' => 'Langsung mengembalikan dompet kepada Hasan.',
-            'internal_value' => 'level_3',
+            'internal_value' => 'post_conventional',
             'sort_order' => 1,
             'is_active' => true,
         ]);
@@ -110,7 +110,7 @@ class TestReviewSeeder extends Seeder
             'moral_case_id' => $moralCase->id,
             'label' => 'B',
             'text' => 'Menyimpan dompetnya karena tidak ada yang melihat.',
-            'internal_value' => 'level_1',
+            'internal_value' => 'pre_conventional',
             'sort_order' => 2,
             'is_active' => true,
         ]);

@@ -463,24 +463,6 @@ parameters:
 			path: app/Models/ObservationEntry.php
 
 		-
-			message: '#^Method App\\Models\\ObservationEntry\:\:student\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/ObservationEntry.php
-
-		-
-			message: '#^Method App\\Models\\ObservationEntry\:\:teacher\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/ObservationEntry.php
-
-		-
-			message: '#^Method App\\Models\\ObservationItem\:\:observationEntry\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/ObservationItem.php
-
-		-
 			message: '#^Class App\\Models\\ScoringConfiguration uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
 			identifier: missingType.generics
 			count: 1

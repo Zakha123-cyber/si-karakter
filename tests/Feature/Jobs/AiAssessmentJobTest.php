@@ -32,6 +32,7 @@ test('job marks assessment as failed and rethrows on provider error', function (
     $answer = TestAnswer::factory()->create();
 
     $fake = (new FakeMoralAssessmentService)->failNext('API rate limit exceeded');
+    $this->app->instance(MoralAssessmentService::class, $fake);
 
     $job = new AiAssessmentJob($answer->id);
 

@@ -11,6 +11,8 @@ class TestScoreCalculator
 {
     /**
      * Skor per level moral final (hasil validasi ustadz).
+     * Level kanonikal AI (pre_conventional/conventional/post_conventional) dan
+     * label Kohlberg yang dipakai UI review (Tahap 1-6) keduanya diakui.
      *
      * @var array<string, int>
      */
@@ -18,6 +20,12 @@ class TestScoreCalculator
         'pre_conventional' => 0,
         'conventional' => 50,
         'post_conventional' => 100,
+        'Tahap 1: Kepatuhan dan Hukuman' => 0,
+        'Tahap 2: Individualisme dan Pertukaran' => 0,
+        'Tahap 3: Orientasi Anak Manis' => 50,
+        'Tahap 4: Menjaga Ketertiban Sosial' => 50,
+        'Tahap 5: Kontrak Sosial dan Hak Individu' => 100,
+        'Tahap 6: Prinsip Etika Universal' => 100,
     ];
 
     /**

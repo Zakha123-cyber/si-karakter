@@ -35,7 +35,7 @@ class GroupController extends Controller
             ->when($request->integer('teacher_id'), fn ($q, $id) => $q->where('teacher_id', $id))
             ->when($request->boolean('is_active'), fn ($q) => $q->where('is_active', true))
             ->latest()
-            ->paginate($request->integer('per_page', 15));
+            ->paginate(min($request->integer('per_page', 15), 100));
 
         return $this->success('Groups retrieved', GroupResource::collection($groups));
     }

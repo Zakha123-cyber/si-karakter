@@ -78,7 +78,7 @@ class ReviewController extends Controller
             $query->whereHas('teacherValidations', fn ($v) => $v->where('decision', 'overridden'));
         }
 
-        $reviews = $query->latest()->paginate($request->integer('per_page', 15));
+        $reviews = $query->latest()->paginate(min($request->integer('per_page', 15), 100));
 
         return $this->success('Review queue retrieved', ReviewQueueResource::collection($reviews));
     }
@@ -145,9 +145,11 @@ class ReviewController extends Controller
             return $this->error('Audio file storage path does not exist on disk', 404);
         }
 
+        $safeName = preg_replace('/[^\w.\- ]+/u', '_', $audioFile->original_name) ?: 'audio';
+
         return response()->file($filePath, [
             'Content-Type' => $audioFile->mime_type ?: 'audio/mpeg',
-            'Content-Disposition' => 'inline; filename="'.$audioFile->original_name.'"',
+            'Content-Disposition' => 'inline; filename="'.$safeName.'"',
         ]);
     }
 

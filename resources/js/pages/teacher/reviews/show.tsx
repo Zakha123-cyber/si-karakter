@@ -1,24 +1,30 @@
-import AppLayout from '@/layouts/app-layout';
-import { AudioPlayer } from '@/components/audio-player';
-import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import {
     ArrowLeft,
     AudioLines,
-    Award,
     Bot,
     CheckCircle2,
     Clock,
     Edit3,
     FileText,
     HelpCircle,
-    Mic,
+    MessageSquareText,
     Save,
     ShieldAlert,
     User,
     X,
 } from 'lucide-react';
 import { useState } from 'react';
+import { AudioPlayer } from '@/components/audio-player';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 
 interface ReviewDetailProps {
     review: {
@@ -31,6 +37,7 @@ interface ReviewDetailProps {
             name: string;
             student_code: string;
             gender: string;
+            username?: string;
         };
         group: {
             id: number;
@@ -114,6 +121,70 @@ interface ReviewDetailProps {
     };
 }
 
+function formatDateTime(value: string | null) {
+    if (!value) {
+        return '-';
+    }
+
+    return new Intl.DateTimeFormat('id-ID', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+    }).format(new Date(value));
+}
+
+function formatPercent(value: number | null) {
+    if (value === null || Number.isNaN(value)) {
+        return '-';
+    }
+
+    return `${(value * 100).toFixed(1)}%`;
+}
+
+function transcriptionBadge(status: string | null) {
+    if (status === 'completed') {
+        return {
+            label: 'Transkripsi selesai',
+            className:
+                'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+            icon: CheckCircle2,
+        };
+    }
+
+    if (status === 'failed') {
+        return {
+            label: 'Transkripsi gagal',
+            className:
+                'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300',
+            icon: ShieldAlert,
+        };
+    }
+
+    if (status === 'processing') {
+        return {
+            label: 'Sedang diproses',
+            className:
+                'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300',
+            icon: Clock,
+        };
+    }
+
+    if (status === 'pending') {
+        return {
+            label: 'Menunggu antrean',
+            className:
+                'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
+            icon: Clock,
+        };
+    }
+
+    return {
+        label: 'Belum ada transkrip',
+        className:
+            'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300',
+        icon: AudioLines,
+    };
+}
+
 export default function ReviewDetail({ review }: ReviewDetailProps) {
     const [isEditingTranscript, setIsEditingTranscript] = useState(false);
     const [showRawResponseJson, setShowRawResponseJson] = useState(false);
@@ -165,854 +236,976 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
         overrideForm.post(`/teacher/reviews/${review.id}/override`);
     };
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Dashboard',
-            href: '/dashboard',
-        },
-        {
-            title: 'Validasi & Review',
-            href: '/teacher/reviews',
-        },
-        {
-            title: `Detail Review #${review.id}`,
-            href: `/teacher/reviews/${review.id}`,
-        },
-    ];
+    const stt = transcriptionBadge(review.transcription?.status ?? null);
+    const SttIcon = stt.icon;
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <>
             <Head title={`Detail Review - ${review.student.name}`} />
 
-            <div className="flex flex-col gap-6 p-4 md:p-6">
-                {/* Back Button & Title Header */}
+            <div className="flex h-full flex-1 flex-col gap-6 p-4">
+                {/* Header & Back Button */}
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div className="flex items-center gap-3">
-                        <Link
-                            href="/teacher/reviews"
-                            className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
-                        >
-                            <ArrowLeft className="h-4 w-4" />
-                        </Link>
+                        <Button asChild variant="outline" size="icon">
+                            <Link href="/teacher/reviews">
+                                <ArrowLeft className="size-4" />
+                                <span className="sr-only">Kembali</span>
+                            </Link>
+                        </Button>
                         <div>
-                            <div className="flex items-center gap-2">
-                                <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <h1 className="text-2xl font-semibold tracking-normal">
                                     Detail Review Jawaban Santri
                                 </h1>
-                                <span className="rounded bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                                    #{review.id}
-                                </span>
+                                <Badge variant="secondary">#{review.id}</Badge>
                             </div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
-                                {review.test_package.title} — Submitted:{' '}
-                                {review.submitted_at || 'Terbaru'}
+                            <p className="text-sm text-muted-foreground">
+                                {review.test_package.title} — dikirim{' '}
+                                {formatDateTime(review.submitted_at)}
                             </p>
                         </div>
                     </div>
 
-                    {/* Status Badge */}
                     <div>
                         {review.validation.status === 'approved' && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                                <CheckCircle2 className="h-4 w-4" />
+                            <Badge
+                                variant="default"
+                                className="gap-1.5 bg-emerald-600 px-3 py-1 text-white hover:bg-emerald-700"
+                            >
+                                <CheckCircle2 className="size-4" />
                                 Status: Disetujui (Approved)
-                            </span>
+                            </Badge>
                         )}
                         {review.validation.status === 'overridden' && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-4 py-1.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
-                                <ShieldAlert className="h-4 w-4" />
+                            <Badge
+                                variant="default"
+                                className="gap-1.5 bg-amber-600 px-3 py-1 text-white hover:bg-amber-700"
+                            >
+                                <ShieldAlert className="size-4" />
                                 Status: Dioverride
-                            </span>
+                            </Badge>
                         )}
                         {review.validation.status === 'pending_review' && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/10 px-4 py-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400">
-                                <Clock className="h-4 w-4" />
+                            <Badge
+                                variant="secondary"
+                                className="gap-1.5 px-3 py-1"
+                            >
+                                <Clock className="size-4" />
                                 Status: Belum Direview
-                            </span>
+                            </Badge>
                         )}
                     </div>
                 </div>
 
-                {/* Main Content Grid */}
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                    {/* Left Column (2/3): Question Context, Answers & Audio */}
-                    <div className="flex flex-col gap-6 lg:col-span-2">
-                        {/* Student Card */}
-                        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                            <div className="flex items-center gap-4">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-md shadow-emerald-600/20">
-                                    <User className="h-6 w-6" />
-                                </div>
+                {/* Overview Cards */}
+                <div className="grid gap-4 md:grid-cols-4">
+                    <Card className="rounded-lg md:col-span-2">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-base">
+                                <User className="size-5 text-muted-foreground" />
+                                Data Santri
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2 text-sm">
+                            <div className="font-semibold">
+                                {review.student.name}
+                            </div>
+                            <div className="text-muted-foreground">
+                                NIS: {review.student.student_code} • Kelompok:{' '}
+                                {review.group.name}
+                            </div>
+                            <div className="text-muted-foreground">
+                                Username: @
+                                {review.student.username ??
+                                    review.student.student_code?.toLowerCase()}
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="rounded-lg">
+                        <CardHeader>
+                            <CardTitle className="text-base">
+                                Jawaban & Pilihan
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-semibold">
+                                {review.selected_option
+                                    ? `Pilihan ${review.selected_option.label}`
+                                    : 'Belum memilih'}
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                Status: {review.answer_status}
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="rounded-lg">
+                        <CardHeader>
+                            <CardTitle className="text-base">
+                                STT & AI
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-semibold">
+                                {review.transcription
+                                    ? review.transcription.confidence
+                                        ? formatPercent(
+                                              review.transcription.confidence,
+                                          )
+                                        : '100%'
+                                    : '0%'}
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                Keyakinan transkripsi / AI
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Main Case & Review Card */}
+                <div className="grid gap-4">
+                    <Card className="rounded-lg">
+                        <CardHeader>
+                            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                                 <div>
-                                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-                                        {review.student.name}
-                                    </h3>
-                                    <div className="mt-0.5 flex flex-wrap gap-2 text-xs text-slate-500">
-                                        <span>
-                                            Kode: {review.student.student_code}
-                                        </span>
-                                        <span>•</span>
-                                        <span>
-                                            Kelompok: {review.group.name}
-                                        </span>
-                                    </div>
+                                    <CardTitle className="flex items-center gap-2 text-base">
+                                        <HelpCircle className="size-5 text-muted-foreground" />
+                                        Kasus Moral: {review.moral_case.title}
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Status jawaban: {review.answer_status}
+                                    </CardDescription>
                                 </div>
+                                <span
+                                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${stt.className}`}
+                                >
+                                    <SttIcon className="size-3.5" />
+                                    {stt.label}
+                                </span>
                             </div>
-                        </div>
+                        </CardHeader>
 
-                        {/* Moral Case Context */}
-                        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                            <div className="flex items-center gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
-                                <HelpCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                                <h3 className="font-bold text-slate-900 dark:text-slate-100">
-                                    Konteks Kasus Moral:{' '}
-                                    {review.moral_case.title}
-                                </h3>
-                            </div>
+                        <CardContent className="grid gap-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+                            {/* Left Column (1.4fr) */}
+                            <div className="space-y-5">
+                                <div className="rounded-md bg-muted/40 p-4 text-sm leading-6 text-muted-foreground">
+                                    {review.moral_case.story}
+                                </div>
 
-                            <div className="mt-4 rounded-lg bg-slate-50 p-4 text-xs leading-relaxed text-slate-700 md:text-sm dark:bg-slate-800/60 dark:text-slate-300">
-                                {review.moral_case.story}
-                            </div>
-
-                            {/* Options */}
-                            <div className="mt-4">
-                                <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                                    Pilihan Jawaban Santri:
-                                </h4>
-                                <div className="mt-2 space-y-2">
+                                <div className="space-y-2">
+                                    <div className="text-sm font-medium">
+                                        Pilihan Santri
+                                    </div>
                                     {review.moral_case.options.map((opt) => {
                                         const isSelected =
                                             review.selected_option?.id ===
                                             opt.id;
+
                                         return (
                                             <div
                                                 key={opt.id}
-                                                className={`rounded-lg border p-3 text-xs md:text-sm ${
+                                                className={`rounded-md border p-3 text-sm ${
                                                     isSelected
-                                                        ? 'border-emerald-500 bg-emerald-50/75 font-medium text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200'
-                                                        : 'border-slate-200 bg-white text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400'
+                                                        ? 'border-primary bg-primary/10 text-primary'
+                                                        : 'bg-background text-muted-foreground'
                                                 }`}
                                             >
-                                                <div className="flex items-start gap-2">
-                                                    <span className="font-bold">
+                                                <div className="flex gap-2">
+                                                    <span className="font-semibold">
                                                         {opt.label}.
                                                     </span>
                                                     <span>{opt.text}</span>
-                                                    {isSelected && (
-                                                        <span className="ml-auto rounded bg-emerald-600 px-2 py-0.5 text-[10px] text-white">
+                                                    {isSelected ? (
+                                                        <Badge className="ml-auto">
                                                             Dipilih Santri
-                                                        </span>
-                                                    )}
+                                                        </Badge>
+                                                    ) : null}
                                                 </div>
                                             </div>
                                         );
                                     })}
                                 </div>
-                            </div>
-                        </div>
 
-                        {/* Audio & Speech Transcript */}
-                        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                            <div className="flex items-center gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
-                                <Mic className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                                <h3 className="font-bold text-slate-900 dark:text-slate-100">
-                                    Rekaman Suara & Transkripsi (STT)
-                                </h3>
-                            </div>
-
-                            {/* Audio Player */}
-                            {review.audio ? (
-                                <div className="mt-4">
-                                    <AudioPlayer
-                                        src={`/teacher/reviews/${review.id}/audio`}
-                                        originalName={
-                                            review.audio.original_name
-                                        }
-                                        durationSeconds={
-                                            review.audio.duration_seconds
-                                        }
-                                    />
+                                <div className="rounded-md border p-4">
+                                    <div className="flex items-center gap-2 text-sm font-medium">
+                                        <MessageSquareText className="size-4 text-muted-foreground" />
+                                        Alasan Teks Santri
+                                    </div>
+                                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                                        {review.typed_reason || (
+                                            <span className="italic">
+                                                Tidak ada alasan teks.
+                                            </span>
+                                        )}
+                                    </p>
                                 </div>
-                            ) : (
-                                <div className="mt-4 rounded-lg bg-slate-50 p-3 text-xs text-slate-500 dark:bg-slate-800">
-                                    Tidak ada rekaman audio file untuk jawaban
-                                    ini.
-                                </div>
-                            )}
+                            </div>
 
-                            {/* Transkripsi Asli STT */}
-                            <div className="mt-5 border-t border-slate-100 pt-4 dark:border-slate-800">
-                                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
-                                        <FileText className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                                        <span>
-                                            Tampilan Transkripsi Asli STT
-                                        </span>
+                            {/* Right Column (1fr) */}
+                            <div className="space-y-5">
+                                {/* Audio Jawaban */}
+                                <div className="rounded-md border p-4">
+                                    <div className="flex items-center gap-2 text-sm font-medium">
+                                        <AudioLines className="size-4 text-muted-foreground" />
+                                        Audio Jawaban
+                                    </div>
+                                    <div className="mt-3">
+                                        {review.audio ? (
+                                            <AudioPlayer
+                                                src={`/teacher/reviews/${review.id}/audio`}
+                                                originalName={
+                                                    review.audio.original_name
+                                                }
+                                                durationSeconds={
+                                                    review.audio
+                                                        .duration_seconds
+                                                }
+                                            />
+                                        ) : (
+                                            <p className="rounded-md bg-muted/40 p-3 text-sm text-muted-foreground">
+                                                Tidak ada rekaman audio file
+                                                untuk jawaban ini.
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Hasil Transkripsi STT */}
+                                <div className="rounded-md border p-4">
+                                    <div className="flex flex-wrap items-center justify-between gap-2">
+                                        <div className="flex items-center gap-2 text-sm font-medium">
+                                            <FileText className="size-4 text-muted-foreground" />
+                                            Hasil Transkripsi STT
+                                        </div>
+                                        {review.transcription ? (
+                                            <Badge variant="outline">
+                                                {review.transcription.provider}{' '}
+                                                • {review.transcription.model}
+                                            </Badge>
+                                        ) : null}
                                     </div>
 
                                     {review.transcription ? (
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                                                Provider:{' '}
-                                                {review.transcription.provider}{' '}
-                                                ({review.transcription.model})
-                                            </span>
-                                            {review.transcription
-                                                .confidence && (
-                                                <span className="rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                                        <div className="mt-3 space-y-3">
+                                            <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2">
+                                                <div>
+                                                    Status:{' '}
+                                                    <span className="font-semibold text-foreground">
+                                                        {
+                                                            review.transcription
+                                                                .status
+                                                        }
+                                                    </span>
+                                                </div>
+                                                <div>
                                                     Confidence:{' '}
-                                                    {(
-                                                        review.transcription
-                                                            .confidence * 100
-                                                    ).toFixed(1)}
-                                                    %
-                                                </span>
+                                                    <span className="font-semibold text-foreground">
+                                                        {formatPercent(
+                                                            review.transcription
+                                                                .confidence,
+                                                        )}
+                                                    </span>
+                                                </div>
+                                                <div className="sm:col-span-2">
+                                                    Diproses:{' '}
+                                                    <span className="font-semibold text-foreground">
+                                                        {formatDateTime(
+                                                            review.transcription
+                                                                .processed_at,
+                                                        )}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div className="rounded-md bg-muted/40 p-3">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="text-xs font-semibold text-muted-foreground">
+                                                        Transkrip asli
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        {(review.transcription
+                                                            ?.original_text ||
+                                                            review.final_transcript) && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    const text =
+                                                                        review
+                                                                            .transcription
+                                                                            ?.original_text ||
+                                                                        review.final_transcript;
+
+                                                                    if (text) {
+                                                                        navigator.clipboard.writeText(
+                                                                            text,
+                                                                        );
+                                                                        alert(
+                                                                            'Teks transkripsi berhasil disalin!',
+                                                                        );
+                                                                    }
+                                                                }}
+                                                                className="inline-flex items-center gap-1 rounded border bg-background px-2 py-0.5 text-[10px] font-medium text-muted-foreground hover:bg-muted"
+                                                            >
+                                                                Salin
+                                                            </button>
+                                                        )}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                setIsEditingTranscript(
+                                                                    !isEditingTranscript,
+                                                                )
+                                                            }
+                                                            className="inline-flex items-center gap-1 rounded bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground hover:bg-primary/90"
+                                                        >
+                                                            <Edit3 className="size-3" />
+                                                            {isEditingTranscript
+                                                                ? 'Batal'
+                                                                : 'Edit'}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <p className="mt-1 text-sm leading-6">
+                                                    {review.transcription
+                                                        .original_text ||
+                                                        review.final_transcript || (
+                                                            <span className="text-muted-foreground italic">
+                                                                Belum ada teks
+                                                                transkrip asli.
+                                                            </span>
+                                                        )}
+                                                </p>
+                                            </div>
+
+                                            {isEditingTranscript && (
+                                                <form
+                                                    onSubmit={
+                                                        handleSaveTranscript
+                                                    }
+                                                    className="mt-3 space-y-2 rounded-md border border-primary/40 bg-primary/5 p-3"
+                                                >
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-xs font-bold text-primary">
+                                                            Edit / Perbaiki Teks
+                                                            Transkripsi
+                                                        </span>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                setIsEditingTranscript(
+                                                                    false,
+                                                                )
+                                                            }
+                                                            className="text-muted-foreground hover:text-foreground"
+                                                        >
+                                                            <X className="size-4" />
+                                                        </button>
+                                                    </div>
+                                                    <textarea
+                                                        rows={3}
+                                                        value={
+                                                            transcriptData.edited_text
+                                                        }
+                                                        onChange={(e) =>
+                                                            setTranscriptData(
+                                                                'edited_text',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        placeholder="Tuliskan teks transkripsi perbaikan di sini..."
+                                                        className="w-full rounded-md border bg-background p-2.5 text-xs text-foreground outline-none focus:ring-1 focus:ring-primary"
+                                                    />
+                                                    {transcriptErrors.edited_text && (
+                                                        <p className="text-[11px] text-destructive">
+                                                            {
+                                                                transcriptErrors.edited_text
+                                                            }
+                                                        </p>
+                                                    )}
+                                                    <div className="flex justify-end gap-2">
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                setIsEditingTranscript(
+                                                                    false,
+                                                                )
+                                                            }
+                                                        >
+                                                            Batal
+                                                        </Button>
+                                                        <Button
+                                                            type="submit"
+                                                            size="sm"
+                                                            disabled={
+                                                                isSavingTranscript
+                                                            }
+                                                        >
+                                                            <Save className="mr-1 size-3.5" />
+                                                            {isSavingTranscript
+                                                                ? 'Menyimpan...'
+                                                                : 'Simpan Perbaikan'}
+                                                        </Button>
+                                                    </div>
+                                                </form>
                                             )}
-                                            <span className="rounded bg-indigo-50 px-2 py-0.5 text-[10px] font-medium text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-                                                Status:{' '}
-                                                {review.transcription.status}
-                                            </span>
+
+                                            {review.transcription.edited_text &&
+                                                !isEditingTranscript && (
+                                                    <div className="rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-900 dark:bg-amber-950/20">
+                                                        <div className="text-xs font-semibold text-amber-700 dark:text-amber-300">
+                                                            Transkrip hasil edit
+                                                            ustadz
+                                                        </div>
+                                                        <p className="mt-1 text-sm leading-6 text-amber-900 dark:text-amber-100">
+                                                            {
+                                                                review
+                                                                    .transcription
+                                                                    .edited_text
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                )}
                                         </div>
                                     ) : (
-                                        <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                                            Teks Jawaban Terketik
-                                        </span>
+                                        <p className="mt-3 rounded-md bg-muted/40 p-3 text-sm text-muted-foreground">
+                                            Belum ada record transkripsi untuk
+                                            audio ini.
+                                        </p>
                                     )}
                                 </div>
 
-                                {/* Original Transcript Text Box */}
-                                <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-800/60">
-                                    <div className="mb-2 flex items-center justify-between">
-                                        <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                                            Teks Transkripsi Asli:
-                                        </span>
-                                        <div className="flex items-center gap-2">
-                                            {(review.transcription
-                                                ?.original_text ||
-                                                review.final_transcript) && (
-                                                <button
-                                                    onClick={() => {
-                                                        const text =
-                                                            review.transcription
-                                                                ?.original_text ||
-                                                            review.final_transcript;
-                                                        if (text) {
-                                                            navigator.clipboard.writeText(
-                                                                text,
-                                                            );
-                                                            alert(
-                                                                'Teks transkripsi berhasil disalin!',
-                                                            );
+                                {/* Rekomendasi AI Assessment */}
+                                <div className="rounded-md border p-4">
+                                    <div className="flex items-center justify-between gap-2 border-b pb-3">
+                                        <div className="flex items-center gap-2 text-sm font-medium">
+                                            <Bot className="size-4 text-teal-600 dark:text-teal-400" />
+                                            Rekomendasi AI Assessment
+                                        </div>
+                                        {review.ai_assessment && (
+                                            <Badge
+                                                variant="outline"
+                                                className="border-teal-200 text-teal-600 dark:border-teal-900 dark:text-teal-400"
+                                            >
+                                                AI Assessment
+                                            </Badge>
+                                        )}
+                                    </div>
+
+                                    {review.ai_assessment ? (
+                                        <div className="mt-3 space-y-3 text-sm">
+                                            <div>
+                                                <span className="text-xs font-medium text-muted-foreground">
+                                                    Rekomendasi Tingkat Moral
+                                                    (Kohlberg):
+                                                </span>
+                                                <div className="mt-1.5 rounded-lg bg-emerald-600 p-3 text-center text-white shadow-sm">
+                                                    <span className="block text-xs opacity-90">
+                                                        Tingkat Penilaian LLM
+                                                    </span>
+                                                    <span className="block text-base font-extrabold">
+                                                        {
+                                                            review.ai_assessment
+                                                                .moral_level
                                                         }
-                                                    }}
-                                                    className="inline-flex items-center gap-1 rounded bg-white px-2 py-1 text-[10px] font-medium text-slate-600 shadow-sm hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300"
-                                                >
-                                                    Salin Teks
-                                                </button>
-                                            )}
-                                            <button
-                                                onClick={() =>
-                                                    setIsEditingTranscript(
-                                                        !isEditingTranscript,
-                                                    )
-                                                }
-                                                className="inline-flex items-center gap-1 rounded bg-indigo-600 px-2.5 py-1 text-[10px] font-semibold text-white shadow-sm transition hover:bg-indigo-700"
-                                            >
-                                                <Edit3 className="h-3 w-3" />
-                                                {isEditingTranscript
-                                                    ? 'Batal Edit'
-                                                    : 'Edit Transkripsi'}
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <p className="text-xs leading-relaxed text-slate-800 md:text-sm dark:text-slate-200">
-                                        {review.transcription?.original_text ||
-                                            review.final_transcript || (
-                                                <span className="text-slate-400 italic">
-                                                    Belum ada transkripsi teks
-                                                    asli.
-                                                </span>
-                                            )}
-                                    </p>
-                                </div>
-
-                                {/* Form Edit Transkripsi Inline */}
-                                {isEditingTranscript && (
-                                    <form
-                                        onSubmit={handleSaveTranscript}
-                                        className="mt-3 rounded-xl border border-indigo-200 bg-indigo-50/50 p-4 shadow-sm dark:border-indigo-900/60 dark:bg-indigo-950/30"
-                                    >
-                                        <div className="flex items-center justify-between border-b border-indigo-100 pb-2 dark:border-indigo-900/40">
-                                            <span className="text-xs font-bold text-indigo-900 dark:text-indigo-200">
-                                                Edit / Perbaiki Teks Transkripsi
-                                            </span>
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    setIsEditingTranscript(
-                                                        false,
-                                                    )
-                                                }
-                                                className="text-slate-400 hover:text-slate-600"
-                                            >
-                                                <X className="h-4 w-4" />
-                                            </button>
-                                        </div>
-
-                                        <p className="mt-1 text-[11px] text-slate-500">
-                                            Perbaiki kata atau kalimat yang
-                                            salah dikonversi oleh Speech-To-Text
-                                            sebelum dikonfirmasi oleh Ustadz.
-                                        </p>
-
-                                        <textarea
-                                            rows={3}
-                                            value={transcriptData.edited_text}
-                                            onChange={(e) =>
-                                                setTranscriptData(
-                                                    'edited_text',
-                                                    e.target.value,
-                                                )
-                                            }
-                                            placeholder="Tuliskan teks transkripsi perbaikan di sini..."
-                                            className="mt-2 w-full rounded-lg border border-indigo-200 bg-white p-3 text-xs text-slate-800 shadow-inner outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 md:text-sm dark:border-indigo-800 dark:bg-slate-900 dark:text-slate-200"
-                                        />
-                                        {transcriptErrors.edited_text && (
-                                            <p className="mt-1 text-[11px] text-red-500">
-                                                {transcriptErrors.edited_text}
-                                            </p>
-                                        )}
-
-                                        <div className="mt-3 flex items-center justify-end gap-2">
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    setIsEditingTranscript(
-                                                        false,
-                                                    )
-                                                }
-                                                className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                                            >
-                                                Batal
-                                            </button>
-                                            <button
-                                                type="submit"
-                                                disabled={isSavingTranscript}
-                                                className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-indigo-700 disabled:opacity-50"
-                                            >
-                                                <Save className="h-3.5 w-3.5" />
-                                                {isSavingTranscript
-                                                    ? 'Menyimpan...'
-                                                    : 'Simpan Perbaikan'}
-                                            </button>
-                                        </div>
-                                    </form>
-                                )}
-
-                                {/* If edited transcript exists */}
-                                {review.transcription?.edited_text &&
-                                    !isEditingTranscript && (
-                                        <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50/60 p-4 dark:border-amber-900/40 dark:bg-amber-950/20">
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-[11px] font-semibold text-amber-800 dark:text-amber-300">
-                                                    Teks Hasil Perbaikan/Revisi
-                                                    Ustadz:
-                                                </span>
-                                                <span className="rounded bg-amber-200/80 px-2 py-0.5 text-[10px] font-bold text-amber-900 dark:bg-amber-900 dark:text-amber-100">
-                                                    Telah Direvisi
-                                                </span>
-                                            </div>
-                                            <p className="mt-1 text-xs leading-relaxed text-amber-900 md:text-sm dark:text-amber-200">
-                                                {
-                                                    review.transcription
-                                                        .edited_text
-                                                }
-                                            </p>
-                                        </div>
-                                    )}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Column (1/3): AI Assessment Recommendation Panel */}
-                    <div className="flex flex-col gap-6">
-                        <div className="rounded-xl border border-teal-200 bg-teal-50/50 p-5 shadow-sm dark:border-teal-900 dark:bg-teal-950/20">
-                            <div className="flex items-center justify-between border-b border-teal-200 pb-3 dark:border-teal-900">
-                                <div className="flex items-center gap-2">
-                                    <Bot className="h-5 w-5 text-teal-600 dark:text-teal-400" />
-                                    <h3 className="font-bold text-teal-950 dark:text-teal-100">
-                                        Rekomendasi AI Assessment
-                                    </h3>
-                                </div>
-                                {review.ai_assessment && (
-                                    <span className="rounded bg-teal-600 px-2 py-0.5 text-[10px] font-semibold text-white">
-                                        {review.ai_assessment.provider} (
-                                        {review.ai_assessment.model})
-                                    </span>
-                                )}
-                            </div>
-
-                            {review.ai_assessment ? (
-                                <div className="mt-4 flex flex-col gap-4">
-                                    {/* Level Recommendation */}
-                                    <div>
-                                        <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
-                                            Rekomendasi Tingkat Moral
-                                            (Kohlberg):
-                                        </span>
-                                        <div className="mt-1 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 p-3.5 text-center shadow-md shadow-teal-600/20">
-                                            <span className="block text-xs font-medium text-teal-100">
-                                                Tingkat Penilaian LLM
-                                            </span>
-                                            <span className="mt-0.5 block text-sm font-extrabold text-white">
-                                                {
-                                                    review.ai_assessment
-                                                        .moral_level
-                                                }
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Confidence Score Bar */}
-                                    <div className="rounded-lg bg-white p-3 shadow-sm dark:bg-slate-900">
-                                        <div className="flex justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
-                                            <span>
-                                                Tingkat Keyakinan (Confidence)
-                                            </span>
-                                            <span className="text-teal-600 dark:text-teal-400">
-                                                {(
-                                                    review.ai_assessment
-                                                        .confidence * 100
-                                                ).toFixed(1)}
-                                                %
-                                            </span>
-                                        </div>
-                                        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-                                            <div
-                                                className="h-full rounded-full bg-teal-500 transition-all duration-500"
-                                                style={{
-                                                    width: `${Math.min(100, Math.max(0, review.ai_assessment.confidence * 100))}%`,
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Reasoning Summary */}
-                                    <div>
-                                        <span className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                                            Ringkasan Penalaran AI:
-                                        </span>
-                                        <p className="mt-1 rounded-lg bg-white p-3 text-xs leading-relaxed text-slate-700 shadow-sm dark:bg-slate-900 dark:text-slate-300">
-                                            {
-                                                review.ai_assessment
-                                                    .reasoning_summary
-                                            }
-                                        </p>
-                                    </div>
-
-                                    {/* Suggested Intervention */}
-                                    {review.ai_assessment
-                                        .suggested_intervention && (
-                                        <div>
-                                            <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-300">
-                                                Saran Intervensi Pedagogis:
-                                            </span>
-                                            <p className="mt-1 rounded-lg border border-emerald-200 bg-emerald-100/60 p-3 text-xs text-emerald-950 dark:border-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-200">
-                                                {
-                                                    review.ai_assessment
-                                                        .suggested_intervention
-                                                }
-                                            </p>
-                                        </div>
-                                    )}
-
-                                    {/* Warning Signals */}
-                                    {review.ai_assessment.warning_signals &&
-                                        review.ai_assessment.warning_signals
-                                            .length > 0 && (
-                                            <div>
-                                                <span className="text-[11px] font-semibold text-amber-800 dark:text-amber-300">
-                                                    Sinyal Peringatan / Warning
-                                                    Signals:
-                                                </span>
-                                                <div className="mt-1 flex flex-wrap gap-1.5">
-                                                    {review.ai_assessment.warning_signals.map(
-                                                        (signal, idx) => (
-                                                            <span
-                                                                key={idx}
-                                                                className="inline-flex items-center gap-1 rounded bg-amber-100 px-2 py-1 text-[11px] font-medium text-amber-900 dark:bg-amber-950 dark:text-amber-200"
-                                                            >
-                                                                <ShieldAlert className="h-3 w-3 text-amber-600" />
-                                                                {typeof signal ===
-                                                                'string'
-                                                                    ? signal
-                                                                    : JSON.stringify(
-                                                                          signal,
-                                                                      )}
-                                                            </span>
-                                                        ),
-                                                    )}
+                                                    </span>
                                                 </div>
                                             </div>
-                                        )}
 
-                                    {/* Character Indicators Evaluated */}
-                                    {review.ai_assessment.indicators &&
-                                        review.ai_assessment.indicators.length >
-                                            0 && (
-                                            <div>
-                                                <span className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                                                    Skor Indikator Karakter
-                                                    Teridentifikasi:
-                                                </span>
-                                                <div className="mt-1 space-y-1">
-                                                    {review.ai_assessment.indicators.map(
-                                                        (
-                                                            ind: any,
-                                                            idx: number,
-                                                        ) => (
-                                                            <div
-                                                                key={idx}
-                                                                className="flex items-center justify-between rounded bg-white px-3 py-1.5 text-xs text-slate-700 shadow-sm dark:bg-slate-900 dark:text-slate-300"
-                                                            >
-                                                                <span>
-                                                                    {ind.indicator_name ||
-                                                                        `Indikator #${ind.indicator_id}`}
-                                                                </span>
-                                                                <span className="font-bold text-teal-600 dark:text-teal-400">
-                                                                    Skor:{' '}
-                                                                    {ind.score}
-                                                                </span>
-                                                            </div>
-                                                        ),
-                                                    )}
+                                            <div className="space-y-1.5 rounded-md border bg-muted/20 p-3">
+                                                <div className="flex justify-between text-xs font-semibold">
+                                                    <span>
+                                                        Tingkat Keyakinan
+                                                        (Confidence)
+                                                    </span>
+                                                    <span className="text-teal-600 dark:text-teal-400">
+                                                        {formatPercent(
+                                                            review.ai_assessment
+                                                                .confidence,
+                                                        )}
+                                                    </span>
+                                                </div>
+                                                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                                                    <div
+                                                        className="h-full rounded-full bg-teal-500 transition-all duration-500"
+                                                        style={{
+                                                            width: `${Math.min(100, Math.max(0, review.ai_assessment.confidence * 100))}%`,
+                                                        }}
+                                                    />
                                                 </div>
                                             </div>
-                                        )}
 
-                                    {/* Toggle Raw JSON Response */}
-                                    <div className="border-t border-teal-200/60 pt-3 dark:border-teal-900/40">
-                                        <button
-                                            onClick={() =>
-                                                setShowRawResponseJson(
-                                                    !showRawResponseJson,
-                                                )
-                                            }
-                                            className="text-[11px] font-semibold text-teal-700 hover:underline dark:text-teal-400"
-                                        >
-                                            {showRawResponseJson
-                                                ? 'Sembunyikan Raw JSON AI'
-                                                : 'Lihat Raw JSON AI Response'}
-                                        </button>
-                                        {showRawResponseJson && (
-                                            <pre className="mt-2 max-h-48 overflow-auto rounded bg-slate-950 p-3 font-mono text-[10px] text-emerald-400">
-                                                {JSON.stringify(
-                                                    review.ai_assessment,
-                                                    null,
-                                                    2,
-                                                )}
-                                            </pre>
-                                        )}
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="mt-4 p-4 text-center text-xs text-slate-500">
-                                    Belum ada hasil penilaian AI.
-                                </div>
-                            )}
-                        </div>
+                                            <div>
+                                                <span className="text-xs font-medium text-muted-foreground">
+                                                    Ringkasan Penalaran AI:
+                                                </span>
+                                                <p className="mt-1 rounded-md bg-muted/40 p-3 text-xs leading-relaxed text-foreground">
+                                                    {
+                                                        review.ai_assessment
+                                                            .reasoning_summary
+                                                    }
+                                                </p>
+                                            </div>
 
-                        {/* Form Validasi Ustadz (Approve & Override) */}
-                        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                            <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                                Validasi & Keputusan Ustadz
-                            </h4>
-
-                            {/* Existing Validation Decision Status */}
-                            {review.validation.decision && (
-                                <div
-                                    className={`mt-3 rounded-lg p-3 text-xs ${
-                                        review.validation.decision ===
-                                        'approved'
-                                            ? 'border border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200'
-                                            : 'border border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200'
-                                    }`}
-                                >
-                                    <div className="flex items-center justify-between font-bold">
-                                        <span>
-                                            Keputusan Validasi:{' '}
-                                            {review.validation.decision ===
-                                            'approved'
-                                                ? 'Disetujui'
-                                                : 'Dioverride'}
-                                        </span>
-                                        <span className="text-[10px] opacity-75">
-                                            {review.validation.validated_at ||
-                                                ''}
-                                        </span>
-                                    </div>
-                                    <p className="mt-1 font-semibold">
-                                        Level Akhir:{' '}
-                                        {review.validation.final_moral_level}
-                                    </p>
-                                    {review.validation.override_reason && (
-                                        <p className="mt-1 text-[11px] italic">
-                                            Alasan Override: &quot;
-                                            {review.validation.override_reason}
-                                            &quot;
-                                        </p>
-                                    )}
-                                    {review.validation.teacher_note && (
-                                        <p className="mt-1 text-[11px]">
-                                            Catatan: &quot;
-                                            {review.validation.teacher_note}
-                                            &quot;
-                                        </p>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Action Tabs */}
-                            <div className="mt-4 flex rounded-lg bg-slate-100 p-1 dark:bg-slate-800">
-                                <button
-                                    onClick={() => setActionTab('approve')}
-                                    className={`flex-1 rounded-md py-1.5 text-xs font-semibold transition ${
-                                        actionTab === 'approve'
-                                            ? 'bg-emerald-600 text-white shadow-sm'
-                                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
-                                    }`}
-                                >
-                                    Setujui (Approve)
-                                </button>
-                                <button
-                                    onClick={() => setActionTab('override')}
-                                    className={`flex-1 rounded-md py-1.5 text-xs font-semibold transition ${
-                                        actionTab === 'override'
-                                            ? 'bg-amber-600 text-white shadow-sm'
-                                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
-                                    }`}
-                                >
-                                    Ubah Nilai (Override)
-                                </button>
-                            </div>
-
-                            {/* Approve Form */}
-                            {actionTab === 'approve' && (
-                                <form
-                                    onSubmit={handleApproveSubmit}
-                                    className="mt-4 flex flex-col gap-3"
-                                >
-                                    <p className="text-xs text-slate-600 dark:text-slate-400">
-                                        Menyetujui rekomendasi AI level{' '}
-                                        <span className="font-bold text-emerald-600">
                                             {review.ai_assessment
-                                                ?.moral_level ||
-                                                review.selected_option
-                                                    ?.internal_value ||
-                                                'Tahap 3'}
-                                        </span>{' '}
-                                        sebagai hasil akhir santri.
-                                    </p>
+                                                .suggested_intervention && (
+                                                <div>
+                                                    <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                                                        Saran Intervensi
+                                                        Pedagogis:
+                                                    </span>
+                                                    <p className="mt-1 rounded-md border border-emerald-200 bg-emerald-50/70 p-3 text-xs text-emerald-950 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200">
+                                                        {
+                                                            review.ai_assessment
+                                                                .suggested_intervention
+                                                        }
+                                                    </p>
+                                                </div>
+                                            )}
 
-                                    <div>
-                                        <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                                            Catatan Ustadz (Opsional):
-                                        </label>
-                                        <textarea
-                                            rows={2}
-                                            value={
-                                                approveForm.data.teacher_note
-                                            }
-                                            onChange={(e) =>
-                                                approveForm.setData(
-                                                    'teacher_note',
-                                                    e.target.value,
-                                                )
-                                            }
-                                            placeholder="Tambahkan catatan hasil pengamatan..."
-                                            className="mt-1 w-full rounded-lg border border-slate-200 bg-white p-2.5 text-xs text-slate-800 outline-none focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
-                                        />
+                                            {review.ai_assessment
+                                                .warning_signals &&
+                                                review.ai_assessment
+                                                    .warning_signals.length >
+                                                    0 && (
+                                                    <div>
+                                                        <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
+                                                            Sinyal Peringatan
+                                                            (Warning Signals):
+                                                        </span>
+                                                        <div className="mt-1 flex flex-wrap gap-1.5">
+                                                            {review.ai_assessment.warning_signals.map(
+                                                                (
+                                                                    signal,
+                                                                    idx,
+                                                                ) => (
+                                                                    <Badge
+                                                                        key={
+                                                                            idx
+                                                                        }
+                                                                        variant="outline"
+                                                                        className="border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200"
+                                                                    >
+                                                                        <ShieldAlert className="mr-1 size-3 text-amber-600" />
+                                                                        {typeof signal ===
+                                                                        'string'
+                                                                            ? signal
+                                                                            : JSON.stringify(
+                                                                                  signal,
+                                                                              )}
+                                                                    </Badge>
+                                                                ),
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                            {review.ai_assessment.indicators &&
+                                                review.ai_assessment.indicators
+                                                    .length > 0 && (
+                                                    <div>
+                                                        <span className="text-xs font-medium text-muted-foreground">
+                                                            Skor Indikator
+                                                            Karakter
+                                                            Teridentifikasi:
+                                                        </span>
+                                                        <div className="mt-1 space-y-1">
+                                                            {review.ai_assessment.indicators.map(
+                                                                (
+                                                                    ind: any,
+                                                                    idx: number,
+                                                                ) => (
+                                                                    <div
+                                                                        key={
+                                                                            idx
+                                                                        }
+                                                                        className="flex items-center justify-between rounded-md border bg-background px-3 py-1.5 text-xs"
+                                                                    >
+                                                                        <span>
+                                                                            {ind.indicator_name ||
+                                                                                ind.name ||
+                                                                                ind.code ||
+                                                                                (ind.indicator_id
+                                                                                    ? `Indikator #${ind.indicator_id}`
+                                                                                    : `Indikator ${idx + 1}`)}
+                                                                        </span>
+                                                                        <span className="font-bold text-teal-600 dark:text-teal-400">
+                                                                            Skor:{' '}
+                                                                            {
+                                                                                ind.score
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                ),
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                            <div className="pt-1">
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setShowRawResponseJson(
+                                                            !showRawResponseJson,
+                                                        )
+                                                    }
+                                                    className="text-xs font-semibold text-teal-600 hover:underline dark:text-teal-400"
+                                                >
+                                                    {showRawResponseJson
+                                                        ? 'Sembunyikan Raw JSON AI'
+                                                        : 'Lihat Raw JSON AI Response'}
+                                                </button>
+                                                {showRawResponseJson && (
+                                                    <pre className="mt-2 max-h-48 overflow-auto rounded bg-slate-950 p-3 font-mono text-[10px] text-emerald-400">
+                                                        {JSON.stringify(
+                                                            review.ai_assessment,
+                                                            null,
+                                                            2,
+                                                        )}
+                                                    </pre>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <p className="mt-3 rounded-md bg-muted/40 p-3 text-sm text-muted-foreground">
+                                            Belum ada rekomendasi penilaian AI.
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* Validasi & Keputusan Ustadz */}
+                                <div className="space-y-3 rounded-md border p-4">
+                                    <div className="text-sm font-medium">
+                                        Validasi & Keputusan Ustadz
                                     </div>
 
-                                    <button
-                                        type="submit"
-                                        disabled={approveForm.processing}
-                                        className="mt-1 flex w-full items-center justify-center gap-1.5 rounded-lg bg-emerald-600 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-700 disabled:opacity-50"
-                                    >
-                                        <CheckCircle2 className="h-4 w-4" />
-                                        {approveForm.processing
-                                            ? 'Menyimpan...'
-                                            : 'Setujui Rekomendasi AI'}
-                                    </button>
-                                </form>
-                            )}
-
-                            {/* Override Form */}
-                            {actionTab === 'override' && (
-                                <form
-                                    onSubmit={handleOverrideSubmit}
-                                    className="mt-4 flex flex-col gap-3"
-                                >
-                                    <div>
-                                        <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                                            Pilih Tingkat Moral Akhir
-                                            (Kohlberg):
-                                        </label>
-                                        <select
-                                            value={
-                                                overrideForm.data
-                                                    .final_moral_level
-                                            }
-                                            onChange={(e) =>
-                                                overrideForm.setData(
-                                                    'final_moral_level',
-                                                    e.target.value,
-                                                )
-                                            }
-                                            className="mt-1 w-full rounded-lg border border-slate-200 bg-white p-2.5 text-xs font-medium text-slate-800 outline-none focus:border-amber-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                                    {review.validation.decision && (
+                                        <div
+                                            className={`rounded-md p-3 text-xs ${
+                                                review.validation.decision ===
+                                                'approved'
+                                                    ? 'border border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200'
+                                                    : 'border border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200'
+                                            }`}
                                         >
-                                            <option value="Tahap 1: Kepatuhan dan Hukuman">
-                                                Tahap 1: Kepatuhan dan Hukuman
-                                            </option>
-                                            <option value="Tahap 2: Individualisme dan Pertukaran">
-                                                Tahap 2: Individualisme dan
-                                                Pertukaran
-                                            </option>
-                                            <option value="Tahap 3: Orientasi Anak Manis">
-                                                Tahap 3: Orientasi Anak Manis
-                                            </option>
-                                            <option value="Tahap 4: Menjaga Ketertiban Sosial">
-                                                Tahap 4: Menjaga Ketertiban
-                                                Sosial
-                                            </option>
-                                            <option value="Tahap 5: Kontrak Sosial dan Hak Individu">
-                                                Tahap 5: Kontrak Sosial dan Hak
-                                                Individu
-                                            </option>
-                                            <option value="Tahap 6: Prinsip Etika Universal">
-                                                Tahap 6: Prinsip Etika Universal
-                                            </option>
-                                        </select>
-                                        {overrideForm.errors
-                                            .final_moral_level && (
-                                            <p className="mt-1 text-[11px] text-red-500">
+                                            <div className="flex items-center justify-between font-bold">
+                                                <span>
+                                                    Keputusan Validasi:{' '}
+                                                    {review.validation
+                                                        .decision === 'approved'
+                                                        ? 'Disetujui'
+                                                        : 'Dioverride'}
+                                                </span>
+                                                <span className="text-[10px] opacity-75">
+                                                    {review.validation
+                                                        .validated_at || ''}
+                                                </span>
+                                            </div>
+                                            <p className="mt-1 font-semibold">
+                                                Level Akhir:{' '}
                                                 {
-                                                    overrideForm.errors
+                                                    review.validation
                                                         .final_moral_level
                                                 }
                                             </p>
-                                        )}
+                                            {review.validation
+                                                .override_reason && (
+                                                <p className="mt-1 text-[11px] italic">
+                                                    Alasan Override: &quot;
+                                                    {
+                                                        review.validation
+                                                            .override_reason
+                                                    }
+                                                    &quot;
+                                                </p>
+                                            )}
+                                            {review.validation.teacher_note && (
+                                                <p className="mt-1 text-[11px]">
+                                                    Catatan:{' '}
+                                                    {
+                                                        review.validation
+                                                            .teacher_note
+                                                    }
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {/* Tabs */}
+                                    <div className="flex rounded-md border bg-muted/40 p-1">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setActionTab('approve')
+                                            }
+                                            className={`flex-1 rounded-sm py-1.5 text-xs font-semibold transition ${
+                                                actionTab === 'approve'
+                                                    ? 'bg-background text-foreground shadow-sm'
+                                                    : 'text-muted-foreground hover:text-foreground'
+                                            }`}
+                                        >
+                                            Setujui Hasil AI
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setActionTab('override')
+                                            }
+                                            className={`flex-1 rounded-sm py-1.5 text-xs font-semibold transition ${
+                                                actionTab === 'override'
+                                                    ? 'bg-background text-foreground shadow-sm'
+                                                    : 'text-muted-foreground hover:text-foreground'
+                                            }`}
+                                        >
+                                            Override Penilaian
+                                        </button>
                                     </div>
 
-                                    <div>
-                                        <label className="text-[11px] font-semibold text-amber-800 dark:text-amber-300">
-                                            Alasan Override (Wajib Diisi):{' '}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
-                                        </label>
-                                        <textarea
-                                            rows={3}
-                                            value={
-                                                overrideForm.data
-                                                    .override_reason
-                                            }
-                                            onChange={(e) =>
-                                                overrideForm.setData(
-                                                    'override_reason',
-                                                    e.target.value,
-                                                )
-                                            }
-                                            placeholder="Jelaskan alasan Anda mengubah hasil penilaian AI (misal: berdasarkan observasi harian atau jawaban lisan santri)..."
-                                            className="mt-1 w-full rounded-lg border border-amber-300 bg-amber-50/50 p-2.5 text-xs text-amber-950 outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200"
-                                        />
-                                        {overrideForm.errors
-                                            .override_reason && (
-                                            <p className="mt-1 text-[11px] font-medium text-red-500">
-                                                {
-                                                    overrideForm.errors
-                                                        .override_reason
-                                                }
+                                    {/* Form Approve */}
+                                    {actionTab === 'approve' && (
+                                        <form
+                                            onSubmit={handleApproveSubmit}
+                                            className="space-y-3 pt-1"
+                                        >
+                                            <p className="text-xs text-muted-foreground">
+                                                Menyetujui rekomendasi AI level{' '}
+                                                <span className="font-bold text-emerald-600">
+                                                    {review.ai_assessment
+                                                        ?.moral_level ||
+                                                        review.selected_option
+                                                            ?.internal_value ||
+                                                        'Tahap 3'}
+                                                </span>{' '}
+                                                sebagai hasil akhir santri.
                                             </p>
-                                        )}
-                                    </div>
 
-                                    <div>
-                                        <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                                            Catatan Tambahan (Opsional):
-                                        </label>
-                                        <textarea
-                                            rows={2}
-                                            value={
-                                                overrideForm.data.teacher_note
-                                            }
-                                            onChange={(e) =>
-                                                overrideForm.setData(
-                                                    'teacher_note',
-                                                    e.target.value,
-                                                )
-                                            }
-                                            placeholder="Tambahkan catatan pendampingan..."
-                                            className="mt-1 w-full rounded-lg border border-slate-200 bg-white p-2.5 text-xs text-slate-800 outline-none focus:border-amber-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
-                                        />
-                                    </div>
-
-                                    <button
-                                        type="submit"
-                                        disabled={overrideForm.processing}
-                                        className="mt-1 flex w-full items-center justify-center gap-1.5 rounded-lg bg-amber-600 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-600/20 transition hover:bg-amber-700 disabled:opacity-50"
-                                    >
-                                        <ShieldAlert className="h-4 w-4" />
-                                        {overrideForm.processing
-                                            ? 'Menyimpan...'
-                                            : 'Simpan Override Penilaian'}
-                                    </button>
-                                </form>
-                            )}
-                        </div>
-
-                        {/* Audit Perubahan & Timeline Visual */}
-                        {review.audit_trail &&
-                            review.audit_trail.length > 0 && (
-                                <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                                    <div className="flex items-center gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
-                                        <Clock className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                                        <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                                            Audit Perubahan & Riwayat Pemrosesan
-                                        </h4>
-                                    </div>
-
-                                    <div className="relative mt-4 space-y-4 before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-800">
-                                        {review.audit_trail.map((item, idx) => (
-                                            <div
-                                                key={idx}
-                                                className="relative flex gap-3 pl-8"
-                                            >
-                                                <div className="absolute top-1 left-1 h-5 w-5 rounded-full border-2 border-white bg-indigo-600 shadow-sm dark:border-slate-900" />
-                                                <div className="flex flex-col">
-                                                    <div className="flex flex-wrap items-center gap-2">
-                                                        <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
-                                                            {item.event}
-                                                        </span>
-                                                        <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                                                            {item.actor}
-                                                        </span>
-                                                        <span className="text-[10px] text-slate-400">
-                                                            {item.timestamp}
-                                                        </span>
-                                                    </div>
-                                                    <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">
-                                                        {item.description}
-                                                    </p>
-                                                </div>
+                                            <div>
+                                                <label className="text-xs font-medium">
+                                                    Catatan Ustadz (Opsional):
+                                                </label>
+                                                <textarea
+                                                    rows={2}
+                                                    value={
+                                                        approveForm.data
+                                                            .teacher_note
+                                                    }
+                                                    onChange={(e) =>
+                                                        approveForm.setData(
+                                                            'teacher_note',
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    placeholder="Tambahkan catatan hasil pengamatan..."
+                                                    className="mt-1 w-full rounded-md border bg-background p-2 text-xs outline-none focus:ring-1 focus:ring-primary"
+                                                />
                                             </div>
-                                        ))}
-                                    </div>
+
+                                            <Button
+                                                type="submit"
+                                                disabled={
+                                                    approveForm.processing
+                                                }
+                                                className="w-full bg-emerald-600 text-white hover:bg-emerald-700"
+                                            >
+                                                <CheckCircle2 className="mr-1.5 size-4" />
+                                                {approveForm.processing
+                                                    ? 'Menyimpan...'
+                                                    : 'Setujui Rekomendasi AI'}
+                                            </Button>
+                                        </form>
+                                    )}
+
+                                    {/* Form Override */}
+                                    {actionTab === 'override' && (
+                                        <form
+                                            onSubmit={handleOverrideSubmit}
+                                            className="space-y-3 pt-1"
+                                        >
+                                            <div>
+                                                <label className="text-xs font-medium">
+                                                    Pilih Tingkat Moral Akhir
+                                                    (Kohlberg):
+                                                </label>
+                                                <select
+                                                    value={
+                                                        overrideForm.data
+                                                            .final_moral_level
+                                                    }
+                                                    onChange={(e) =>
+                                                        overrideForm.setData(
+                                                            'final_moral_level',
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    className="mt-1 w-full rounded-md border bg-background p-2 text-xs font-medium outline-none focus:ring-1 focus:ring-amber-500"
+                                                >
+                                                    <option value="Tahap 1: Kepatuhan dan Hukuman">
+                                                        Tahap 1: Kepatuhan dan
+                                                        Hukuman
+                                                    </option>
+                                                    <option value="Tahap 2: Individualisme dan Pertukaran">
+                                                        Tahap 2: Individualisme
+                                                        dan Pertukaran
+                                                    </option>
+                                                    <option value="Tahap 3: Orientasi Anak Manis">
+                                                        Tahap 3: Orientasi Anak
+                                                        Manis
+                                                    </option>
+                                                    <option value="Tahap 4: Menjaga Ketertiban Sosial">
+                                                        Tahap 4: Menjaga
+                                                        Ketertiban Sosial
+                                                    </option>
+                                                    <option value="Tahap 5: Kontrak Sosial dan Hak Individu">
+                                                        Tahap 5: Kontrak Sosial
+                                                        dan Hak Individu
+                                                    </option>
+                                                    <option value="Tahap 6: Prinsip Etika Universal">
+                                                        Tahap 6: Prinsip Etika
+                                                        Universal
+                                                    </option>
+                                                </select>
+                                                {overrideForm.errors
+                                                    .final_moral_level && (
+                                                    <p className="mt-1 text-[11px] text-destructive">
+                                                        {
+                                                            overrideForm.errors
+                                                                .final_moral_level
+                                                        }
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            <div>
+                                                <label className="text-xs font-medium text-amber-700 dark:text-amber-300">
+                                                    Alasan Override (Wajib
+                                                    Diisi):{' '}
+                                                    <span className="text-destructive">
+                                                        *
+                                                    </span>
+                                                </label>
+                                                <textarea
+                                                    rows={3}
+                                                    value={
+                                                        overrideForm.data
+                                                            .override_reason
+                                                    }
+                                                    onChange={(e) =>
+                                                        overrideForm.setData(
+                                                            'override_reason',
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    placeholder="Jelaskan alasan Anda mengubah hasil penilaian AI..."
+                                                    className="mt-1 w-full rounded-md border border-amber-300 bg-amber-50/50 p-2 text-xs outline-none focus:ring-1 focus:ring-amber-500 dark:border-amber-900 dark:bg-amber-950/20"
+                                                />
+                                                {overrideForm.errors
+                                                    .override_reason && (
+                                                    <p className="mt-1 text-[11px] text-destructive">
+                                                        {
+                                                            overrideForm.errors
+                                                                .override_reason
+                                                        }
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            <div>
+                                                <label className="text-xs font-medium">
+                                                    Catatan Tambahan (Opsional):
+                                                </label>
+                                                <textarea
+                                                    rows={2}
+                                                    value={
+                                                        overrideForm.data
+                                                            .teacher_note
+                                                    }
+                                                    onChange={(e) =>
+                                                        overrideForm.setData(
+                                                            'teacher_note',
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    placeholder="Tambahkan catatan pendampingan..."
+                                                    className="mt-1 w-full rounded-md border bg-background p-2 text-xs outline-none focus:ring-1 focus:ring-amber-500"
+                                                />
+                                            </div>
+
+                                            <Button
+                                                type="submit"
+                                                disabled={
+                                                    overrideForm.processing
+                                                }
+                                                className="w-full bg-amber-600 text-white hover:bg-amber-700"
+                                            >
+                                                <ShieldAlert className="mr-1.5 size-4" />
+                                                {overrideForm.processing
+                                                    ? 'Menyimpan...'
+                                                    : 'Simpan Override Penilaian'}
+                                            </Button>
+                                        </form>
+                                    )}
                                 </div>
-                            )}
-                    </div>
+
+                                {/* Audit Perubahan */}
+                                {review.audit_trail &&
+                                    review.audit_trail.length > 0 && (
+                                        <div className="space-y-3 rounded-md border p-4">
+                                            <div className="flex items-center gap-2 text-sm font-medium">
+                                                <Clock className="size-4 text-muted-foreground" />
+                                                Audit Perubahan & Riwayat
+                                                Pemrosesan
+                                            </div>
+
+                                            <div className="relative mt-2 space-y-3 before:absolute before:inset-0 before:left-2 before:w-0.5 before:bg-border">
+                                                {review.audit_trail.map(
+                                                    (item, idx) => (
+                                                        <div
+                                                            key={idx}
+                                                            className="relative flex gap-3 pl-6"
+                                                        >
+                                                            <div className="absolute top-1 left-0.5 h-3.5 w-3.5 rounded-full border-2 border-background bg-primary" />
+                                                            <div className="flex flex-col text-xs">
+                                                                <div className="flex flex-wrap items-center gap-1.5">
+                                                                    <span className="font-bold text-foreground">
+                                                                        {
+                                                                            item.event
+                                                                        }
+                                                                    </span>
+                                                                    <Badge
+                                                                        variant="outline"
+                                                                        className="px-1 py-0 text-[10px]"
+                                                                    >
+                                                                        {
+                                                                            item.actor
+                                                                        }
+                                                                    </Badge>
+                                                                    <span className="text-[10px] text-muted-foreground">
+                                                                        {
+                                                                            item.timestamp
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                                <p className="mt-0.5 text-muted-foreground">
+                                                                    {
+                                                                        item.description
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    ),
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
-        </AppLayout>
+        </>
     );
 }

@@ -63,7 +63,7 @@ export default function StudentTestWork({
     // Recorder & preview state
     const [isRecording, setIsRecording] = useState(false);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-    const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
+    const [, setRecordedBlob] = useState<Blob | null>(null);
     const [recordedUrl, setRecordedUrl] = useState<string | null>(null);
     const [filePreviewUrl, setFilePreviewUrl] = useState<string | null>(null);
 
@@ -102,6 +102,7 @@ export default function StudentTestWork({
         const hasData =
             form.data.selected_option_id !== null ||
             form.data.typed_reason !== '';
+
         if (!hasData) {
             return;
         }
@@ -134,6 +135,7 @@ export default function StudentTestWork({
             if (recordedUrl) {
                 URL.revokeObjectURL(recordedUrl);
             }
+
             if (filePreviewUrl) {
                 URL.revokeObjectURL(filePreviewUrl);
             }
@@ -229,6 +231,7 @@ export default function StudentTestWork({
     const startRecording = async () => {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             alert('Browser Anda tidak mendukung perekaman audio.');
+
             return;
         }
 
@@ -240,7 +243,9 @@ export default function StudentTestWork({
             const chunks: BlobPart[] = [];
 
             mr.ondataavailable = (e) => {
-                if (e.data && e.data.size > 0) chunks.push(e.data);
+                if (e.data && e.data.size > 0) {
+                    chunks.push(e.data);
+                }
             };
 
             mr.onstop = () => {
@@ -256,7 +261,6 @@ export default function StudentTestWork({
             mr.start();
             setIsRecording(true);
         } catch (err) {
-            // eslint-disable-next-line no-console
             console.error(err);
             alert('Gagal mengakses mikrofon.');
         }
@@ -264,7 +268,11 @@ export default function StudentTestWork({
 
     const stopRecording = () => {
         const mr = mediaRecorderRef.current;
-        if (!mr) return;
+
+        if (!mr) {
+            return;
+        }
+
         mr.stop();
         setIsRecording(false);
         // stop all tracks
@@ -273,7 +281,9 @@ export default function StudentTestWork({
     };
 
     const uploadRecordedAudio = (blob: Blob) => {
-        if (!current_case) return;
+        if (!current_case) {
+            return;
+        }
 
         const formData = new FormData();
         formData.append('moral_case_id', String(current_case.id));
@@ -301,9 +311,13 @@ export default function StudentTestWork({
     };
 
     const playStory = () => {
-        if (!current_case) return;
+        if (!current_case) {
+            return;
+        }
+
         if (!('speechSynthesis' in window)) {
             alert('Browser Anda tidak mendukung Text-to-Speech.');
+
             return;
         }
 

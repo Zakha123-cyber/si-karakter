@@ -7,6 +7,8 @@ use App\Enums\AssessmentStatus;
 use App\Models\AiAssessment;
 use App\Models\TestAnswer;
 use App\Services\AI\Exceptions\AiAssessmentException;
+use App\Services\AI\FakeMoralAssessmentService;
+use App\Services\AI\GoogleGeminiService;
 use App\Services\AI\MoralAssessmentService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -123,7 +125,7 @@ class AiAssessmentJob implements ShouldQueue
         $provider = config('ai.provider', 'fake');
 
         return match ($provider) {
-            'google_gemini' => new \App\Services\AI\GoogleGeminiService(
+            'google_gemini' => new GoogleGeminiService(
                 apiKey: config('ai.google_gemini.api_key', ''),
                 model: config('ai.google_gemini.model', 'gemini-2.0-flash'),
                 baseUrl: config('ai.google_gemini.base_url', 'https://generativelanguage.googleapis.com/v1beta'),
@@ -132,7 +134,7 @@ class AiAssessmentJob implements ShouldQueue
                 jsonSchema: config('ai.json_schema', []),
                 timeout: (int) config('ai.timeout', 60),
             ),
-            'fake' => new \App\Services\AI\FakeMoralAssessmentService,
+            'fake' => new FakeMoralAssessmentService,
             default => throw new \InvalidArgumentException("Unsupported AI provider: [{$provider}]"),
         };
     }

@@ -115,6 +115,6 @@ class GoogleGeminiService implements MoralAssessmentService
             ."Cerita: {$input->case['story']}\n\n"
             ."Pilihan santri: {$input->case['selected_option']}\n\n"
             ."Alasan santri: {$answerText}\n\n"
-            ."Indikator yang diizinkan: ".implode(', ', $input->allowedIndicators);
+            .'Indikator yang diizinkan: '.implode(', ', $input->allowedIndicators);
     }
 }

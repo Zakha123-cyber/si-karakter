@@ -11,7 +11,6 @@ use App\Models\SimulationScenario;
 use App\Models\Student;
 use App\Models\TestAttempt;
 use App\Models\TestPackage;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;

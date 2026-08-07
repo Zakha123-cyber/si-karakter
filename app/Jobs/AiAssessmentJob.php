@@ -7,6 +7,8 @@ use App\Enums\AssessmentStatus;
 use App\Models\AiAssessment;
 use App\Models\TestAnswer;
 use App\Services\AI\Exceptions\AiAssessmentException;
+use App\Services\AI\FakeMoralAssessmentService;
+use App\Services\AI\GoogleGeminiService;
 use App\Services\AI\MoralAssessmentService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -121,6 +123,40 @@ class AiAssessmentJob implements ShouldQueue
     private function resolveService(): MoralAssessmentService
     {
         return app(MoralAssessmentService::class);
+        $provider = config('ai.provider', 'fake');
+
+        return match ($provider) {
+            'google_gemini' => new GoogleGeminiService(
+                apiKey: config('ai.google_gemini.api_key', ''),
+                model: config('ai.google_gemini.model', 'gemini-2.0-flash'),
+                baseUrl: config('ai.google_gemini.base_url', 'https://generativelanguage.googleapis.com/v1beta'),
+                promptVersion: config('ai.prompt_version', 'moral-classifier-v1'),
+                systemPrompt: $this->loadPrompt(),
+                jsonSchema: config('ai.json_schema', []),
+                timeout: (int) config('ai.timeout', 60),
+            ),
+            'fake' => new FakeMoralAssessmentService,
+            default => throw new \InvalidArgumentException("Unsupported AI provider: [{$provider}]"),
+        };
+    }
+
+    private function loadPrompt(): string
+    {
+        $path = config('ai.prompt_file');
+
+        if ($path === null || ! file_exists($path)) {
+            return 'Anda membantu ustadz mengklasifikasikan kualitas penalaran moral anak usia 6-10 tahun. Klasifikasikan alasan, bukan hanya pilihan tindakan. Gunakan hanya kategori: pre_conventional, conventional, post_conventional. Jangan melakukan diagnosis psikologis. Jangan memberikan label permanen. Gunakan bahasa netral. Hasil adalah rekomendasi yang harus dikonfirmasi ustadz. Kembalikan JSON sesuai schema.';
+        }
+
+        $content = file_get_contents($path);
+
+        if ($content === false) {
+            Log::error('AiAssessmentJob: failed to read prompt file.', ['path' => $path]);
+
+            throw new \RuntimeException("Failed to read AI prompt file at: {$path}");
+        }
+
+        return $content;
     }
 
     private function buildInput(TestAnswer $testAnswer): MoralAssessmentInput

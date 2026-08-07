@@ -14,17 +14,6 @@ import { useState } from 'react';
 import type { BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-    },
-    {
-        title: 'Validasi & Review',
-        href: '/teacher/reviews',
-    },
-];
-
 interface ReviewItem {
     id: number;
     test_attempt_id: number;
@@ -154,7 +143,7 @@ export default function ReviewQueueIndex({
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <>
             <Head title="Antrean Review Validasi Ustadz" />
 
             <div className="flex flex-col gap-6 p-4 md:p-6">
@@ -354,6 +343,6 @@ export default function ReviewQueueIndex({
                     )}
                 </div>
             </div>
-        </AppLayout>
+        </>
     );
 }

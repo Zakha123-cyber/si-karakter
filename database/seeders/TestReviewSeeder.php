@@ -167,8 +167,8 @@ class TestReviewSeeder extends Seeder
 
         AiAssessment::query()->create([
             'test_answer_id' => $answer1->id,
-            'provider' => 'openai',
-            'model' => 'gpt-4o',
+            'provider' => 'google_gemini',
+            'model' => 'gemini-3.1-flash-lite',
             'moral_level' => 'Tahap 3: Orientasi Anak Manis',
             'confidence' => 0.9100,
             'reasoning_summary' => 'Santri menunjukkan empati dan kesadaran akan aturan norma kejujuran.',
@@ -205,8 +205,8 @@ class TestReviewSeeder extends Seeder
 
         $aiAssessment2 = AiAssessment::query()->create([
             'test_answer_id' => $answer2->id,
-            'provider' => 'openai',
-            'model' => 'gpt-4o',
+            'provider' => 'google_gemini',
+            'model' => 'gemini-3.1-flash-lite',
             'moral_level' => 'Tahap 3: Orientasi Anak Manis',
             'confidence' => 0.8800,
             'reasoning_summary' => 'Santri memilih jawaban yang sesuai norma kebaikan.',

@@ -91,7 +91,7 @@ export default function StudentDashboard({
             <section className="relative mb-6 overflow-hidden rounded-[32px] bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-500 p-6 text-white shadow-[0_12px_40px_rgba(16,185,129,0.35)] sm:p-8">
                 {/* Mosque silhouette */}
                 <svg
-                    className="pointer-events-none absolute -right-6 -top-6 h-56 w-56 opacity-20"
+                    className="pointer-events-none absolute -top-6 -right-6 h-56 w-56 opacity-20"
                     viewBox="0 0 200 200"
                     fill="currentColor"
                     aria-hidden="true"
@@ -150,9 +150,15 @@ export default function StudentDashboard({
                         onAction={() => {}}
                     >
                         <div className="grid gap-4 sm:grid-cols-2">
-                            {(contents.length > 0 ? contents : placeholderContents).map(
-                                (c) => <MovieCard key={`${c.id}-${c.title}`} content={c} />,
-                            )}
+                            {(contents.length > 0
+                                ? contents
+                                : placeholderContents
+                            ).map((c) => (
+                                <MovieCard
+                                    key={`${c.id}-${c.title}`}
+                                    content={c}
+                                />
+                            ))}
                         </div>
                     </Section>
 
@@ -206,9 +212,12 @@ export default function StudentDashboard({
                         onAction={() => {}}
                     >
                         <div className="grid gap-4 sm:grid-cols-3">
-                            {(scenarios.length > 0 ? scenarios : placeholderScenarios).map(
-                                (s) => <ScenarioCard key={s.title} scenario={s} />,
-                            )}
+                            {(scenarios.length > 0
+                                ? scenarios
+                                : placeholderScenarios
+                            ).map((s) => (
+                                <ScenarioCard key={s.title} scenario={s} />
+                            ))}
                         </div>
                     </Section>
                 </div>
@@ -241,22 +250,30 @@ export default function StudentDashboard({
                                 <span>
                                     {student.next_level?.minimum_points ??
                                         student.points}{' '}
-                                poin
+                                    poin
                                 </span>
                             </div>
                             <div className="h-3 w-full overflow-hidden rounded-full bg-emerald-100">
                                 <div
                                     className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-700"
-                                    style={{ width: `${student.tree_progress}%` }}
+                                    style={{
+                                        width: `${student.tree_progress}%`,
+                                    }}
                                 />
                             </div>
                         </div>
                         <div className="mt-4 flex justify-center gap-1.5">
                             {Array.from({ length: 5 }).map((_, i) =>
                                 i < student.stars ? (
-                                    <Star key={i} className="size-5 fill-yellow-400 text-yellow-400" />
+                                    <Star
+                                        key={i}
+                                        className="size-5 fill-yellow-400 text-yellow-400"
+                                    />
                                 ) : (
-                                    <Star key={i} className="size-5 text-slate-200" />
+                                    <Star
+                                        key={i}
+                                        className="size-5 text-slate-200"
+                                    />
                                 ),
                             )}
                         </div>
@@ -279,7 +296,8 @@ export default function StudentDashboard({
                                     className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-400"
                                     style={{
                                         width: `${
-                                            (completedMissions / missions.length) *
+                                            (completedMissions /
+                                                missions.length) *
                                             100
                                         }%`,
                                     }}
@@ -291,7 +309,9 @@ export default function StudentDashboard({
                                 <li
                                     key={m.id}
                                     className={`flex items-center gap-3 rounded-2xl p-2.5 ${
-                                        m.completed ? 'bg-emerald-50' : 'bg-gray-50'
+                                        m.completed
+                                            ? 'bg-emerald-50'
+                                            : 'bg-gray-50'
                                     }`}
                                 >
                                     <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-lg shadow-sm">
@@ -322,8 +342,8 @@ export default function StudentDashboard({
                         <div className="flex items-center gap-3">
                             <span className="text-3xl">🌼</span>
                             <p className="text-sm font-bold text-amber-800">
-                                “Sebaik-baik manusia adalah yang paling bermanfaat
-                                bagi sesama.”
+                                “Sebaik-baik manusia adalah yang paling
+                                bermanfaat bagi sesama.”
                             </p>
                         </div>
                         <button className="mt-3 flex items-center gap-2 rounded-2xl bg-white px-4 py-2 text-xs font-bold text-amber-700 shadow-sm transition-transform hover:scale-[1.02]">
@@ -380,7 +400,7 @@ function StatPill({
             {icon}
             <div className="leading-tight">
                 <div className="text-base font-extrabold">{value}</div>
-                <div className="text-[10px] font-semibold uppercase tracking-wide opacity-90">
+                <div className="text-[10px] font-semibold tracking-wide uppercase opacity-90">
                     {label}
                 </div>
             </div>
@@ -415,7 +435,9 @@ function Section({
                         {index}
                     </span>
                     <div>
-                        <h2 className={`flex items-center gap-2 text-lg font-extrabold ${color}`}>
+                        <h2
+                            className={`flex items-center gap-2 text-lg font-extrabold ${color}`}
+                        >
                             <span>{emoji}</span>
                             {title}
                         </h2>
@@ -458,7 +480,7 @@ function MovieCard({ content }: { content: Content }) {
                     <Play className="ml-0.5 size-5 fill-current" />
                 </button>
                 {minutes !== null && (
-                    <span className="absolute bottom-2 right-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-bold text-white">
+                    <span className="absolute right-2 bottom-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-bold text-white">
                         {minutes} mnt
                     </span>
                 )}
@@ -500,12 +522,17 @@ function ScenarioCard({ scenario }: { scenario: Scenario }) {
 }
 
 function TreeIllustration({ progress }: { progress: number }) {
-    const leafCount = progress > 80 ? 6 : progress > 50 ? 5 : progress > 25 ? 4 : 3;
+    const leafCount =
+        progress > 80 ? 6 : progress > 50 ? 5 : progress > 25 ? 4 : 3;
 
     return (
         <div className="relative mx-auto mt-6 flex h-32 w-40 items-end justify-center">
             <div className="absolute bottom-0 h-3 w-16 rounded-full bg-emerald-800" />
-            <svg viewBox="0 0 160 130" className="absolute bottom-0 h-full w-full" aria-hidden="true">
+            <svg
+                viewBox="0 0 160 130"
+                className="absolute bottom-0 h-full w-full"
+                aria-hidden="true"
+            >
                 {/* trunk */}
                 <path
                     d="M78 128 C74 105 74 88 78 70 C82 88 82 105 78 128 Z"
@@ -524,7 +551,7 @@ function TreeIllustration({ progress }: { progress: number }) {
                 ))}
                 <circle cx="82" cy="18" r="12" fill="#a7f3d0" />
             </svg>
-            <div className="absolute right-0 top-0 -translate-y-2 animate-bounce">
+            <div className="absolute top-0 right-0 -translate-y-2 animate-bounce">
                 <span className="text-2xl">🐭</span>
             </div>
         </div>

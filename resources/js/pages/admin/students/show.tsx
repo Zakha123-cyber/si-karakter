@@ -48,8 +48,8 @@ const statusLabels: Record<string, string> = {
 export default function AdminStudentShow({ student, timeline }: Props) {
     const formatDate = (dateStr: string | null) => {
         if (!dateStr) {
-return '-';
-}
+            return '-';
+        }
 
         return new Date(dateStr).toLocaleDateString('id-ID', {
             year: 'numeric',

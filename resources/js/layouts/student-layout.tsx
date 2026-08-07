@@ -58,7 +58,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
                         className="absolute inset-0 bg-black/30"
                         onClick={() => setDrawerOpen(false)}
                     />
-                    <div className="absolute left-0 top-0 h-full w-72 rounded-r-[28px] bg-white p-5 shadow-2xl">
+                    <div className="absolute top-0 left-0 h-full w-72 rounded-r-[28px] bg-white p-5 shadow-2xl">
                         <div className="mb-4 flex justify-end">
                             <button
                                 onClick={() => setDrawerOpen(false)}

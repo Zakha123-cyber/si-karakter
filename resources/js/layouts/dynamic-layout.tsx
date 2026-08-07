@@ -19,9 +19,7 @@ export default function DynamicLayout({
 
     if (role === 'teacher' || role === 'admin') {
         return (
-            <TeacherLayout breadcrumbs={breadcrumbs}>
-                {children}
-            </TeacherLayout>
+            <TeacherLayout breadcrumbs={breadcrumbs}>{children}</TeacherLayout>
         );
     }
 

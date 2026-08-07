@@ -148,8 +148,8 @@ const statusVariant: Record<
 
 function formatDateTime(value: string | null) {
     if (!value) {
-return '-';
-}
+        return '-';
+    }
 
     return new Intl.DateTimeFormat('id-ID', {
         dateStyle: 'medium',
@@ -159,8 +159,8 @@ return '-';
 
 function formatPercent(value: number | null) {
     if (value === null || Number.isNaN(value)) {
-return '-';
-}
+        return '-';
+    }
 
     return `${(value * 100).toFixed(1)}%`;
 }

@@ -33,8 +33,8 @@ export function AudioPlayer({
         const audio = audioRef.current;
 
         if (!audio) {
-return;
-}
+            return;
+        }
 
         const updateTime = () => setCurrentTime(audio.currentTime);
         const updateDuration = () =>
@@ -56,8 +56,8 @@ return;
         const audio = audioRef.current;
 
         if (!audio) {
-return;
-}
+            return;
+        }
 
         if (isPlaying) {
             audio.pause();
@@ -76,8 +76,8 @@ return;
         const audio = audioRef.current;
 
         if (!audio) {
-return;
-}
+            return;
+        }
 
         const newTime = parseFloat(e.target.value);
         audio.currentTime = newTime;
@@ -88,8 +88,8 @@ return;
         const audio = audioRef.current;
 
         if (!audio) {
-return;
-}
+            return;
+        }
 
         audio.playbackRate = rate;
         setPlaybackRate(rate);
@@ -99,8 +99,8 @@ return;
         const audio = audioRef.current;
 
         if (!audio) {
-return;
-}
+            return;
+        }
 
         const newVol = parseFloat(e.target.value);
         audio.volume = newVol;
@@ -112,8 +112,8 @@ return;
         const audio = audioRef.current;
 
         if (!audio) {
-return;
-}
+            return;
+        }
 
         if (isMuted) {
             audio.muted = false;
@@ -126,8 +126,8 @@ return;
 
     const formatTime = (timeInSec: number) => {
         if (isNaN(timeInSec) || timeInSec < 0) {
-return '00:00';
-}
+            return '00:00';
+        }
 
         const mins = Math.floor(timeInSec / 60);
         const secs = Math.floor(timeInSec % 60);

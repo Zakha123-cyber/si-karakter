@@ -75,7 +75,7 @@ export default function TeacherLayout({ children }: TeacherLayoutProps) {
                         className="absolute inset-0 bg-black/30"
                         onClick={() => setDrawerOpen(false)}
                     />
-                    <div className="absolute left-0 top-0 h-full w-72 rounded-r-[28px] bg-white p-5 shadow-2xl">
+                    <div className="absolute top-0 left-0 h-full w-72 rounded-r-[28px] bg-white p-5 shadow-2xl">
                         <div className="mb-4 flex justify-end">
                             <button
                                 onClick={() => setDrawerOpen(false)}
@@ -148,7 +148,7 @@ function SidebarContent() {
                     href="/logout"
                     method="post"
                     as="button"
-                    className="mt-2 flex w-full items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-semibold text-rose-500 hover:bg-rose-50 transition-colors"
+                    className="mt-2 flex w-full items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-semibold text-rose-500 transition-colors hover:bg-rose-50"
                 >
                     <span className="text-lg leading-none">🚪</span>
                     Keluar
@@ -158,7 +158,7 @@ function SidebarContent() {
             {/* Mascot + Assistant Card matching Student Dashboard */}
             <div className="mt-4 rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 p-4">
                 <div className="mb-2 flex justify-center">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-3xl shadow-inner text-white">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-3xl text-white shadow-inner">
                         👳‍♂️
                     </div>
                 </div>

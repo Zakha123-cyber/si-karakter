@@ -244,8 +244,8 @@ export default function StudentTestWork({
 
             mr.ondataavailable = (e) => {
                 if (e.data && e.data.size > 0) {
-chunks.push(e.data);
-}
+                    chunks.push(e.data);
+                }
             };
 
             mr.onstop = () => {
@@ -261,7 +261,6 @@ chunks.push(e.data);
             mr.start();
             setIsRecording(true);
         } catch (err) {
-             
             console.error(err);
             alert('Gagal mengakses mikrofon.');
         }
@@ -271,8 +270,8 @@ chunks.push(e.data);
         const mr = mediaRecorderRef.current;
 
         if (!mr) {
-return;
-}
+            return;
+        }
 
         mr.stop();
         setIsRecording(false);
@@ -283,8 +282,8 @@ return;
 
     const uploadRecordedAudio = (blob: Blob) => {
         if (!current_case) {
-return;
-}
+            return;
+        }
 
         const formData = new FormData();
         formData.append('moral_case_id', String(current_case.id));
@@ -313,8 +312,8 @@ return;
 
     const playStory = () => {
         if (!current_case) {
-return;
-}
+            return;
+        }
 
         if (!('speechSynthesis' in window)) {
             alert('Browser Anda tidak mendukung Text-to-Speech.');

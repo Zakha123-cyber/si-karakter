@@ -442,15 +442,15 @@ export default function TeacherMoralCasesIndex({
                         <Button
                             type="button"
                             onClick={openCreate}
-                            className="inline-flex shrink-0 self-start items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-emerald-800 shadow-md transition-all hover:bg-emerald-50 hover:shadow-lg md:self-center"
+                            className="inline-flex shrink-0 items-center gap-2 self-start rounded-xl bg-white px-5 py-3 text-sm font-semibold text-emerald-800 shadow-md transition-all hover:bg-emerald-50 hover:shadow-lg md:self-center"
                         >
                             <Plus className="size-4" />
                             Tambah Kasus
                         </Button>
                     </div>
                     {/* Decorative Background Glows */}
-                    <div className="pointer-events-none absolute -right-10 -top-10 size-60 rounded-full bg-white/10 blur-2xl" />
-                    <div className="pointer-events-none absolute -bottom-10 right-20 size-40 rounded-full bg-teal-500/20 blur-xl" />
+                    <div className="pointer-events-none absolute -top-10 -right-10 size-60 rounded-full bg-white/10 blur-2xl" />
+                    <div className="pointer-events-none absolute right-20 -bottom-10 size-40 rounded-full bg-teal-500/20 blur-xl" />
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
@@ -501,7 +501,9 @@ export default function TeacherMoralCasesIndex({
                                         Daftar Kasus
                                     </CardTitle>
                                     <CardDescription className="text-xs text-slate-500">
-                                        Menampilkan {moralCases.from ?? 0}-{moralCases.to ?? 0} dari {moralCases.total} kasus moral
+                                        Menampilkan {moralCases.from ?? 0}-
+                                        {moralCases.to ?? 0} dari{' '}
+                                        {moralCases.total} kasus moral
                                     </CardDescription>
                                 </div>
                             </div>
@@ -513,14 +515,14 @@ export default function TeacherMoralCasesIndex({
                             className="grid gap-3 md:grid-cols-[minmax(0,1fr)_200px_auto]"
                         >
                             <div className="relative">
-                                <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+                                <Search className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
                                 <Input
                                     value={search}
                                     onChange={(event) =>
                                         setSearch(event.target.value)
                                     }
                                     placeholder="Cari judul atau cerita kasus..."
-                                    className="h-10 rounded-xl border-slate-200 bg-slate-50 pl-10 pr-4 text-sm transition-all focus:border-emerald-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                                    className="h-10 rounded-xl border-slate-200 bg-slate-50 pr-4 pl-10 text-sm transition-all focus:border-emerald-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                                 />
                             </div>
                             <select
@@ -545,20 +547,12 @@ export default function TeacherMoralCasesIndex({
 
                         <div className="overflow-x-auto rounded-xl border border-slate-100 dark:border-slate-800">
                             <table className="w-full min-w-[980px] text-sm">
-                                <thead className="border-b border-slate-100 bg-slate-50/80 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-400">
+                                <thead className="border-b border-slate-100 bg-slate-50/80 text-left text-xs font-semibold tracking-wider text-slate-500 uppercase dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-400">
                                     <tr>
-                                        <th className="px-6 py-4">
-                                            Kasus
-                                        </th>
-                                        <th className="px-6 py-4">
-                                            Konten
-                                        </th>
-                                        <th className="px-6 py-4">
-                                            Media
-                                        </th>
-                                        <th className="px-6 py-4">
-                                            Status
-                                        </th>
+                                        <th className="px-6 py-4">Kasus</th>
+                                        <th className="px-6 py-4">Konten</th>
+                                        <th className="px-6 py-4">Media</th>
+                                        <th className="px-6 py-4">Status</th>
                                         <th className="px-6 py-4 text-right">
                                             Action
                                         </th>
@@ -1351,12 +1345,9 @@ function SummaryCard({
     const colorMap = {
         emerald:
             'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900',
-        blue:
-            'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900',
-        purple:
-            'bg-purple-50 text-purple-600 border-purple-100 dark:bg-purple-950/40 dark:text-purple-400 dark:border-purple-900',
-        amber:
-            'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900',
+        blue: 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900',
+        purple: 'bg-purple-50 text-purple-600 border-purple-100 dark:bg-purple-950/40 dark:text-purple-400 dark:border-purple-900',
+        amber: 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900',
     };
 
     return (
@@ -1368,7 +1359,7 @@ function SummaryCard({
                     {icon}
                 </div>
                 <div>
-                    <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-400">
+                    <div className="text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-slate-400">
                         {label}
                     </div>
                     <div className="mt-1 text-2xl font-bold text-slate-800 dark:text-white">

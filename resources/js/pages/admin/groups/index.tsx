@@ -99,12 +99,12 @@ function StudentCheckboxList({
 
     const filtered = students.filter((s) => {
         if (showOnlyUnassigned && s.current_group_id) {
-return false;
-}
+            return false;
+        }
 
         if (!s.user) {
-return false;
-}
+            return false;
+        }
 
         return (
             !q ||
@@ -266,8 +266,8 @@ export default function AdminGroupsIndex({
         event.preventDefault();
 
         if (!editingGroup) {
-return;
-}
+            return;
+        }
 
         const toastId = toast.loading('Menyimpan perubahan...');
         editForm.put(`/admin/groups/${editingGroup.id}`, {
@@ -327,8 +327,8 @@ return;
         event.preventDefault();
 
         if (!assignGroup) {
-return;
-}
+            return;
+        }
 
         const toastId = toast.loading('Menyimpan...');
         assignForm.post(`/admin/groups/${assignGroup.id}/students`, {
@@ -654,10 +654,10 @@ return;
                                             disabled={!link.url}
                                             onClick={() => {
                                                 if (link.url) {
-router.visit(link.url, {
+                                                    router.visit(link.url, {
                                                         preserveScroll: true,
                                                     });
-}
+                                                }
                                             }}
                                         >
                                             {link.label ===
@@ -697,8 +697,8 @@ router.visit(link.url, {
                 open={viewGroup !== null}
                 onOpenChange={(open) => {
                     if (!open) {
-cancelView();
-}
+                        cancelView();
+                    }
                 }}
             >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
@@ -760,8 +760,8 @@ cancelView();
                 open={editingGroup !== null}
                 onOpenChange={(open) => {
                     if (!open) {
-cancelEdit();
-}
+                        cancelEdit();
+                    }
                 }}
             >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
@@ -882,8 +882,8 @@ cancelEdit();
                 open={assignGroup !== null}
                 onOpenChange={(open) => {
                     if (!open) {
-cancelAssign();
-}
+                        cancelAssign();
+                    }
                 }}
             >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">

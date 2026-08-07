@@ -121,8 +121,8 @@ export default function AdminAcademicYearsIndex({
         event.preventDefault();
 
         if (!editingYear) {
-return;
-}
+            return;
+        }
 
         const toastId = toast.loading('Menyimpan perubahan...');
         editForm.put(`/admin/academic-years/${editingYear.id}`, {
@@ -141,8 +141,8 @@ return;
 
     const activateYear = (year: AcademicYear) => {
         if (year.is_active) {
-return;
-}
+            return;
+        }
 
         const toastId = toast.loading('Mengaktifkan tahun ajaran...');
         router.patch(
@@ -455,10 +455,10 @@ return;
                                             disabled={!link.url}
                                             onClick={() => {
                                                 if (link.url) {
-router.visit(link.url, {
+                                                    router.visit(link.url, {
                                                         preserveScroll: true,
                                                     });
-}
+                                                }
                                             }}
                                         >
                                             {link.label ===
@@ -498,8 +498,8 @@ router.visit(link.url, {
                 open={editingYear !== null}
                 onOpenChange={(open) => {
                     if (!open) {
-cancelEdit();
-}
+                        cancelEdit();
+                    }
                 }}
             >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">

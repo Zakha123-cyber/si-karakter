@@ -111,8 +111,8 @@ const statusVariant: Record<
 
 function formatDateTime(value: string | null) {
     if (!value) {
-return '-';
-}
+        return '-';
+    }
 
     return new Intl.DateTimeFormat('id-ID', {
         dateStyle: 'medium',

@@ -153,8 +153,8 @@ export default function AdminStudentsIndex({
         event.preventDefault();
 
         if (!editingStudent) {
-return;
-}
+            return;
+        }
 
         const toastId = toast.loading('Menyimpan perubahan...');
         editForm.put(`/admin/students/${editingStudent.id}`, {
@@ -537,10 +537,10 @@ return;
                                             disabled={!link.url}
                                             onClick={() => {
                                                 if (link.url) {
-router.visit(link.url, {
+                                                    router.visit(link.url, {
                                                         preserveScroll: true,
                                                     });
-}
+                                                }
                                             }}
                                         >
                                             {link.label ===
@@ -580,8 +580,8 @@ router.visit(link.url, {
                 open={editingStudent !== null}
                 onOpenChange={(open) => {
                     if (!open) {
-cancelEdit();
-}
+                        cancelEdit();
+                    }
                 }}
             >
                 <SheetContent className="w-full overflow-y-auto sm:max-w-lg">

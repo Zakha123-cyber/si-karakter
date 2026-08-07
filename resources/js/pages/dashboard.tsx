@@ -5,7 +5,6 @@ import {
     CalendarDays,
     ClipboardCheck,
     FileText,
-    LayoutDashboard,
     TreePine,
     Users,
 } from 'lucide-react';

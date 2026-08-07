@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Teacher\CharacterIndicatorController;
 use App\Http\Controllers\Teacher\MoralCaseController;
+use App\Http\Controllers\Teacher\ObservationController;
 use App\Http\Controllers\Teacher\ReviewController;
 use App\Http\Controllers\Teacher\ScoringConfigurationController;
 use App\Http\Controllers\Teacher\TestPackageController;
@@ -90,6 +91,12 @@ Route::middleware(['auth', 'active', 'role:teacher,admin'])->prefix('teacher')->
     Route::post('reviews/{answer}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
     Route::post('reviews/{answer}/override', [ReviewController::class, 'override'])->name('reviews.override');
     Route::post('reviews/{answer}/retry-transcription', [ReviewController::class, 'retryTranscription'])->name('reviews.retry-transcription');
+
+    // Daily Observation
+    Route::get('observations', [ObservationController::class, 'index'])->name('observations.index');
+    Route::post('observations', [ObservationController::class, 'store'])->name('observations.store');
+    Route::put('observations/{observationEntry}', [ObservationController::class, 'update'])->name('observations.update');
+    Route::delete('observations/{observationEntry}', [ObservationController::class, 'destroy'])->name('observations.destroy');
 });
 
 require __DIR__.'/settings.php';

@@ -1,11 +1,6 @@
-import AppLayout from '@/layouts/app-layout';
-import { AudioPlayer } from '@/components/audio-player';
-import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import {
     ArrowLeft,
-    AudioLines,
-    Award,
     Bot,
     CheckCircle2,
     Clock,
@@ -19,6 +14,9 @@ import {
     X,
 } from 'lucide-react';
 import { useState } from 'react';
+import type { BreadcrumbItem } from '@/types';
+import { AudioPlayer } from '@/components/audio-player';
+import AppLayout from '@/layouts/app-layout';
 
 interface ReviewDetailProps {
     review: {
@@ -284,6 +282,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                         const isSelected =
                                             review.selected_option?.id ===
                                             opt.id;
+
                                         return (
                                             <div
                                                 key={opt.id}
@@ -396,6 +395,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                             review.transcription
                                                                 ?.original_text ||
                                                             review.final_transcript;
+
                                                         if (text) {
                                                             navigator.clipboard.writeText(
                                                                 text,

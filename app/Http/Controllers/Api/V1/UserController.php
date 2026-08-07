@@ -32,7 +32,7 @@ class UserController extends Controller
             })
             ->when($request->string('role')->toString() !== '', fn ($query) => $query->where('role', $request->string('role')->toString()))
             ->latest()
-            ->paginate($request->integer('per_page', 15));
+            ->paginate(min($request->integer('per_page', 15), 100));
 
         return $this->success('Users retrieved', UserResource::collection($users));
     }

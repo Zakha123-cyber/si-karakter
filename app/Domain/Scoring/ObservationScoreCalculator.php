@@ -2,6 +2,7 @@
 
 namespace App\Domain\Scoring;
 
+use App\Models\ObservationEntry;
 use App\Models\ObservationItem;
 use App\Models\Student;
 use Carbon\CarbonInterface;
@@ -56,6 +57,50 @@ class ObservationScoreCalculator
                     'score' => $score,
                 ];
             }
+        }
+
+        if ($scores === []) {
+            return new ObservationScoreResult(null, $details, $counted, $total);
+        }
+
+        return new ObservationScoreResult(
+            round(array_sum($scores) / count($scores), 2),
+            $details,
+            $counted,
+            $total,
+        );
+    }
+
+    /**
+     * Hitung skor satu entry observasi (rata-rata skor item-nya).
+     * Memakai logika yang sama dengan calculateForPeriod.
+     */
+    public function calculateForEntry(ObservationEntry $entry): ObservationScoreResult
+    {
+        $items = $entry->items()->orderBy('id')->get();
+
+        $scores = [];
+        $details = [];
+        $counted = 0;
+        $total = 0;
+
+        foreach ($items as $item) {
+            $total++;
+
+            $score = $this->itemScore($item);
+            if ($score === null) {
+                continue;
+            }
+
+            $counted++;
+            $scores[] = $score;
+            $details[] = [
+                'item_id' => $item->id,
+                'character_indicator_id' => $item->character_indicator_id,
+                'sentiment' => $item->sentiment,
+                'source' => $item->assessment_score !== null ? 'assessment_score' : 'sentiment',
+                'score' => $score,
+            ];
         }
 
         if ($scores === []) {

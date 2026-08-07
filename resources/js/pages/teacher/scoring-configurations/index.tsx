@@ -1,8 +1,8 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { Pencil, Plus, Scale, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import type { FormEvent } from 'react';
 import { toast } from 'sonner';
+import type { FormEvent } from 'react';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -145,24 +145,21 @@ export default function TeacherScoringConfigurationsIndex({
 
         const toastId = toast.loading('Menyimpan perubahan konfigurasi...');
 
-        editForm.put(
-            `/teacher/scoring-configurations/${editingConfig.id}`,
-            {
-                preserveScroll: true,
-                onSuccess: () => {
-                    toast.success('Konfigurasi berhasil diperbarui.', {
-                        id: toastId,
-                    });
-                    cancelEdit();
-                },
-                onError: () => {
-                    toast.error(
-                        'Konfigurasi belum bisa diperbarui. Periksa kembali form.',
-                        { id: toastId },
-                    );
-                },
+        editForm.put(`/teacher/scoring-configurations/${editingConfig.id}`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success('Konfigurasi berhasil diperbarui.', {
+                    id: toastId,
+                });
+                cancelEdit();
             },
-        );
+            onError: () => {
+                toast.error(
+                    'Konfigurasi belum bisa diperbarui. Periksa kembali form.',
+                    { id: toastId },
+                );
+            },
+        });
     };
 
     const deleteConfiguration = (config: ScoringConfiguration) => {
@@ -177,9 +174,7 @@ export default function TeacherScoringConfigurationsIndex({
                         {
                             preserveScroll: true,
                             onSuccess: () => {
-                                toast.success(
-                                    'Konfigurasi berhasil dihapus.',
-                                );
+                                toast.success('Konfigurasi berhasil dihapus.');
                             },
                             onError: () => {
                                 toast.error('Gagal menghapus konfigurasi.');
@@ -239,7 +234,9 @@ export default function TeacherScoringConfigurationsIndex({
                                 className="grid gap-4"
                             >
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Nama Konfigurasi</Label>
+                                    <Label htmlFor="name">
+                                        Nama Konfigurasi
+                                    </Label>
                                     <Input
                                         id="name"
                                         value={createForm.data.name}
@@ -329,8 +326,7 @@ export default function TeacherScoringConfigurationsIndex({
                                         />
                                         <InputError
                                             message={
-                                                createForm.errors
-                                                    .effective_from
+                                                createForm.errors.effective_from
                                             }
                                         />
                                     </div>
@@ -479,7 +475,9 @@ export default function TeacherScoringConfigurationsIndex({
                                                             </td>
                                                             <td className="px-4 py-3 text-xs text-muted-foreground">
                                                                 <div>
-                                                                    {config.effective_from}
+                                                                    {
+                                                                        config.effective_from
+                                                                    }
                                                                 </div>
                                                                 {config.effective_until && (
                                                                     <div>
@@ -587,17 +585,12 @@ export default function TeacherScoringConfigurationsIndex({
                         className="grid gap-4 px-4 pb-4"
                     >
                         <div className="grid gap-2">
-                            <Label htmlFor="edit_name">
-                                Nama Konfigurasi
-                            </Label>
+                            <Label htmlFor="edit_name">Nama Konfigurasi</Label>
                             <Input
                                 id="edit_name"
                                 value={editForm.data.name}
                                 onChange={(event) =>
-                                    editForm.setData(
-                                        'name',
-                                        event.target.value,
-                                    )
+                                    editForm.setData('name', event.target.value)
                                 }
                             />
                             <InputError message={editForm.errors.name} />
@@ -643,9 +636,7 @@ export default function TeacherScoringConfigurationsIndex({
                                     }
                                 />
                                 <InputError
-                                    message={
-                                        editForm.errors.observation_weight
-                                    }
+                                    message={editForm.errors.observation_weight}
                                 />
                             </div>
                         </div>

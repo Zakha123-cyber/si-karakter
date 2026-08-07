@@ -19,7 +19,7 @@ return [
 
     'prompt_version' => env('AI_PROMPT_VERSION') ?: 'moral-classifier-v1',
 
-    'prompt_file' => env('AI_PROMPT_FILE') ?: base_path('prompts' . DIRECTORY_SEPARATOR . 'moral-classifier-v1.txt'),
+    'prompt_file' => env('AI_PROMPT_FILE') ?: base_path('prompts'.DIRECTORY_SEPARATOR.'moral-classifier-v1.txt'),
 
     'json_schema' => [
         'type' => 'object',

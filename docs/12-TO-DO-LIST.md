@@ -148,16 +148,16 @@ Status:
 
 - [x] Migration observation entries.
 - [x] Migration observation items.
-- [ ] Form observasi cepat.
-- [ ] Checklist indikator.
-- [ ] Sentiment.
-- [ ] Assessment score.
-- [ ] Reward points.
-- [ ] Catatan.
-- [ ] Riwayat observasi santri.
-- [ ] Edit/delete terotorisasi.
-- [ ] Audit log.
-- [ ] Test observation flow.
+- [x] Form observasi cepat.
+- [x] Checklist indikator.
+- [x] Sentiment.
+- [x] Assessment score.
+- [x] Reward points.
+- [x] Catatan.
+- [x] Riwayat observasi santri.
+- [x] Edit/delete terotorisasi.
+- [x] Audit log.
+- [x] Test observation flow.
 
 ## Phase 10 — Character Scoring (Ustadz)
 

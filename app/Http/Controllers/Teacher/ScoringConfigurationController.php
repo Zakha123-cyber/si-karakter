@@ -53,8 +53,9 @@ class ScoringConfigurationController extends Controller
     public function update(UpdateScoringConfigurationRequest $request, ScoringConfiguration $scoringConfiguration): RedirectResponse
     {
         $data = $request->validated();
+        $isActive = $request->boolean('is_active', $scoringConfiguration->is_active);
 
-        if ($request->boolean('is_active')) {
+        if ($isActive) {
             ScoringConfiguration::query()
                 ->where('is_active', true)
                 ->where('id', '!=', $scoringConfiguration->id)
@@ -63,7 +64,7 @@ class ScoringConfigurationController extends Controller
 
         $scoringConfiguration->update([
             ...$data,
-            'is_active' => $request->boolean('is_active', false),
+            'is_active' => $isActive,
         ]);
 
         return back()->with('status', 'Konfigurasi bobot berhasil diperbarui.');

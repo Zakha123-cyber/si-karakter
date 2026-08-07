@@ -96,6 +96,11 @@ function getNavItems(role: string): NavItem[] {
                 href: '/admin/test-results',
                 icon: FileSearch,
             },
+            {
+                title: 'Observasi',
+                href: '/teacher/observations',
+                icon: FileText,
+            },
         ];
     }
 
@@ -129,7 +134,7 @@ function getNavItems(role: string): NavItem[] {
             },
             {
                 title: 'Observasi',
-                href: '/dashboard',
+                href: '/teacher/observations',
                 icon: FileText,
             },
         ];

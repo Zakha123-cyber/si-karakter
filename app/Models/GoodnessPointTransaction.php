@@ -21,6 +21,14 @@ class GoodnessPointTransaction extends Model
         return $this->belongsTo(User::class, 'awarded_by');
     }
 
+    /**
+     * @return BelongsTo<ObservationEntry, $this>
+     */
+    public function observationEntry(): BelongsTo
+    {
+        return $this->belongsTo(ObservationEntry::class, 'source_id');
+    }
+
     protected function casts(): array
     {
         return [

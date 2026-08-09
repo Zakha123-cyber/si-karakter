@@ -118,6 +118,16 @@ function SidebarContent() {
                         </Link>
                     );
                 })}
+
+                <Link
+                    href="/logout"
+                    method="post"
+                    as="button"
+                    className="mt-2 flex w-full items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-semibold text-rose-500 transition-colors hover:bg-rose-50"
+                >
+                    <span className="text-lg leading-none">🚪</span>
+                    Keluar
+                </Link>
             </nav>
 
             {/* Mascot + voice */}

@@ -273,14 +273,24 @@ export default function Dashboard({
                             />
 
                             {role === 'admin' && (
-                                <FeatureCard
-                                    emoji="🎓"
-                                    title="Manajemen Santri & User"
-                                    description="Kelola akun admin, ustadz, dan kelompok santri."
-                                    actionLabel="User Management"
-                                    actionHref="/admin/users"
-                                    gradient="from-rose-400 to-pink-500"
-                                />
+                                <>
+                                    <FeatureCard
+                                        emoji="🎬"
+                                        title="Materi Edukasi"
+                                        description="Kelola video, komik, audio, gambar, cerita, dan rekomendasi materi santri."
+                                        actionLabel="Kelola Materi"
+                                        actionHref="/admin/educational-contents"
+                                        gradient="from-sky-400 to-emerald-500"
+                                    />
+                                    <FeatureCard
+                                        emoji="🎓"
+                                        title="Manajemen Santri & User"
+                                        description="Kelola akun admin, ustadz, dan kelompok santri."
+                                        actionLabel="User Management"
+                                        actionHref="/admin/users"
+                                        gradient="from-rose-400 to-pink-500"
+                                    />
+                                </>
                             )}
                         </div>
                     </Section>

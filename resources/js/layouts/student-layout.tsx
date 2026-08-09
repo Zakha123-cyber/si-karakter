@@ -9,7 +9,7 @@ type StudentLayoutProps = {
 
 const NAV_ITEMS = [
     { emoji: '🏠', label: 'Beranda', href: '/student/dashboard' },
-    { emoji: '🎬', label: 'Bioskop Teladan', href: '/student/tests' },
+    { emoji: '🎬', label: 'Bioskop Teladan', href: '/student/contents' },
     { emoji: '🛤', label: 'Pilih Jalanmu', href: '/student/tests' },
     { emoji: '🛡️', label: 'Simulasi Berani Menolak', href: '/student/tests' },
     { emoji: '🌳', label: 'Pohon Kebaikan', href: '/student/goodness-tree' },

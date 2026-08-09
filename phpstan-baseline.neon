@@ -349,54 +349,6 @@ parameters:
 			path: app/Models/CharacterScoreSnapshot.php
 
 		-
-			message: '#^Method App\\Models\\ContentInteraction\:\:educationalContent\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/ContentInteraction.php
-
-		-
-			message: '#^Method App\\Models\\ContentInteraction\:\:student\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/ContentInteraction.php
-
-		-
-			message: '#^Class App\\Models\\EducationalContent uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/EducationalContent.php
-
-		-
-			message: '#^Method App\\Models\\EducationalContent\:\:creator\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/EducationalContent.php
-
-		-
-			message: '#^Method App\\Models\\EducationalContent\:\:indicators\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/EducationalContent.php
-
-		-
-			message: '#^Method App\\Models\\EducationalContent\:\:interactions\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/EducationalContent.php
-
-		-
-			message: '#^Method App\\Models\\EducationalContentIndicator\:\:characterIndicator\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/EducationalContentIndicator.php
-
-		-
-			message: '#^Method App\\Models\\EducationalContentIndicator\:\:educationalContent\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/EducationalContentIndicator.php
-
-		-
 			message: '#^Class App\\Models\\MoralCase uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
 			identifier: missingType.generics
 			count: 1

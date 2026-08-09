@@ -31,6 +31,8 @@ type TestPackage = {
 type Content = {
     id: number;
     title: string;
+    slug?: string;
+    content_type?: string;
     description: string | null;
     thumbnail: string | null;
     duration_seconds: number | null;
@@ -147,7 +149,7 @@ export default function StudentDashboard({
                         color="text-sky-600"
                         description="Tonton kisah teladan yang mengajarkan kebaikan."
                         actionLabel="Lihat semua"
-                        onAction={() => {}}
+                        actionHref="/student/contents"
                     >
                         <div className="grid gap-4 sm:grid-cols-2">
                             {(contents.length > 0
@@ -421,6 +423,7 @@ function Section({
     color,
     description,
     actionLabel,
+    actionHref,
     onAction,
     children,
 }: {
@@ -430,7 +433,8 @@ function Section({
     color: string;
     description: string;
     actionLabel: string;
-    onAction: () => void;
+    actionHref?: string;
+    onAction?: () => void;
     children: React.ReactNode;
 }) {
     return (
@@ -450,12 +454,21 @@ function Section({
                         <p className="text-xs text-slate-400">{description}</p>
                     </div>
                 </div>
-                <button
-                    onClick={onAction}
-                    className="rounded-2xl px-3 py-1.5 text-xs font-bold text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600"
-                >
-                    {actionLabel} →
-                </button>
+                {actionHref ? (
+                    <Link
+                        href={actionHref}
+                        className="rounded-2xl px-3 py-1.5 text-xs font-bold text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600"
+                    >
+                        {actionLabel} →
+                    </Link>
+                ) : (
+                    <button
+                        onClick={onAction}
+                        className="rounded-2xl px-3 py-1.5 text-xs font-bold text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600"
+                    >
+                        {actionLabel} →
+                    </button>
+                )}
             </div>
             {children}
         </section>
@@ -467,8 +480,8 @@ function MovieCard({ content }: { content: Content }) {
         ? Math.round(content.duration_seconds / 60)
         : null;
 
-    return (
-        <div className="group overflow-hidden rounded-[24px] bg-sky-50 transition-transform duration-200 group-hover:-translate-y-1">
+    const card = (
+        <div className="group overflow-hidden rounded-[24px] bg-sky-50 transition-transform duration-200 hover:-translate-y-1">
             <div className="relative flex h-28 items-center justify-center bg-gradient-to-br from-sky-200 to-sky-300">
                 {content.thumbnail ? (
                     <img
@@ -501,6 +514,12 @@ function MovieCard({ content }: { content: Content }) {
             </div>
         </div>
     );
+
+    if (content.slug) {
+        return <Link href={`/student/contents/${content.slug}`}>{card}</Link>;
+    }
+
+    return card;
 }
 
 function ScenarioCard({ scenario }: { scenario: Scenario }) {
@@ -568,6 +587,8 @@ const placeholderContents: Content[] = [
     {
         id: 0,
         title: 'Kisah Nabi Ibrahim',
+        slug: undefined,
+        content_type: 'story',
         description: 'Belajar kejujuran dan keberanian dari Nabi Ibrahim a.s.',
         thumbnail: null,
         duration_seconds: 300,
@@ -575,6 +596,8 @@ const placeholderContents: Content[] = [
     {
         id: 0,
         title: 'Anak Saleh Membersihkan Masjid',
+        slug: undefined,
+        content_type: 'story',
         description: 'Kisah tentang tanggung jawab menjaga kebersihan.',
         thumbnail: null,
         duration_seconds: 240,

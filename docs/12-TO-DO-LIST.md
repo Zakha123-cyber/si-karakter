@@ -205,13 +205,13 @@ Status:
 - [x] Migration educational contents.
 - [x] Migration content indicators.
 - [x] Migration interactions.
-- [ ] CRUD content.
-- [ ] Upload media.
-- [ ] Daftar materi santri.
-- [ ] Detail materi.
-- [ ] Emoticon response.
-- [ ] Recommendation mapping.
-- [ ] Test access.
+- [x] CRUD content.
+- [x] Upload media.
+- [x] Daftar materi santri.
+- [x] Detail materi.
+- [x] Emoticon response.
+- [x] Recommendation mapping.
+- [x] Test access.
 
 ## Phase 14 — Assertiveness Simulation
 

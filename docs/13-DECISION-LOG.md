@@ -210,6 +210,24 @@ Gunakan dokumen ini untuk mencatat keputusan produk dan teknis.
   - Tests ditambahkan untuk threshold, akses, riwayat reward positif, non-eksposur warning, dan idempotency seeder.
 - Approved By: Implementation
 
+## D-023 — Phase 13 Educational Content
+
+- Date: 2026-08-09
+- Status: Accepted
+- Context: Phase 13 membutuhkan pengelolaan materi edukasi berupa video, komik, gambar, audio, dan cerita; materi perlu dipetakan ke indikator karakter, direkomendasikan ke santri, dan menerima respons emotikon dari santri.
+- Decision:
+  - CRUD materi edukasi ditempatkan di portal Admin melalui `/admin/educational-contents`, dengan status `draft`, `published`, dan `archived`.
+  - Tipe materi dikontrol melalui enum `video`, `comic`, `image`, `audio`, dan `story`; media utama serta thumbnail disimpan di disk `public` Laravel dan disajikan melalui route terautentikasi.
+  - Materi `draft`/`archived` hanya dapat dipreview Admin; santri dan ustadz hanya dapat membuka media materi yang sudah `published`.
+  - Mapping rekomendasi memakai pivot `educational_content_indicators`; rekomendasi santri mengutamakan konten yang terkait indikator hasil validasi ustadz dan observasi, dengan fallback ke materi published terbaru.
+  - Portal santri memiliki `/student/contents` dan `/student/contents/{slug}` dengan bahasa motivasional, daftar/detail materi, related content, dan respons emotikon positif (`happy`, `inspired`, `curious`, `calm`).
+  - Jika akun student belum punya row profil `students`, materi tetap dapat dibaca tetapi respons emotikon tidak disimpan sampai profil santri lengkap.
+- Consequences:
+  - Dashboard santri dan sidebar kini mengarah ke Bioskop Teladan berbasis Educational Content.
+  - Interaksi materi menjadi riwayat santri sehingga guard hapus santri ikut mempertimbangkan `content_interactions`.
+  - Tests ditambahkan untuk CRUD admin, upload media, akses role, daftar/detail santri, respons emotikon, rekomendasi berdasarkan indikator, dan missing profile.
+- Approved By: Implementation
+
 ## Template Decision Baru
 
 ```md

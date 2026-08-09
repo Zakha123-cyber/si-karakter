@@ -36,6 +36,11 @@ const getNavItems = (role?: string) => [
     ...(role === 'admin'
         ? [
               {
+                  emoji: '🎬',
+                  label: 'Materi Edukasi',
+                  href: '/admin/educational-contents',
+              },
+              {
                   emoji: '👥',
                   label: 'Manajemen User',
                   href: '/admin/users',

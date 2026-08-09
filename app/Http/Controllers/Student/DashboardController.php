@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Domain\EducationalContent\EducationalContentRecommendationService;
 use App\Domain\GoodnessTree\GoodnessTreeService;
 use App\Enums\TestPackageStatus;
 use App\Http\Controllers\Controller;
@@ -20,6 +21,7 @@ class DashboardController extends Controller
 {
     public function __construct(
         private readonly GoodnessTreeService $treeService,
+        private readonly EducationalContentRecommendationService $contentRecommendationService,
     ) {}
 
     public function __invoke(Request $request): Response
@@ -36,16 +38,15 @@ class DashboardController extends Controller
 
         $testPackages = $this->visiblePackages($student);
 
-        $contents = EducationalContent::query()
-            ->where('status', 'published')
-            ->orderByDesc('created_at')
-            ->limit(4)
-            ->get(['id', 'title', 'description', 'thumbnail_path', 'duration_seconds'])
+        $contents = $this->contentRecommendationService
+            ->recommendedForStudent($student, 4)
             ->map(fn (EducationalContent $content) => [
                 'id' => $content->id,
                 'title' => $content->title,
+                'slug' => $content->slug,
+                'content_type' => $content->content_type->value,
                 'description' => $content->description,
-                'thumbnail' => $content->thumbnail_path,
+                'thumbnail' => $content->thumbnail_path === null ? null : route('educational-contents.media', ['educationalContent' => $content->id, 'type' => 'thumbnail']),
                 'duration_seconds' => $content->duration_seconds,
             ]);
 

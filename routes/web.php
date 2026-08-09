@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\AcademicYearController;
+use App\Http\Controllers\Admin\EducationalContentController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\TestResultController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EducationalContentMediaController;
 use App\Http\Controllers\Teacher\CharacterIndicatorController;
 use App\Http\Controllers\Teacher\MoralCaseController;
 use App\Http\Controllers\Teacher\ObservationController;
@@ -21,6 +23,11 @@ Route::redirect('/', '/login')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
+});
+
+Route::middleware(['auth', 'active'])->group(function () {
+    Route::get('educational-contents/{educationalContent}/media/{type}', EducationalContentMediaController::class)
+        ->name('educational-contents.media');
 });
 
 Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -56,6 +63,14 @@ Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->name('admi
     Route::get('test-results', [TestResultController::class, 'index'])->name('test-results.index');
     Route::get('test-results/answers/{answer}/audio', [TestResultController::class, 'audio'])->name('test-results.answers.audio');
     Route::get('test-results/{testAttempt}', [TestResultController::class, 'show'])->name('test-results.show');
+
+    // Educational Content
+    Route::get('educational-contents', [EducationalContentController::class, 'index'])->name('educational-contents.index');
+    Route::post('educational-contents', [EducationalContentController::class, 'store'])->name('educational-contents.store');
+    Route::put('educational-contents/{educationalContent}', [EducationalContentController::class, 'update'])->name('educational-contents.update');
+    Route::delete('educational-contents/{educationalContent}', [EducationalContentController::class, 'destroy'])->name('educational-contents.destroy');
+    Route::post('educational-contents/{educationalContent}/indicators', [EducationalContentController::class, 'assignIndicators'])->name('educational-contents.indicators');
+    Route::post('educational-contents/{educationalContent}/media', [EducationalContentController::class, 'uploadMedia'])->name('educational-contents.media');
 });
 
 Route::middleware(['auth', 'active', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {

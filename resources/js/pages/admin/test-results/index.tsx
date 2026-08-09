@@ -12,8 +12,8 @@ import {
     ShieldAlert,
     User,
 } from 'lucide-react';
-import type { FormEvent } from 'react';
 import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -110,7 +110,9 @@ const statusVariant: Record<
 };
 
 function formatDateTime(value: string | null) {
-    if (!value) return '-';
+    if (!value) {
+        return '-';
+    }
 
     return new Intl.DateTimeFormat('id-ID', {
         dateStyle: 'medium',

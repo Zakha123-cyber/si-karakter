@@ -148,6 +148,33 @@ Gunakan dokumen ini untuk mencatat keputusan produk dan teknis.
 - Consequences: `01-PROJECT-CONTEXT.md`, `05-API-CONTRACT.md`, `07-UI-UX-GUIDELINES.md`, dan `12-TO-DO-LIST.md` diperbarui. Controller, halaman React, sidebar nav, dan test terkait dipindahkan dari namespace/direktori Admin ke Teacher.
 - Approved By: User
 
+## D-020 — Backend Audit 2026-08-05 dan Perbaikan Aman
+
+- Date: 2026-08-05
+- Status: Accepted
+- Context: Audit menyeluruh backend (struktur, DB, API, role-permission, integrasi, keamanan, performa, test). Baseline: 254 test pass, Pint pass, PHPStan 0 error.
+- Temuan utama (dilaporkan, tidak diubah tanpa persetujuan):
+  - Scoring pipeline tidak terhubung: `CharacterScoreSnapshotService::generateForStudent`, `TestScoreCalculator::calculateAttempt`, `ScoreAdjustmentService` tidak pernah dipanggil controller/command/job mana pun.
+  - Status `test_attempts` tidak pernah transisi ke `completed`; `completed_at` diisi saat submit.
+  - Frontend SPA tidak memakai endpoint `/api/v1/*` (duplikasi controller web vs API).
+  - UI review memakai label Kohlberg ("Tahap 1-6") sedangkan domain scoring hanya mengenal `pre_conventional|conventional|post_conventional`.
+- Perbaikan aman yang diterapkan (backward compatible):
+  - BUG-1: Hapus blok validasi duplikat `submitted` di `Student\TestController::storeAnswer`.
+  - BUG-2: `is_active` kasus/opsi moral dipertahankan saat update bila field tidak dikirim.
+  - BUG-3: `is_active` konfigurasi bobot dipertahankan saat update (web + API).
+  - BUG-4: Validasi kepemilikan `selected_option_id` terhadap `moral_case_id` pada penyimpanan jawaban.
+  - BUG-5: Guard hapus santri — tolak jika ada riwayat tes/observasi/reward/warning (hindari 500 FK); relasi baru ditambahkan di model Student.
+  - BUG-6: `TestReviewSeeder` diselaraskan (gender `male/female`, key `category`, `internal_value` kanonikal).
+  - BUG-7: Rate limit `throttle:5,1` pada `POST /api/v1/auth/login`.
+  - BUG-8: Middleware `role`/`active` mengembalikan JSON hanya untuk route `/api/*`, `abort(403)` untuk web.
+  - BUG-9: Sanitasi nama file pada header `Content-Disposition` (3 endpoint audio).
+  - BUG-10: Cap `per_page` API maksimal 100.
+  - Konsistensi domain: `TestScoreCalculator::LEVEL_SCORES` kini mengakui label Kohlberg (Tahap 1-2→0, 3-4→50, 5-6→100) selain level kanonikal.
+  - Factory baru: `MoralCaseOptionFactory`, `TeacherValidationFactory`; trait `HasFactory` ditambahkan ke model `TeacherValidation`.
+  - Test regresi baru: `tests/Feature/Audit/BackendAuditFixesTest.php` (11 test).
+- Consequences: Total test 265, semuanya hijau; Pint & PHPStan lulus. Item rekomendasi (wiring scoring, transisi status attempt, refactor duplikasi web/API, guard self-lockout admin, revoke sesi saat ganti password) menunggu persetujuan sebelum dikerjakan.
+- Approved By: Implementation
+
 ## Template Decision Baru
 
 ```md

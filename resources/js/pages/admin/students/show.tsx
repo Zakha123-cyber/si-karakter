@@ -1,6 +1,5 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, History, User } from 'lucide-react';
-import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -48,7 +47,10 @@ const statusLabels: Record<string, string> = {
 
 export default function AdminStudentShow({ student, timeline }: Props) {
     const formatDate = (dateStr: string | null) => {
-        if (!dateStr) return '-';
+        if (!dateStr) {
+            return '-';
+        }
+
         return new Date(dateStr).toLocaleDateString('id-ID', {
             year: 'numeric',
             month: 'long',

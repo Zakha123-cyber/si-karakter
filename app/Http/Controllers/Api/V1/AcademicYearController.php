@@ -25,7 +25,7 @@ class AcademicYearController extends Controller
             ->when($request->boolean('is_active'), fn ($q) => $q->where('is_active', true))
             ->withCount('groups')
             ->latest()
-            ->paginate($request->integer('per_page', 15));
+            ->paginate(min($request->integer('per_page', 15), 100));
 
         return $this->success('Academic years retrieved', AcademicYearResource::collection($academicYears));
     }

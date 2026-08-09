@@ -8,6 +8,7 @@ import {
     FileSearch,
     FileText,
     LayoutGrid,
+    Scale,
     Tag,
     TreePine,
     UserCheck,
@@ -95,6 +96,11 @@ function getNavItems(role: string): NavItem[] {
                 href: '/admin/test-results',
                 icon: FileSearch,
             },
+            {
+                title: 'Observasi',
+                href: '/teacher/observations',
+                icon: FileText,
+            },
         ];
     }
 
@@ -117,13 +123,18 @@ function getNavItems(role: string): NavItem[] {
                 icon: Tag,
             },
             {
+                title: 'Bobot Penilaian',
+                href: '/teacher/scoring-configurations',
+                icon: Scale,
+            },
+            {
                 title: 'Review',
                 href: '/teacher/reviews',
                 icon: ClipboardCheck,
             },
             {
                 title: 'Observasi',
-                href: '/dashboard',
+                href: '/teacher/observations',
                 icon: FileText,
             },
         ];

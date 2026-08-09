@@ -5,7 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property int $id
+ * @property int $student_id
+ * @property Carbon $period_start
+ * @property Carbon $period_end
+ * @property string $test_score
+ * @property string $observation_score
+ * @property string $calculated_score
+ * @property string|null $manual_adjustment
+ * @property string $final_score
+ * @property string|null $final_level
+ * @property int|null $adjusted_by
+ * @property string|null $adjustment_reason
+ * @property array<string, mixed> $calculation_detail_json
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ */
 #[Fillable(['student_id', 'period_start', 'period_end', 'test_score', 'observation_score', 'calculated_score', 'manual_adjustment', 'final_score', 'final_level', 'adjusted_by', 'adjustment_reason', 'calculation_detail_json'])]
 class CharacterScoreSnapshot extends Model
 {

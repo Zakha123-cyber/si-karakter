@@ -1,15 +1,3 @@
-import { AudioPlayer } from '@/components/audio-player';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
-import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import {
     ArrowLeft,
@@ -27,6 +15,18 @@ import {
     X,
 } from 'lucide-react';
 import { useState } from 'react';
+import type { BreadcrumbItem } from '@/types';
+import AppLayout from '@/layouts/app-layout';
+import { AudioPlayer } from '@/components/audio-player';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 
 interface ReviewDetailProps {
     review: {
@@ -124,7 +124,9 @@ interface ReviewDetailProps {
 }
 
 function formatDateTime(value: string | null) {
-    if (!value) return '-';
+    if (!value) {
+        return '-';
+    }
 
     return new Intl.DateTimeFormat('id-ID', {
         dateStyle: 'medium',
@@ -133,7 +135,9 @@ function formatDateTime(value: string | null) {
 }
 
 function formatPercent(value: number | null) {
-    if (value === null || Number.isNaN(value)) return '-';
+    if (value === null || Number.isNaN(value)) {
+        return '-';
+    }
 
     return `${(value * 100).toFixed(1)}%`;
 }
@@ -234,26 +238,11 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
         overrideForm.post(`/teacher/reviews/${review.id}/override`);
     };
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Dashboard',
-            href: '/dashboard',
-        },
-        {
-            title: 'Validasi & Review',
-            href: '/teacher/reviews',
-        },
-        {
-            title: `Detail Review #${review.id}`,
-            href: `/teacher/reviews/${review.id}`,
-        },
-    ];
-
     const stt = transcriptionBadge(review.transcription?.status ?? null);
     const SttIcon = stt.icon;
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <>
             <Head title={`Detail Review - ${review.student.name}`} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4">
@@ -415,6 +404,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                         const isSelected =
                                             review.selected_option?.id ===
                                             opt.id;
+
                                         return (
                                             <div
                                                 key={opt.id}
@@ -548,6 +538,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                                             .transcription
                                                                             ?.original_text ||
                                                                         review.final_transcript;
+
                                                                     if (text) {
                                                                         navigator.clipboard.writeText(
                                                                             text,
@@ -1217,6 +1208,6 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                     </Card>
                 </div>
             </div>
-        </AppLayout>
+        </>
     );
 }

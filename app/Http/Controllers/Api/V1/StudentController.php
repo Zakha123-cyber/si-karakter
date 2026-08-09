@@ -33,7 +33,7 @@ class StudentController extends Controller
             ->when($request->integer('current_group_id'), fn ($q, $id) => $q->where('current_group_id', $id))
             ->when($request->string('status')->toString() !== '', fn ($q) => $q->where('status', $request->string('status')->toString()))
             ->latest()
-            ->paginate($request->integer('per_page', 15));
+            ->paginate(min($request->integer('per_page', 15), 100));
 
         return $this->success('Students retrieved', StudentResource::collection($students));
     }

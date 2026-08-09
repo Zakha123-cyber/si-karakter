@@ -5,9 +5,12 @@ use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\TestResultController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Teacher\CharacterIndicatorController;
 use App\Http\Controllers\Teacher\MoralCaseController;
+use App\Http\Controllers\Teacher\ObservationController;
 use App\Http\Controllers\Teacher\ReviewController;
+use App\Http\Controllers\Teacher\ScoringConfigurationController;
 use App\Http\Controllers\Teacher\TestPackageController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,7 +19,7 @@ require __DIR__.'/student.php';
 Route::redirect('/', '/login')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', DashboardController::class)->name('dashboard');
 });
 
 Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -58,6 +61,8 @@ Route::middleware(['auth', 'active', 'role:teacher'])->prefix('teacher')->name('
     Route::resource('character-indicators', CharacterIndicatorController::class)->except(['create', 'edit', 'show']);
     Route::patch('character-indicators/{character_indicator}/status', [CharacterIndicatorController::class, 'updateStatus'])->name('character-indicators.status');
 
+    Route::resource('scoring-configurations', ScoringConfigurationController::class)->except(['create', 'edit', 'show']);
+
     Route::get('moral-cases', [MoralCaseController::class, 'index'])->name('moral-cases.index');
     Route::post('moral-cases', [MoralCaseController::class, 'store'])->name('moral-cases.store');
     Route::put('moral-cases/{moralCase}', [MoralCaseController::class, 'update'])->name('moral-cases.update');
@@ -86,6 +91,12 @@ Route::middleware(['auth', 'active', 'role:teacher,admin'])->prefix('teacher')->
     Route::post('reviews/{answer}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
     Route::post('reviews/{answer}/override', [ReviewController::class, 'override'])->name('reviews.override');
     Route::post('reviews/{answer}/retry-transcription', [ReviewController::class, 'retryTranscription'])->name('reviews.retry-transcription');
+
+    // Daily Observation
+    Route::get('observations', [ObservationController::class, 'index'])->name('observations.index');
+    Route::post('observations', [ObservationController::class, 'store'])->name('observations.store');
+    Route::put('observations/{observationEntry}', [ObservationController::class, 'update'])->name('observations.update');
+    Route::delete('observations/{observationEntry}', [ObservationController::class, 'destroy'])->name('observations.destroy');
 });
 
 require __DIR__.'/settings.php';

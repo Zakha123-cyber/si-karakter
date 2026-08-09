@@ -7,11 +7,12 @@ use App\Enums\TranscriptionStatus;
 use App\Http\Controllers\Controller;
 use App\Jobs\AiAssessmentJob;
 use App\Jobs\TranscribeAnswerJob;
+use App\Models\MoralCaseOption;
 use App\Models\Student;
 use App\Models\TestAnswer;
-use App\Models\Transcription;
 use App\Models\TestAttempt;
 use App\Models\TestPackage;
+use App\Models\Transcription;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -143,12 +144,6 @@ class TestController extends Controller
             ]);
         }
 
-        if ($testAttempt->status === 'submitted') {
-            return back()->withErrors([
-                'attempt' => 'Percobaan sudah dikirim dan tidak dapat diubah.',
-            ]);
-        }
-
         $data = $request->validate([
             'moral_case_id' => ['required', 'exists:moral_cases,id'],
             'selected_option_id' => ['nullable', 'exists:moral_case_options,id'],
@@ -162,6 +157,19 @@ class TestController extends Controller
             return back()->withErrors([
                 'moral_case_id' => 'Kasus ini tidak tersedia untuk paket ini.',
             ]);
+        }
+
+        if ($data['selected_option_id'] !== null) {
+            $optionBelongsToCase = MoralCaseOption::query()
+                ->whereKey($data['selected_option_id'])
+                ->where('moral_case_id', $data['moral_case_id'])
+                ->exists();
+
+            if (! $optionBelongsToCase) {
+                return back()->withErrors([
+                    'selected_option_id' => 'Pilihan jawaban tidak tersedia untuk kasus ini.',
+                ]);
+            }
         }
 
         $answer = TestAnswer::query()->updateOrCreate(

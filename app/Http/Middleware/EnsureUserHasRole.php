@@ -16,11 +16,15 @@ class EnsureUserHasRole
         $role = $request->user()?->role?->value;
 
         if ($role === null || ! in_array($role, $roles, true)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This action is unauthorized',
-                'errors' => [],
-            ], 403);
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This action is unauthorized',
+                    'errors' => [],
+                ], 403);
+            }
+
+            abort(403, 'This action is unauthorized.');
         }
 
         return $next($request);

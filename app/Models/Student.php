@@ -53,6 +53,38 @@ class Student extends Model
     }
 
     /**
+     * @return HasMany<ObservationEntry, $this>
+     */
+    public function observationEntries(): HasMany
+    {
+        return $this->hasMany(ObservationEntry::class);
+    }
+
+    /**
+     * @return HasMany<TestAttempt, $this>
+     */
+    public function testAttempts(): HasMany
+    {
+        return $this->hasMany(TestAttempt::class);
+    }
+
+    /**
+     * @return HasMany<GoodnessPointTransaction, $this>
+     */
+    public function goodnessPointTransactions(): HasMany
+    {
+        return $this->hasMany(GoodnessPointTransaction::class);
+    }
+
+    /**
+     * @return HasMany<StudentWarning, $this>
+     */
+    public function warnings(): HasMany
+    {
+        return $this->hasMany(StudentWarning::class);
+    }
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array

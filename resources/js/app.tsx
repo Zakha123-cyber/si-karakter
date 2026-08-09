@@ -1,12 +1,14 @@
 import { createInertiaApp } from '@inertiajs/react';
-import type { ResolvedComponent } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import type { ResolvedComponent } from '@inertiajs/react';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { initializeTheme } from '@/hooks/use-appearance';
-import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
+import DynamicLayout from '@/layouts/dynamic-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import StudentLayout from '@/layouts/student-layout';
+import TeacherLayout from '@/layouts/teacher-layout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -26,9 +28,15 @@ createInertiaApp({
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):
-                return [AppLayout, SettingsLayout];
+                return [DynamicLayout, SettingsLayout];
+            case name.startsWith('student/'):
+                return StudentLayout;
+            case name === 'dashboard' ||
+                name.startsWith('teacher/') ||
+                name.startsWith('admin/'):
+                return TeacherLayout;
             default:
-                return AppLayout;
+                return DynamicLayout;
         }
     },
     strictMode: true,

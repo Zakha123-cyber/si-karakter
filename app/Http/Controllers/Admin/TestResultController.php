@@ -113,9 +113,11 @@ class TestResultController extends Controller
             abort(404, 'Audio physical file does not exist.');
         }
 
+        $safeName = preg_replace('/[^\w.\- ]+/u', '_', $audioFile->original_name) ?: 'audio';
+
         return response()->file($filePath, [
             'Content-Type' => $audioFile->mime_type ?: 'audio/mpeg',
-            'Content-Disposition' => 'inline; filename="'.$audioFile->original_name.'"',
+            'Content-Disposition' => 'inline; filename="'.$safeName.'"',
         ]);
     }
 }

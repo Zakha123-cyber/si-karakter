@@ -1,6 +1,12 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Method App\\Enums\\AssessmentStatus\:\:values\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Enums/AssessmentStatus.php
+
+		-
 			message: '#^Access to an undefined property App\\Models\\Student\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Student\>\:\:\$current_group_id\.$#'
 			identifier: property.notFound
 			count: 2
@@ -11,6 +17,84 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: app/Http/Controllers/Api/V1/GroupController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$student\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$testPackage\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\TestAnswer\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\TestAnswer\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>title" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$minimum_points\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Controllers/Student/DashboardController.php
+
+		-
+			message: '#^Cannot clone bool\.$#'
+			identifier: clone.nonObject
+			count: 1
+			path: app/Http/Controllers/Student/DashboardController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Student\\DashboardController\:\:missions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Student/DashboardController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Student\\DashboardController\:\:visiblePackages\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Student/DashboardController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between int and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Student/DashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Student/TestController.php
 
 		-
 			message: '#^Anonymous function should return array\{id\: int, title\: string, story\: string, options\: Illuminate\\Support\\Collection\<int, array\{id\: mixed, label\: mixed, text\: mixed\}\>\} but returns array\{id\: int, title\: string, story\: string, options\: Illuminate\\Support\\Collection\<int, array\{id\: int, label\: mixed, text\: mixed\}\>\}\.$#'
@@ -103,6 +187,132 @@ parameters:
 			path: app/Http/Resources/AcademicYearResource.php
 
 		-
+			message: '#^Cannot call method toISOString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Resources/Admin/TestResultAttemptResource.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type string\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Resources/Admin/TestResultAttemptResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/Admin/TestResultDetailResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/Admin/TestResultDetailResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$options\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/Admin/TestResultDetailResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$story\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/Admin/TestResultDetailResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/Admin/TestResultDetailResource.php
+
+		-
+			message: '#^Cannot call method toISOString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 6
+			path: app/Http/Resources/Admin/TestResultDetailResource.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\TestAnswer\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Resources/Admin/TestResultDetailResource.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\TestAnswer\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Resources/Admin/TestResultDetailResource.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,array\<string, array\<string, mixed\>\|int\|string\|null\>\>\:\:values\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Resources/Admin/TestResultDetailResource.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type string\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: app/Http/Resources/Admin/TestResultDetailResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$edited_text\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Jobs/AiAssessmentJob.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$indicators\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Jobs/AiAssessmentJob.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$label\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Jobs/AiAssessmentJob.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$original_text\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Jobs/AiAssessmentJob.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$story\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Jobs/AiAssessmentJob.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Jobs/AiAssessmentJob.php
+
+		-
+			message: '#^Method App\\Jobs\\AiAssessmentJob\:\:backoff\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Jobs/AiAssessmentJob.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>edited_text" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Jobs/AiAssessmentJob.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>label" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Jobs/AiAssessmentJob.php
+
+		-
 			message: '#^Class App\\Models\\AiAssessment uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
 			identifier: missingType.generics
 			count: 1
@@ -119,6 +329,12 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: app/Models/AiAssessment.php
+
+		-
+			message: '#^Class App\\Models\\AnswerAudioFile uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/AnswerAudioFile.php
 
 		-
 			message: '#^Method App\\Models\\AnswerAudioFile\:\:testAnswer\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
@@ -245,36 +461,6 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: app/Models/ObservationEntry.php
-
-		-
-			message: '#^Method App\\Models\\ObservationEntry\:\:items\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/ObservationEntry.php
-
-		-
-			message: '#^Method App\\Models\\ObservationEntry\:\:student\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/ObservationEntry.php
-
-		-
-			message: '#^Method App\\Models\\ObservationEntry\:\:teacher\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/ObservationEntry.php
-
-		-
-			message: '#^Method App\\Models\\ObservationItem\:\:characterIndicator\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/ObservationItem.php
-
-		-
-			message: '#^Method App\\Models\\ObservationItem\:\:observationEntry\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/ObservationItem.php
 
 		-
 			message: '#^Class App\\Models\\ScoringConfiguration uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
@@ -415,12 +601,6 @@ parameters:
 			path: app/Models/TestAnswer.php
 
 		-
-			message: '#^Method App\\Models\\TestAnswer\:\:teacherValidations\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/TestAnswer.php
-
-		-
 			message: '#^Method App\\Models\\TestAnswer\:\:testAttempt\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
 			identifier: missingType.generics
 			count: 1
@@ -434,12 +614,6 @@ parameters:
 
 		-
 			message: '#^Class App\\Models\\TestAttempt uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/TestAttempt.php
-
-		-
-			message: '#^Method App\\Models\\TestAttempt\:\:answers\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
 			identifier: missingType.generics
 			count: 1
 			path: app/Models/TestAttempt.php
@@ -463,6 +637,12 @@ parameters:
 			path: app/Models/TestPackage.php
 
 		-
+			message: '#^Class App\\Models\\Transcription uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Transcription.php
+
+		-
 			message: '#^Method App\\Models\\Transcription\:\:testAnswer\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
 			identifier: missingType.generics
 			count: 1
@@ -479,3 +659,9 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: app/Models/WarningRule.php
+
+		-
+			message: '#^Method App\\Services\\AI\\GoogleGeminiService\:\:__construct\(\) has parameter \$jsonSchema with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/AI/GoogleGeminiService.php

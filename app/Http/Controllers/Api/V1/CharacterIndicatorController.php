@@ -32,7 +32,7 @@ class CharacterIndicatorController extends Controller
                 $q->where('is_warning_indicator', $request->boolean('is_warning_indicator'));
             })
             ->orderBy('name')
-            ->paginate($request->integer('per_page', 15));
+            ->paginate(min($request->integer('per_page', 15), 100));
 
         return $this->success('Character indicators retrieved', CharacterIndicatorResource::collection($indicators));
     }

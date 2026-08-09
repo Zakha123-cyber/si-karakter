@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             CharacterIndicatorSeeder::class,
+            ScoringConfigurationSeeder::class,
             TestReviewSeeder::class,
         ]);
     }

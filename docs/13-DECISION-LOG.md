@@ -175,6 +175,59 @@ Gunakan dokumen ini untuk mencatat keputusan produk dan teknis.
 - Consequences: Total test 265, semuanya hijau; Pint & PHPStan lulus. Item rekomendasi (wiring scoring, transisi status attempt, refactor duplikasi web/API, guard self-lockout admin, revoke sesi saat ganti password) menunggu persetujuan sebelum dikerjakan.
 - Approved By: Implementation
 
+## D-021 — Phase 11 Early Warning Pendampingan
+
+- Date: 2026-08-09
+- Status: Accepted
+- Context: Phase 11 membutuhkan early warning awal menggunakan indikator dummy, hanya tampil kepada admin/ustadz, memakai bahasa pendampingan, serta tidak boleh tampil pada portal santri.
+- Decision:
+  - Rule awal memakai tipe `observation_negative_indicator` dengan kondisi JSON: jendela hari, minimum item negatif, indikator warning, dan daftar kode indikator opsional.
+  - Seeder `WarningRuleSeeder` membuat rule dummy idempotent untuk indikator `dishonesty_warning`.
+  - `WarningRuleEngine` mengevaluasi pola observasi negatif, dan `StudentWarningGenerator` membuat `student_warnings` tanpa duplikasi selama warning masih `open` atau `reviewed`.
+  - Generate warning dapat dijalankan manual dari halaman `/teacher/warnings` untuk semua santri yang terlihat atau satu santri tertentu, dan juga dijalankan otomatis setelah observasi dibuat/diperbarui.
+  - Dashboard warning ditempatkan di portal teacher/admin dengan aksi review dan resolve; resolve wajib catatan tindak lanjut.
+  - Portal santri tidak diberi route/props warning.
+- Consequences:
+  - Early warning fase awal sudah usable end-to-end tetapi belum berupa rule builder kompleks.
+  - Audit dicatat untuk `warning.generated`, `warning.reviewed`, dan `warning.resolved`.
+  - Tests ditambahkan untuk rule engine, generate, authorization, review/resolve, bahasa pendampingan, dan non-eksposur pada santri.
+- Approved By: Implementation
+
+## D-022 — Phase 12 Goodness Tree
+
+- Date: 2026-08-09
+- Status: Accepted
+- Context: Phase 12 membutuhkan gamifikasi positif berupa pohon virtual yang tumbuh dari reward points, terpisah dari skor asesmen karakter, dan aman dilihat santri tanpa label negatif.
+- Decision:
+  - Level pohon disimpan di `goodness_tree_levels` dan diisi idempotent melalui `GoodnessTreeLevelSeeder` dengan threshold awal 0, 25, 60, 120, dan 200 poin.
+  - Kalkulasi total poin, level aktif, level berikutnya, progress, dan sisa poin dipusatkan di `GoodnessTreeService`.
+  - Transaksi poin positif dari observasi disinkronkan melalui `GoodnessPointAwarder`, sementara skor asesmen tetap terpisah.
+  - Santri mendapat halaman khusus `/student/goodness-tree` berisi representasi positif, level journey, dan riwayat reward positif; warning tidak dikirim pada props halaman ini.
+  - Portal santri memakai bahasa motivasional dan tidak menampilkan hukuman visual saat poin rendah.
+- Consequences:
+  - Dashboard santri dan halaman Pohon Kebaikan memakai kalkulasi level yang sama.
+  - Halaman Goodness Tree siap dikembangkan lagi untuk reward dari simulasi/misi pada fase berikutnya.
+  - Tests ditambahkan untuk threshold, akses, riwayat reward positif, non-eksposur warning, dan idempotency seeder.
+- Approved By: Implementation
+
+## D-023 — Phase 13 Educational Content
+
+- Date: 2026-08-09
+- Status: Accepted
+- Context: Phase 13 membutuhkan pengelolaan materi edukasi berupa video, komik, gambar, audio, dan cerita; materi perlu dipetakan ke indikator karakter, direkomendasikan ke santri, dan menerima respons emotikon dari santri.
+- Decision:
+  - CRUD materi edukasi ditempatkan di portal Admin melalui `/admin/educational-contents`, dengan status `draft`, `published`, dan `archived`.
+  - Tipe materi dikontrol melalui enum `video`, `comic`, `image`, `audio`, dan `story`; media utama serta thumbnail disimpan di disk `public` Laravel dan disajikan melalui route terautentikasi.
+  - Materi `draft`/`archived` hanya dapat dipreview Admin; santri dan ustadz hanya dapat membuka media materi yang sudah `published`.
+  - Mapping rekomendasi memakai pivot `educational_content_indicators`; rekomendasi santri mengutamakan konten yang terkait indikator hasil validasi ustadz dan observasi, dengan fallback ke materi published terbaru.
+  - Portal santri memiliki `/student/contents` dan `/student/contents/{slug}` dengan bahasa motivasional, daftar/detail materi, related content, dan respons emotikon positif (`happy`, `inspired`, `curious`, `calm`).
+  - Jika akun student belum punya row profil `students`, materi tetap dapat dibaca tetapi respons emotikon tidak disimpan sampai profil santri lengkap.
+- Consequences:
+  - Dashboard santri dan sidebar kini mengarah ke Bioskop Teladan berbasis Educational Content.
+  - Interaksi materi menjadi riwayat santri sehingga guard hapus santri ikut mempertimbangkan `content_interactions`.
+  - Tests ditambahkan untuk CRUD admin, upload media, akses role, daftar/detail santri, respons emotikon, rekomendasi berdasarkan indikator, dan missing profile.
+- Approved By: Implementation
+
 ## Template Decision Baru
 
 ```md

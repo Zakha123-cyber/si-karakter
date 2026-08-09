@@ -1,9 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
     BookOpen,
-    CalendarDays,
-    ClipboardCheck,
-    FileText,
     ChevronRight,
     Clock,
     ShieldCheck,
@@ -20,6 +17,7 @@ type Stats = {
     validated_reviews: number;
     active_packages: number;
     total_indicators: number;
+    open_warnings: number;
 };
 
 type PendingReview = {
@@ -43,6 +41,7 @@ export default function Dashboard({
         validated_reviews: 0,
         active_packages: 0,
         total_indicators: 0,
+        open_warnings: 0,
     },
     recent_pending_reviews = [],
 }: DashboardProps) {
@@ -115,6 +114,13 @@ export default function Dashboard({
                             }
                             value={`${stats.total_indicators}`}
                             label="Indikator"
+                        />
+                        <StatPill
+                            icon={
+                                <ShieldCheck className="size-5 text-rose-200" />
+                            }
+                            value={`${stats.open_warnings}`}
+                            label="Pendampingan"
                         />
                     </div>
                 </div>
@@ -255,15 +261,36 @@ export default function Dashboard({
                                 gradient="from-purple-400 to-indigo-500"
                             />
 
+                            <FeatureCard
+                                emoji="🌸"
+                                title="Early Warning Pendampingan"
+                                description="Pantau catatan santri yang membutuhkan pendampingan dengan bahasa positif."
+                                actionLabel="Buka Pendampingan"
+                                actionHref="/teacher/warnings"
+                                badgeText={`${stats.open_warnings} Terbuka`}
+                                badgeColor="bg-rose-100 text-rose-800"
+                                gradient="from-rose-400 to-orange-400"
+                            />
+
                             {role === 'admin' && (
-                                <FeatureCard
-                                    emoji="🎓"
-                                    title="Manajemen Santri & User"
-                                    description="Kelola akun admin, ustadz, dan kelompok santri."
-                                    actionLabel="User Management"
-                                    actionHref="/admin/users"
-                                    gradient="from-rose-400 to-pink-500"
-                                />
+                                <>
+                                    <FeatureCard
+                                        emoji="🎬"
+                                        title="Materi Edukasi"
+                                        description="Kelola video, komik, audio, gambar, cerita, dan rekomendasi materi santri."
+                                        actionLabel="Kelola Materi"
+                                        actionHref="/admin/educational-contents"
+                                        gradient="from-sky-400 to-emerald-500"
+                                    />
+                                    <FeatureCard
+                                        emoji="🎓"
+                                        title="Manajemen Santri & User"
+                                        description="Kelola akun admin, ustadz, dan kelompok santri."
+                                        actionLabel="User Management"
+                                        actionHref="/admin/users"
+                                        gradient="from-rose-400 to-pink-500"
+                                    />
+                                </>
                             )}
                         </div>
                     </Section>

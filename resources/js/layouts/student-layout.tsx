@@ -9,10 +9,10 @@ type StudentLayoutProps = {
 
 const NAV_ITEMS = [
     { emoji: '🏠', label: 'Beranda', href: '/student/dashboard' },
-    { emoji: '🎬', label: 'Bioskop Teladan', href: '/student/tests' },
+    { emoji: '🎬', label: 'Bioskop Teladan', href: '/student/contents' },
     { emoji: '🛤', label: 'Pilih Jalanmu', href: '/student/tests' },
     { emoji: '🛡️', label: 'Simulasi Berani Menolak', href: '/student/tests' },
-    { emoji: '🌳', label: 'Pohon Kebaikan', href: '/student/dashboard' },
+    { emoji: '🌳', label: 'Pohon Kebaikan', href: '/student/goodness-tree' },
     { emoji: '🏆', label: 'Misi Harian', href: '/student/dashboard' },
     { emoji: '🎁', label: 'Hadiah', href: '/student/dashboard' },
     { emoji: '⚙️', label: 'Pengaturan', href: '/student/dashboard' },
@@ -99,7 +99,10 @@ function SidebarContent() {
             {/* Nav */}
             <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
                 {NAV_ITEMS.map((item) => {
-                    const isActive = url === item.href;
+                    const isActive =
+                        url === item.href ||
+                        (item.href !== '/student/dashboard' &&
+                            url.startsWith(item.href));
 
                     return (
                         <Link
@@ -118,6 +121,16 @@ function SidebarContent() {
                         </Link>
                     );
                 })}
+
+                <Link
+                    href="/logout"
+                    method="post"
+                    as="button"
+                    className="mt-2 flex w-full items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-semibold text-rose-500 transition-colors hover:bg-rose-50"
+                >
+                    <span className="text-lg leading-none">🚪</span>
+                    Keluar
+                </Link>
             </nav>
 
             {/* Mascot + voice */}

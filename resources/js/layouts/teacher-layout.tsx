@@ -23,8 +23,23 @@ const getNavItems = (role?: string) => [
         label: 'Konfigurasi Scoring',
         href: '/teacher/scoring-configurations',
     },
+    {
+        emoji: '📝',
+        label: 'Observasi Harian',
+        href: '/teacher/observations',
+    },
+    {
+        emoji: '🌸',
+        label: 'Pendampingan Santri',
+        href: '/teacher/warnings',
+    },
     ...(role === 'admin'
         ? [
+              {
+                  emoji: '🎬',
+                  label: 'Materi Edukasi',
+                  href: '/admin/educational-contents',
+              },
               {
                   emoji: '👥',
                   label: 'Manajemen User',

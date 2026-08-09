@@ -36,6 +36,21 @@ const getNavItems = (role?: string) => [
     ...(role === 'admin'
         ? [
               {
+                  emoji: '📅',
+                  label: 'Tahun Ajaran',
+                  href: '/admin/academic-years',
+              },
+              {
+                  emoji: '🏫',
+                  label: 'Kelompok',
+                  href: '/admin/groups',
+              },
+              {
+                  emoji: '🎓',
+                  label: 'Data Santri',
+                  href: '/admin/students',
+              },
+              {
                   emoji: '🎬',
                   label: 'Materi Edukasi',
                   href: '/admin/educational-contents',

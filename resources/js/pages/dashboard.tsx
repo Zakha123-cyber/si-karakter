@@ -275,6 +275,32 @@ export default function Dashboard({
                             {role === 'admin' && (
                                 <>
                                     <FeatureCard
+                                        emoji="📅"
+                                        title="Tahun Ajaran"
+                                        description="Kelola periode akademik aktif untuk kelompok dan riwayat santri."
+                                        actionLabel="Kelola Tahun Ajaran"
+                                        actionHref="/admin/academic-years"
+                                        gradient="from-cyan-400 to-sky-500"
+                                    />
+                                    <FeatureCard
+                                        emoji="🏫"
+                                        title="Kelompok Santri"
+                                        description="Kelola kelompok belajar, ustadz pembimbing, dan penempatan santri."
+                                        actionLabel="Kelola Kelompok"
+                                        actionHref="/admin/groups"
+                                        gradient="from-teal-400 to-emerald-500"
+                                    />
+                                    <FeatureCard
+                                        emoji="🎓"
+                                        title="Data Santri"
+                                        description="Kelola profil santri agar asesmen, observasi, dan respons materi bisa tersimpan."
+                                        actionLabel="Kelola Santri"
+                                        actionHref="/admin/students"
+                                        badgeText={`${stats.total_students} Santri`}
+                                        badgeColor="bg-sky-100 text-sky-800"
+                                        gradient="from-indigo-400 to-blue-500"
+                                    />
+                                    <FeatureCard
                                         emoji="🎬"
                                         title="Materi Edukasi"
                                         description="Kelola video, komik, audio, gambar, cerita, dan rekomendasi materi santri."
@@ -283,9 +309,9 @@ export default function Dashboard({
                                         gradient="from-sky-400 to-emerald-500"
                                     />
                                     <FeatureCard
-                                        emoji="🎓"
-                                        title="Manajemen Santri & User"
-                                        description="Kelola akun admin, ustadz, dan kelompok santri."
+                                        emoji="👥"
+                                        title="Manajemen User"
+                                        description="Kelola akun admin, ustadz, dan akses login santri."
                                         actionLabel="User Management"
                                         actionHref="/admin/users"
                                         gradient="from-rose-400 to-pink-500"

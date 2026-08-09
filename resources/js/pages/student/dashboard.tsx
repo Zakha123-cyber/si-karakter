@@ -277,6 +277,12 @@ export default function StudentDashboard({
                                 ),
                             )}
                         </div>
+                        <Link
+                            href="/student/goodness-tree"
+                            className="mt-4 flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-4 py-2.5 text-xs font-extrabold text-white shadow-[0_6px_18px_rgba(16,185,129,0.28)] transition-transform hover:scale-[1.02]"
+                        >
+                            Lihat Pohonku
+                        </Link>
                     </div>
 
                     {/* Daily mission */}

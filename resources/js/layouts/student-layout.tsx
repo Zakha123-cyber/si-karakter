@@ -12,7 +12,7 @@ const NAV_ITEMS = [
     { emoji: '🎬', label: 'Bioskop Teladan', href: '/student/tests' },
     { emoji: '🛤', label: 'Pilih Jalanmu', href: '/student/tests' },
     { emoji: '🛡️', label: 'Simulasi Berani Menolak', href: '/student/tests' },
-    { emoji: '🌳', label: 'Pohon Kebaikan', href: '/student/dashboard' },
+    { emoji: '🌳', label: 'Pohon Kebaikan', href: '/student/goodness-tree' },
     { emoji: '🏆', label: 'Misi Harian', href: '/student/dashboard' },
     { emoji: '🎁', label: 'Hadiah', href: '/student/dashboard' },
     { emoji: '⚙️', label: 'Pengaturan', href: '/student/dashboard' },
@@ -99,7 +99,10 @@ function SidebarContent() {
             {/* Nav */}
             <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
                 {NAV_ITEMS.map((item) => {
-                    const isActive = url === item.href;
+                    const isActive =
+                        url === item.href ||
+                        (item.href !== '/student/dashboard' &&
+                            url.startsWith(item.href));
 
                     return (
                         <Link

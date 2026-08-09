@@ -191,14 +191,14 @@ Status:
 
 - [x] Migration point transactions.
 - [x] Migration tree levels.
-- [ ] Seeder tree levels.
-- [ ] Award reward points.
-- [ ] Hitung total points.
-- [ ] Tentukan level pohon.
-- [ ] Halaman pohon santri.
-- [ ] Riwayat reward positif.
-- [ ] Unit test threshold.
-- [ ] Responsive test.
+- [x] Seeder tree levels.
+- [x] Award reward points.
+- [x] Hitung total points.
+- [x] Tentukan level pohon.
+- [x] Halaman pohon santri.
+- [x] Riwayat reward positif.
+- [x] Unit test threshold.
+- [x] Responsive test.
 
 ## Phase 13 — Educational Content
 

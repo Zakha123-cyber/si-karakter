@@ -193,6 +193,23 @@ Gunakan dokumen ini untuk mencatat keputusan produk dan teknis.
   - Tests ditambahkan untuk rule engine, generate, authorization, review/resolve, bahasa pendampingan, dan non-eksposur pada santri.
 - Approved By: Implementation
 
+## D-022 — Phase 12 Goodness Tree
+
+- Date: 2026-08-09
+- Status: Accepted
+- Context: Phase 12 membutuhkan gamifikasi positif berupa pohon virtual yang tumbuh dari reward points, terpisah dari skor asesmen karakter, dan aman dilihat santri tanpa label negatif.
+- Decision:
+  - Level pohon disimpan di `goodness_tree_levels` dan diisi idempotent melalui `GoodnessTreeLevelSeeder` dengan threshold awal 0, 25, 60, 120, dan 200 poin.
+  - Kalkulasi total poin, level aktif, level berikutnya, progress, dan sisa poin dipusatkan di `GoodnessTreeService`.
+  - Transaksi poin positif dari observasi disinkronkan melalui `GoodnessPointAwarder`, sementara skor asesmen tetap terpisah.
+  - Santri mendapat halaman khusus `/student/goodness-tree` berisi representasi positif, level journey, dan riwayat reward positif; warning tidak dikirim pada props halaman ini.
+  - Portal santri memakai bahasa motivasional dan tidak menampilkan hukuman visual saat poin rendah.
+- Consequences:
+  - Dashboard santri dan halaman Pohon Kebaikan memakai kalkulasi level yang sama.
+  - Halaman Goodness Tree siap dikembangkan lagi untuk reward dari simulasi/misi pada fase berikutnya.
+  - Tests ditambahkan untuk threshold, akses, riwayat reward positif, non-eksposur warning, dan idempotency seeder.
+- Approved By: Implementation
+
 ## Template Decision Baru
 
 ```md

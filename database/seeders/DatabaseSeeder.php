@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             CharacterIndicatorSeeder::class,
             ScoringConfigurationSeeder::class,
             WarningRuleSeeder::class,
+            GoodnessTreeLevelSeeder::class,
             TestReviewSeeder::class,
         ]);
     }

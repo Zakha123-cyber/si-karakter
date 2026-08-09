@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Domain\EarlyWarning\StudentWarningGenerator;
+use App\Domain\GoodnessTree\GoodnessPointAwarder;
 use App\Domain\Observation\EntrySentimentResolver;
 use App\Domain\Scoring\ObservationScoreCalculator;
 use App\Enums\IndicatorCategory;
@@ -32,6 +33,7 @@ class ObservationController extends Controller
         private readonly EntrySentimentResolver $sentimentResolver,
         private readonly AuditLogger $auditLogger,
         private readonly StudentWarningGenerator $warningGenerator,
+        private readonly GoodnessPointAwarder $pointAwarder,
     ) {}
 
     public function index(Request $request): Response
@@ -322,22 +324,6 @@ class ObservationController extends Controller
 
         $entry->update(['sentiment' => $sentiment]);
 
-        $totalPoints = $entry->items->sum('reward_points');
-
-        GoodnessPointTransaction::query()
-            ->where('source_type', 'observation')
-            ->where('source_id', $entry->id)
-            ->delete();
-
-        if ($totalPoints > 0) {
-            GoodnessPointTransaction::query()->create([
-                'student_id' => $entry->student_id,
-                'source_type' => 'observation',
-                'source_id' => $entry->id,
-                'points' => $totalPoints,
-                'description' => 'Poin observasi '.$entry->observed_at->toDateString(),
-                'awarded_by' => $entry->teacher_id,
-            ]);
-        }
+        $this->pointAwarder->syncObservationReward($entry);
     }
 }

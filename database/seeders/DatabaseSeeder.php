@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             ScoringConfigurationSeeder::class,
             WarningRuleSeeder::class,
             GoodnessTreeLevelSeeder::class,
+            EducationalContentSeeder::class,
             TestReviewSeeder::class,
         ]);
     }

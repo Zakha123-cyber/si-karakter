@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ClipboardCheck, Menu, X } from 'lucide-react';
+import { ClipboardCheck, Menu, Settings, X } from 'lucide-react';
 import { useState } from 'react';
 import type { Auth } from '@/types';
 
@@ -8,47 +8,71 @@ type TeacherLayoutProps = {
     breadcrumbs?: any;
 };
 
-const getNavItems = (role?: string) => [
-    { emoji: '🏠', label: 'Beranda', href: '/dashboard' },
-    { emoji: '📋', label: 'Review Asesmen', href: '/teacher/reviews' },
-    { emoji: '📦', label: 'Paket Tes Moral', href: '/teacher/test-packages' },
-    { emoji: '🧭', label: 'Kasus Dilema', href: '/teacher/moral-cases' },
-    {
-        emoji: '🌱',
-        label: 'Indikator Karakter',
-        href: '/teacher/character-indicators',
-    },
-    {
-        emoji: '⚖️',
-        label: 'Konfigurasi Scoring',
-        href: '/teacher/scoring-configurations',
-    },
-    {
-        emoji: '📝',
-        label: 'Observasi Harian',
-        href: '/teacher/observations',
-    },
-    {
-        emoji: '🌸',
-        label: 'Pendampingan Santri',
-        href: '/teacher/warnings',
-    },
-    ...(role === 'admin'
-        ? [
-              {
-                  emoji: '🎬',
-                  label: 'Materi Edukasi',
-                  href: '/admin/educational-contents',
-              },
-              {
-                  emoji: '👥',
-                  label: 'Manajemen User',
-                  href: '/admin/users',
-              },
-          ]
-        : []),
-    { emoji: '⚙️', label: 'Pengaturan', href: '/settings/profile' },
-];
+const getNavItems = (role?: string) => {
+    if (role === 'admin') {
+        return [
+            { emoji: '🏠', label: 'Dashboard', href: '/dashboard' },
+            {
+                emoji: '📅',
+                label: 'Tahun Ajaran',
+                href: '/admin/academic-years',
+            },
+            {
+                emoji: '🏫',
+                label: 'Kelompok',
+                href: '/admin/groups',
+            },
+            {
+                emoji: '🎓',
+                label: 'Data Santri',
+                href: '/admin/students',
+            },
+            {
+                emoji: '👥',
+                label: 'Manajemen User',
+                href: '/admin/users',
+            },
+            { emoji: '⚙️', label: 'Pengaturan', href: '/settings/profile' },
+        ];
+    }
+
+    return [
+        { emoji: '🏠', label: 'Beranda', href: '/dashboard' },
+        { emoji: '📋', label: 'Review Asesmen', href: '/teacher/reviews' },
+        {
+            emoji: '📦',
+            label: 'Paket Tes Moral',
+            href: '/teacher/test-packages',
+        },
+        { emoji: '🧭', label: 'Kasus Dilema', href: '/teacher/moral-cases' },
+        {
+            emoji: '🌱',
+            label: 'Indikator Karakter',
+            href: '/teacher/character-indicators',
+        },
+        {
+            emoji: '⚖️',
+            label: 'Konfigurasi Scoring',
+            href: '/teacher/scoring-configurations',
+        },
+        {
+            emoji: '📝',
+            label: 'Observasi Harian',
+            href: '/teacher/observations',
+        },
+        {
+            emoji: '🌸',
+            label: 'Pendampingan Santri',
+            href: '/teacher/warnings',
+        },
+        {
+            emoji: '🎬',
+            label: 'Materi Edukasi',
+            href: '/teacher/educational-contents',
+        },
+        { emoji: '⚙️', label: 'Pengaturan', href: '/settings/profile' },
+    ];
+};
 
 export default function TeacherLayout({ children }: TeacherLayoutProps) {
     const { auth } = usePage<{ auth: Auth }>().props;
@@ -186,11 +210,19 @@ function SidebarContent() {
                         : 'Siap membina santri!'}
                 </p>
                 <Link
-                    href="/teacher/reviews"
+                    href={
+                        role === 'admin'
+                            ? '/settings/profile'
+                            : '/teacher/reviews'
+                    }
                     className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-white py-2.5 text-xs font-bold text-emerald-600 shadow-sm transition-transform hover:scale-[1.02]"
                 >
-                    <ClipboardCheck className="size-4" />
-                    Antrian Review
+                    {role === 'admin' ? (
+                        <Settings className="size-4" />
+                    ) : (
+                        <ClipboardCheck className="size-4" />
+                    )}
+                    {role === 'admin' ? 'Pengaturan Akun' : 'Antrian Review'}
                 </Link>
             </div>
         </>

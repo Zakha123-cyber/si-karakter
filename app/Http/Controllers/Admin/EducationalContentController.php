@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\EducationalContentStatus;
 use App\Enums\EducationalContentType;
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\EducationalContents\AssignEducationalContentIndicatorsRequest;
 use App\Http\Requests\Admin\EducationalContents\StoreEducationalContentRequest;
@@ -50,6 +51,9 @@ class EducationalContentController extends Controller
 
         return Inertia::render('admin/educational-contents/index', [
             'contents' => $contents,
+            'basePath' => $request->user()?->role === UserRole::Teacher
+                ? '/teacher/educational-contents'
+                : '/admin/educational-contents',
             'filters' => [
                 'search' => $request->string('search')->toString(),
                 'status' => $request->string('status')->toString(),

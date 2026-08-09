@@ -85,6 +85,7 @@ type PaginatedContents = {
 
 type Props = {
     contents: PaginatedContents;
+    basePath: string;
     filters: {
         search: string;
         status: string;
@@ -98,6 +99,7 @@ type Props = {
 
 export default function AdminEducationalContentsIndex({
     contents,
+    basePath,
     filters,
     contentTypes,
     statuses,
@@ -141,7 +143,7 @@ export default function AdminEducationalContentsIndex({
         event.preventDefault();
 
         router.get(
-            '/admin/educational-contents',
+            basePath,
             {
                 search,
                 status,
@@ -213,15 +215,12 @@ export default function AdminEducationalContentsIndex({
         };
 
         if (editingContent) {
-            contentForm.put(
-                `/admin/educational-contents/${editingContent.id}`,
-                options,
-            );
+            contentForm.put(`${basePath}/${editingContent.id}`, options);
 
             return;
         }
 
-        contentForm.post('/admin/educational-contents', options);
+        contentForm.post(basePath, options);
     };
 
     const deleteContent = (content: EducationalContentRow) => {
@@ -231,7 +230,7 @@ export default function AdminEducationalContentsIndex({
             action: {
                 label: 'Hapus',
                 onClick: () => {
-                    router.delete(`/admin/educational-contents/${content.id}`, {
+                    router.delete(`${basePath}/${content.id}`, {
                         preserveScroll: true,
                         onSuccess: () =>
                             toast.success('Materi berhasil dihapus.'),
@@ -276,7 +275,7 @@ export default function AdminEducationalContentsIndex({
         const toastId = toast.loading('Menyimpan mapping indikator...');
 
         router.post(
-            `/admin/educational-contents/${indicatorContent.id}/indicators`,
+            `${basePath}/${indicatorContent.id}/indicators`,
             { indicator_ids: Array.from(selectedIndicators) },
             {
                 preserveScroll: true,
@@ -308,7 +307,7 @@ export default function AdminEducationalContentsIndex({
 
         const toastId = toast.loading('Mengupload file materi...');
 
-        mediaForm.post(`/admin/educational-contents/${mediaContent.id}/media`, {
+        mediaForm.post(`${basePath}/${mediaContent.id}/media`, {
             forceFormData: true,
             preserveScroll: true,
             onSuccess: () => {

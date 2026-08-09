@@ -175,6 +175,24 @@ Gunakan dokumen ini untuk mencatat keputusan produk dan teknis.
 - Consequences: Total test 265, semuanya hijau; Pint & PHPStan lulus. Item rekomendasi (wiring scoring, transisi status attempt, refactor duplikasi web/API, guard self-lockout admin, revoke sesi saat ganti password) menunggu persetujuan sebelum dikerjakan.
 - Approved By: Implementation
 
+## D-021 — Phase 11 Early Warning Pendampingan
+
+- Date: 2026-08-09
+- Status: Accepted
+- Context: Phase 11 membutuhkan early warning awal menggunakan indikator dummy, hanya tampil kepada admin/ustadz, memakai bahasa pendampingan, serta tidak boleh tampil pada portal santri.
+- Decision:
+  - Rule awal memakai tipe `observation_negative_indicator` dengan kondisi JSON: jendela hari, minimum item negatif, indikator warning, dan daftar kode indikator opsional.
+  - Seeder `WarningRuleSeeder` membuat rule dummy idempotent untuk indikator `dishonesty_warning`.
+  - `WarningRuleEngine` mengevaluasi pola observasi negatif, dan `StudentWarningGenerator` membuat `student_warnings` tanpa duplikasi selama warning masih `open` atau `reviewed`.
+  - Generate warning dapat dijalankan manual dari halaman `/teacher/warnings` untuk semua santri yang terlihat atau satu santri tertentu, dan juga dijalankan otomatis setelah observasi dibuat/diperbarui.
+  - Dashboard warning ditempatkan di portal teacher/admin dengan aksi review dan resolve; resolve wajib catatan tindak lanjut.
+  - Portal santri tidak diberi route/props warning.
+- Consequences:
+  - Early warning fase awal sudah usable end-to-end tetapi belum berupa rule builder kompleks.
+  - Audit dicatat untuk `warning.generated`, `warning.reviewed`, dan `warning.resolved`.
+  - Tests ditambahkan untuk rule engine, generate, authorization, review/resolve, bahasa pendampingan, dan non-eksposur pada santri.
+- Approved By: Implementation
+
 ## Template Decision Baru
 
 ```md

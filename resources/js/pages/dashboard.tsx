@@ -1,9 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
     BookOpen,
-    CalendarDays,
-    ClipboardCheck,
-    FileText,
     ChevronRight,
     Clock,
     ShieldCheck,
@@ -20,6 +17,7 @@ type Stats = {
     validated_reviews: number;
     active_packages: number;
     total_indicators: number;
+    open_warnings: number;
 };
 
 type PendingReview = {
@@ -43,6 +41,7 @@ export default function Dashboard({
         validated_reviews: 0,
         active_packages: 0,
         total_indicators: 0,
+        open_warnings: 0,
     },
     recent_pending_reviews = [],
 }: DashboardProps) {
@@ -115,6 +114,13 @@ export default function Dashboard({
                             }
                             value={`${stats.total_indicators}`}
                             label="Indikator"
+                        />
+                        <StatPill
+                            icon={
+                                <ShieldCheck className="size-5 text-rose-200" />
+                            }
+                            value={`${stats.open_warnings}`}
+                            label="Pendampingan"
                         />
                     </div>
                 </div>
@@ -253,6 +259,17 @@ export default function Dashboard({
                                 actionLabel="Atur Scoring"
                                 actionHref="/teacher/scoring-configurations"
                                 gradient="from-purple-400 to-indigo-500"
+                            />
+
+                            <FeatureCard
+                                emoji="🌸"
+                                title="Early Warning Pendampingan"
+                                description="Pantau catatan santri yang membutuhkan pendampingan dengan bahasa positif."
+                                actionLabel="Buka Pendampingan"
+                                actionHref="/teacher/warnings"
+                                badgeText={`${stats.open_warnings} Terbuka`}
+                                badgeColor="bg-rose-100 text-rose-800"
+                                gradient="from-rose-400 to-orange-400"
                             />
 
                             {role === 'admin' && (

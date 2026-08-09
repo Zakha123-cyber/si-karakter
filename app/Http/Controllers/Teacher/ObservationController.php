@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Teacher;
 
+use App\Domain\EarlyWarning\StudentWarningGenerator;
 use App\Domain\Observation\EntrySentimentResolver;
 use App\Domain\Scoring\ObservationScoreCalculator;
 use App\Enums\IndicatorCategory;
@@ -30,6 +31,7 @@ class ObservationController extends Controller
         private readonly ObservationScoreCalculator $scoreCalculator,
         private readonly EntrySentimentResolver $sentimentResolver,
         private readonly AuditLogger $auditLogger,
+        private readonly StudentWarningGenerator $warningGenerator,
     ) {}
 
     public function index(Request $request): Response
@@ -130,6 +132,7 @@ class ObservationController extends Controller
 
         $entry->load('items');
         $this->finalizeEntry($entry);
+        $this->warningGenerator->generateForObservation($entry);
         $this->auditLogger->record('observation.created', $entry, null, $this->snapshot($entry));
 
         return back()->with('status', 'Observasi berhasil disimpan.');
@@ -175,6 +178,7 @@ class ObservationController extends Controller
 
         $observationEntry->load('items');
         $this->finalizeEntry($observationEntry);
+        $this->warningGenerator->generateForObservation($observationEntry);
         $this->auditLogger->record('observation.updated', $observationEntry, $oldSnapshot, $this->snapshot($observationEntry));
 
         return back()->with('status', 'Observasi berhasil diperbarui.');

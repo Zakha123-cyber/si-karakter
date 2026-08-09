@@ -535,24 +535,6 @@ parameters:
 			path: app/Models/SimulationScenario.php
 
 		-
-			message: '#^Method App\\Models\\StudentWarning\:\:reviewer\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/StudentWarning.php
-
-		-
-			message: '#^Method App\\Models\\StudentWarning\:\:student\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/StudentWarning.php
-
-		-
-			message: '#^Method App\\Models\\StudentWarning\:\:warningRule\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/StudentWarning.php
-
-		-
 			message: '#^Method App\\Models\\TeacherValidation\:\:aiAssessment\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
 			identifier: missingType.generics
 			count: 1
@@ -647,18 +629,6 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: app/Models/Transcription.php
-
-		-
-			message: '#^Class App\\Models\\WarningRule uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/WarningRule.php
-
-		-
-			message: '#^Method App\\Models\\WarningRule\:\:studentWarnings\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Models/WarningRule.php
 
 		-
 			message: '#^Method App\\Services\\AI\\GoogleGeminiService\:\:__construct\(\) has parameter \$jsonSchema with no value type specified in iterable type array\.$#'

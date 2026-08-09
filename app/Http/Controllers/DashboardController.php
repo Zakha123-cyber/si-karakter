@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\UserRole;
 use App\Models\CharacterIndicator;
 use App\Models\Student;
+use App\Models\StudentWarning;
 use App\Models\TestAnswer;
 use App\Models\TestPackage;
 use Illuminate\Http\Request;
@@ -69,6 +70,13 @@ class DashboardController extends Controller
             ->where('is_active', true)
             ->count();
 
+        $openWarningsCount = StudentWarning::query()
+            ->where('status', 'open')
+            ->when($user?->role === UserRole::Teacher, function ($q) use ($user) {
+                $q->whereHas('student.currentGroup', fn ($g) => $g->where('teacher_id', $user->id));
+            })
+            ->count();
+
         $validatedReviewsCount = TestAnswer::query()
             ->whereHas('teacherValidations')
             ->when($user?->role === UserRole::Teacher, function ($q) use ($user) {
@@ -83,6 +91,7 @@ class DashboardController extends Controller
                 'validated_reviews' => $validatedReviewsCount,
                 'active_packages' => $activePackagesCount,
                 'total_indicators' => $totalIndicatorsCount,
+                'open_warnings' => $openWarningsCount,
             ],
             'recent_pending_reviews' => $recentPendingReviews,
         ]);

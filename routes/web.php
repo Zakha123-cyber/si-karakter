@@ -12,6 +12,7 @@ use App\Http\Controllers\Teacher\ObservationController;
 use App\Http\Controllers\Teacher\ReviewController;
 use App\Http\Controllers\Teacher\ScoringConfigurationController;
 use App\Http\Controllers\Teacher\TestPackageController;
+use App\Http\Controllers\Teacher\WarningController;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/student.php';
@@ -97,6 +98,12 @@ Route::middleware(['auth', 'active', 'role:teacher,admin'])->prefix('teacher')->
     Route::post('observations', [ObservationController::class, 'store'])->name('observations.store');
     Route::put('observations/{observationEntry}', [ObservationController::class, 'update'])->name('observations.update');
     Route::delete('observations/{observationEntry}', [ObservationController::class, 'destroy'])->name('observations.destroy');
+
+    // Early Warning / Pendampingan
+    Route::get('warnings', [WarningController::class, 'index'])->name('warnings.index');
+    Route::post('warnings/generate', [WarningController::class, 'generate'])->name('warnings.generate');
+    Route::post('warnings/{warning}/review', [WarningController::class, 'review'])->name('warnings.review');
+    Route::post('warnings/{warning}/resolve', [WarningController::class, 'resolve'])->name('warnings.resolve');
 });
 
 require __DIR__.'/settings.php';

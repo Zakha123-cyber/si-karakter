@@ -177,15 +177,15 @@ Status:
 
 - [x] Migration warning rules.
 - [x] Migration student warnings.
-- [ ] Seeder rule dummy.
-- [ ] Rule engine awal.
-- [ ] Generate warning.
-- [ ] Warning dashboard.
-- [ ] Review warning.
-- [ ] Resolve warning.
-- [ ] Gunakan bahasa pendampingan.
-- [ ] Pastikan tidak tampil ke santri.
-- [ ] Test warning rules.
+- [x] Seeder rule dummy.
+- [x] Rule engine awal.
+- [x] Generate warning.
+- [x] Warning dashboard.
+- [x] Review warning.
+- [x] Resolve warning.
+- [x] Gunakan bahasa pendampingan.
+- [x] Pastikan tidak tampil ke santri.
+- [x] Test warning rules.
 
 ## Phase 12 — Goodness Tree
 

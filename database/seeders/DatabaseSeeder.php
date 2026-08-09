@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CharacterIndicatorSeeder::class,
             ScoringConfigurationSeeder::class,
+            WarningRuleSeeder::class,
             TestReviewSeeder::class,
         ]);
     }

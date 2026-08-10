@@ -103,7 +103,7 @@ class ReviewDetailResource extends JsonResource
                 'file_path' => $audioFile->file_path,
                 'original_name' => $audioFile->original_name,
                 'duration_seconds' => $audioFile->duration_seconds,
-                'url' => asset('storage/'.$audioFile->file_path),
+                'url' => route('teacher.reviews.audio', $answer),
             ] : null,
             'transcription' => $transcription ? [
                 'id' => $transcription->id,

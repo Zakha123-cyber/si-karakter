@@ -245,17 +245,17 @@ Status:
 ## Phase 16 — Character Reports
 
 - [x] Migration reports.
-- [ ] Generate report draft.
-- [ ] Rekap tes.
-- [ ] Rekap observasi.
-- [ ] Narasi manual.
-- [ ] Draft narasi LLM.
-- [ ] Validasi ustadz.
-- [ ] Publish.
-- [ ] Generate PDF.
-- [ ] Authorized PDF download.
-- [ ] Test PDF.
-- [ ] Test report permissions.
+- [x] Generate report draft.
+- [x] Rekap tes.
+- [x] Rekap observasi.
+- [x] Narasi manual.
+- [x] Draft narasi LLM.
+- [x] Validasi ustadz.
+- [x] Publish.
+- [x] Generate PDF.
+- [x] Authorized PDF download.
+- [x] Test PDF.
+- [x] Test report permissions.
 
 ## Phase 17 — Security and Audit
 

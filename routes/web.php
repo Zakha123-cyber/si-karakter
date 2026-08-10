@@ -11,6 +11,7 @@ use App\Http\Controllers\EducationalContentMediaController;
 use App\Http\Controllers\Teacher\CharacterIndicatorController;
 use App\Http\Controllers\Teacher\MoralCaseController;
 use App\Http\Controllers\Teacher\ObservationController;
+use App\Http\Controllers\Teacher\ReportController;
 use App\Http\Controllers\Teacher\ReviewController;
 use App\Http\Controllers\Teacher\ScoringConfigurationController;
 use App\Http\Controllers\Teacher\TestPackageController;
@@ -119,6 +120,16 @@ Route::middleware(['auth', 'active', 'role:teacher,admin'])->prefix('teacher')->
     Route::post('warnings/generate', [WarningController::class, 'generate'])->name('warnings.generate');
     Route::post('warnings/{warning}/review', [WarningController::class, 'review'])->name('warnings.review');
     Route::post('warnings/{warning}/resolve', [WarningController::class, 'resolve'])->name('warnings.resolve');
+
+    // Character Reports
+    Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::post('reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
+    Route::get('reports/{report}', [ReportController::class, 'show'])->name('reports.show');
+    Route::put('reports/{report}', [ReportController::class, 'update'])->name('reports.update');
+    Route::post('reports/{report}/generate-narrative', [ReportController::class, 'generateNarrative'])->name('reports.generate-narrative');
+    Route::post('reports/{report}/review', [ReportController::class, 'review'])->name('reports.review');
+    Route::post('reports/{report}/publish', [ReportController::class, 'publish'])->name('reports.publish');
+    Route::get('reports/{report}/pdf', [ReportController::class, 'pdf'])->name('reports.pdf');
 });
 
 require __DIR__.'/settings.php';

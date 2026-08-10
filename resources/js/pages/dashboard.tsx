@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import {
     BookOpen,
     ChevronRight,
@@ -8,7 +8,25 @@ import {
     TreePine,
     Users,
     Volume2,
+    PieChart as PieChartIcon,
+    BarChart3,
+    TrendingUp,
 } from 'lucide-react';
+import {
+    PieChart,
+    Pie,
+    Cell,
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+    BarChart,
+    Bar,
+} from 'recharts';
 import type { Auth } from '@/types';
 
 type Stats = {
@@ -32,6 +50,17 @@ type PendingReview = {
 type DashboardProps = {
     stats?: Stats;
     recent_pending_reviews?: PendingReview[];
+    analytics?: {
+        moral_distribution: { name: string; value: number }[];
+        observation_summary: { name: string; value: number; fill: string }[];
+        score_trend: { name: string; score: number }[];
+    };
+    filter_options?: {
+        academic_years: { id: number; name: string }[];
+        groups: { id: number; name: string }[];
+        selected_academic_year_id: string | null;
+        selected_group_id: string | null;
+    };
 };
 
 export default function Dashboard({
@@ -44,6 +73,8 @@ export default function Dashboard({
         open_warnings: 0,
     },
     recent_pending_reviews = [],
+    analytics,
+    filter_options,
 }: DashboardProps) {
     const { auth } = usePage<{ auth: Auth }>().props;
     const user = auth.user;
@@ -131,12 +162,14 @@ export default function Dashboard({
             </section>
 
             {isAdmin ? (
-                <AdminDashboard stats={stats} roleTitle={roleTitle} />
+                <AdminDashboard stats={stats} roleTitle={roleTitle} analytics={analytics} filter_options={filter_options} />
             ) : (
                 <TeacherDashboard
                     stats={stats}
                     recentPendingReviews={recent_pending_reviews}
                     roleTitle={roleTitle}
+                    analytics={analytics}
+                    filter_options={filter_options}
                 />
             )}
         </>
@@ -146,9 +179,13 @@ export default function Dashboard({
 function AdminDashboard({
     stats,
     roleTitle,
+    analytics,
+    filter_options,
 }: {
     stats: Stats;
     roleTitle: string;
+    analytics?: DashboardProps['analytics'];
+    filter_options?: DashboardProps['filter_options'];
 }) {
     return (
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_340px]">
@@ -205,6 +242,8 @@ function AdminDashboard({
                         />
                     </div>
                 </Section>
+
+                <AnalyticsSection analytics={analytics} filter_options={filter_options} />
             </div>
 
             <aside className="space-y-6 xl:sticky xl:top-4 xl:self-start">
@@ -275,10 +314,14 @@ function TeacherDashboard({
     stats,
     recentPendingReviews,
     roleTitle,
+    analytics,
+    filter_options,
 }: {
     stats: Stats;
     recentPendingReviews: PendingReview[];
     roleTitle: string;
+    analytics?: DashboardProps['analytics'];
+    filter_options?: DashboardProps['filter_options'];
 }) {
     const totalReviews = stats.validated_reviews + stats.pending_reviews;
     const validationPercentage =
@@ -439,6 +482,8 @@ function TeacherDashboard({
                         />
                     </div>
                 </Section>
+
+                <AnalyticsSection analytics={analytics} filter_options={filter_options} />
             </div>
 
             <aside className="space-y-6 xl:sticky xl:top-4 xl:self-start">
@@ -694,5 +739,155 @@ function FeatureCard({
                 </Link>
             </div>
         </div>
+    );
+}
+
+function AnalyticsSection({ analytics, filter_options }: { analytics: DashboardProps['analytics']; filter_options?: DashboardProps['filter_options'] }) {
+    if (!analytics) return null;
+
+    const handleFilterChange = (key: string, value: string) => {
+        const query = new URLSearchParams(window.location.search);
+        if (value) {
+            query.set(key, value);
+        } else {
+            query.delete(key);
+        }
+        router.get(`/dashboard?${query.toString()}`, undefined, { preserveScroll: true, preserveState: true });
+    };
+
+    return (
+        <Section
+            index="📊"
+            emoji="📈"
+            title="Dasbor Analitik"
+            color="text-emerald-600"
+            description="Wawasan komprehensif terkait perkembangan moral dan observasi santri."
+        >
+            {filter_options && (
+                <div className="mb-6 flex flex-wrap items-center gap-4 rounded-2xl bg-slate-50/50 p-4 border border-slate-100">
+                    <div className="flex items-center gap-2">
+                        <label className="text-xs font-bold text-slate-500">Periode (Tahun Ajaran):</label>
+                        <select
+                            className="rounded-lg border-slate-200 text-sm text-slate-700 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                            value={filter_options.selected_academic_year_id ?? ''}
+                            onChange={(e) => handleFilterChange('academic_year_id', e.target.value)}
+                        >
+                            <option value="">Semua Periode</option>
+                            {filter_options.academic_years.map((ay) => (
+                                <option key={ay.id} value={ay.id}>{ay.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <label className="text-xs font-bold text-slate-500">Kelompok:</label>
+                        <select
+                            className="rounded-lg border-slate-200 text-sm text-slate-700 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                            value={filter_options.selected_group_id ?? ''}
+                            onChange={(e) => handleFilterChange('group_id', e.target.value)}
+                        >
+                            <option value="">Semua Kelompok</option>
+                            {filter_options.groups.map((g) => (
+                                <option key={g.id} value={g.id}>{g.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+            )}
+
+            <div className="grid grid-cols-1 gap-6 2xl:grid-cols-2">
+                {/* Moral Distribution Chart */}
+                <div className="min-w-0 rounded-[24px] border border-slate-100 bg-slate-50/50 p-5">
+                    <h3 className="mb-4 flex items-center gap-2 text-sm font-extrabold text-slate-700">
+                        <PieChartIcon className="size-4 text-emerald-500" />
+                        Distribusi Level Moral
+                    </h3>
+                    <div className="h-72 w-full">
+                        {analytics.moral_distribution.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={analytics.moral_distribution}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={65}
+                                        outerRadius={90}
+                                        paddingAngle={5}
+                                        dataKey="value"
+                                    >
+                                        {analytics.moral_distribution.map((entry, index) => {
+                                            const colors = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'];
+                                            return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                                        })}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend verticalAlign="bottom" height={36} />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="flex h-full items-center justify-center text-xs text-slate-400">
+                                Belum ada data distribusi.
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Observation Summary Chart */}
+                <div className="min-w-0 rounded-[24px] border border-slate-100 bg-slate-50/50 p-5">
+                    <h3 className="mb-4 flex items-center gap-2 text-sm font-extrabold text-slate-700">
+                        <BarChart3 className="size-4 text-sky-500" />
+                        Ringkasan Observasi
+                    </h3>
+                    <div className="h-72 w-full">
+                        {analytics.observation_summary.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={analytics.observation_summary} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} allowDecimals={false} />
+                                    <Tooltip cursor={{ fill: '#f8fafc' }} />
+                                    <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={60} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="flex h-full items-center justify-center text-xs text-slate-400">
+                                Belum ada data observasi.
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Score Trend Chart */}
+                <div className="col-span-1 min-w-0 rounded-[24px] border border-slate-100 bg-slate-50/50 p-5 2xl:col-span-2">
+                    <h3 className="mb-4 flex items-center gap-2 text-sm font-extrabold text-slate-700">
+                        <TrendingUp className="size-4 text-purple-500" />
+                        Tren Skor Rata-rata
+                    </h3>
+                    <div className="h-72 w-full">
+                        {analytics.score_trend.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={analytics.score_trend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} domain={[0, 100]} />
+                                    <Tooltip />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="score"
+                                        stroke="#8b5cf6"
+                                        strokeWidth={4}
+                                        dot={{ r: 4, strokeWidth: 2, fill: '#fff' }}
+                                        activeDot={{ r: 6, fill: '#8b5cf6', stroke: '#fff' }}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="flex h-full items-center justify-center text-xs text-slate-400">
+                                Belum ada data tren skor.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </Section>
     );
 }

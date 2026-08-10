@@ -6,7 +6,21 @@ import {
     Flame,
     Play,
     Volume2,
+    BarChart3,
+    TrendingUp,
 } from 'lucide-react';
+import {
+    Bar,
+    BarChart,
+    CartesianGrid,
+    Cell,
+    Line,
+    LineChart,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis,
+} from 'recharts';
 
 type TreeLevel = {
     level: number;
@@ -71,6 +85,10 @@ type Props = {
     contents: Content[];
     scenarios: Scenario[];
     missions: Mission[];
+    analytics?: {
+        observation_summary: { name: string; value: number; fill: string }[];
+        score_trend: { name: string; score: number }[];
+    };
 };
 
 export default function StudentDashboard({
@@ -79,6 +97,7 @@ export default function StudentDashboard({
     contents,
     scenarios,
     missions,
+    analytics,
 }: Props) {
     const firstName = student.name.split(' ')[0];
     const completedMissions = missions.filter((m) => m.completed).length;
@@ -222,6 +241,78 @@ export default function StudentDashboard({
                             ))}
                         </div>
                     </Section>
+
+                    {/* Section 4: Analitik (Tren & Observasi) */}
+                    {analytics && (
+                        <Section
+                            index="4"
+                            emoji="📊"
+                            title="Rapor Karakterku"
+                            color="text-emerald-600"
+                            description="Lihat perkembangan karakter dan capaian skormu."
+                            actionLabel="Detail"
+                            onAction={() => {}}
+                        >
+                            <div className="grid grid-cols-1 gap-6 2xl:grid-cols-2">
+                                {/* Observation Summary Chart */}
+                                <div className="min-w-0 rounded-[24px] border border-slate-100 bg-slate-50/50 p-5">
+                                    <h3 className="mb-4 flex items-center gap-2 text-sm font-extrabold text-slate-700">
+                                        <BarChart3 className="size-4 text-sky-500" />
+                                        Ringkasan Observasi
+                                    </h3>
+                                    <div className="h-64 w-full">
+                                        {analytics.observation_summary.length > 0 ? (
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <BarChart data={analytics.observation_summary} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
+                                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} allowDecimals={false} />
+                                                    <Tooltip cursor={{ fill: '#f8fafc' }} />
+                                                    <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={60} />
+                                                </BarChart>
+                                            </ResponsiveContainer>
+                                        ) : (
+                                            <div className="flex h-full items-center justify-center text-xs text-slate-400">
+                                                Belum ada data observasi.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Score Trend Chart */}
+                                <div className="min-w-0 rounded-[24px] border border-slate-100 bg-slate-50/50 p-5">
+                                    <h3 className="mb-4 flex items-center gap-2 text-sm font-extrabold text-slate-700">
+                                        <TrendingUp className="size-4 text-purple-500" />
+                                        Tren Skor Karakter
+                                    </h3>
+                                    <div className="h-64 w-full">
+                                        {analytics.score_trend.length > 0 ? (
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <LineChart data={analytics.score_trend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
+                                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} domain={[0, 100]} />
+                                                    <Tooltip />
+                                                    <Line
+                                                        type="monotone"
+                                                        dataKey="score"
+                                                        stroke="#8b5cf6"
+                                                        strokeWidth={4}
+                                                        dot={{ r: 4, strokeWidth: 2, fill: '#fff' }}
+                                                        activeDot={{ r: 6, fill: '#8b5cf6', stroke: '#fff' }}
+                                                    />
+                                                </LineChart>
+                                            </ResponsiveContainer>
+                                        ) : (
+                                            <div className="flex h-full items-center justify-center text-xs text-slate-400">
+                                                Belum ada data tren skor.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </Section>
+                    )}
                 </div>
 
                 {/* Right panel */}
@@ -238,11 +329,11 @@ export default function StudentDashboard({
                         </div>
                         <TreeIllustration progress={student.tree_progress} />
                         {student.tree_level ? (
-                            <p className="-mt-2 text-center text-sm font-bold text-slate-600">
+                            <p className="mt-3 text-center text-sm font-bold text-slate-600">
                                 {student.tree_level.name}
                             </p>
                         ) : (
-                            <p className="-mt-2 text-center text-sm font-bold text-slate-600">
+                            <p className="mt-3 text-center text-sm font-bold text-slate-600">
                                 Mulai menanam kebaikan
                             </p>
                         )}
@@ -312,11 +403,11 @@ export default function StudentDashboard({
                                 />
                             </div>
                         </div>
-                        <ul className="mt-4 space-y-2.5">
+                        <ul className="mt-5 space-y-3">
                             {missions.map((m) => (
                                 <li
                                     key={m.id}
-                                    className={`flex items-center gap-3 rounded-2xl p-2.5 ${
+                                    className={`flex items-center gap-3.5 rounded-2xl p-3 ${
                                         m.completed
                                             ? 'bg-emerald-50'
                                             : 'bg-gray-50'

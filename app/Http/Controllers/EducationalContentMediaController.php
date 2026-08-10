@@ -15,7 +15,7 @@ class EducationalContentMediaController extends Controller
     {
         abort_unless(in_array($type, ['media', 'thumbnail'], true), 404);
 
-        if ($educationalContent->status !== EducationalContentStatus::Published && $request->user()?->role !== UserRole::Admin) {
+        if ($educationalContent->status !== EducationalContentStatus::Published && $request->user()?->role !== UserRole::Teacher) {
             abort(404);
         }
 

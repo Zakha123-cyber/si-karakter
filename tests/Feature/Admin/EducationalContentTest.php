@@ -16,21 +16,21 @@ beforeEach(function () {
     $this->studentUser = User::factory()->student()->create(['name' => 'Santri Konten']);
 });
 
-test('admin can manage educational contents with indicator mapping', function () {
+test('teacher can manage educational contents with indicator mapping', function () {
     $indicator = CharacterIndicator::factory()->create([
         'code' => 'honesty',
         'name' => 'Kejujuran',
     ]);
 
-    $this->actingAs($this->teacher)
-        ->get('/admin/educational-contents')
+    $this->actingAs($this->admin)
+        ->get('/teacher/educational-contents')
         ->assertForbidden();
 
     $this->actingAs($this->studentUser)
-        ->get('/admin/educational-contents')
+        ->get('/teacher/educational-contents')
         ->assertForbidden();
 
-    $response = $this->actingAs($this->admin)->post('/admin/educational-contents', [
+    $response = $this->actingAs($this->teacher)->post('/teacher/educational-contents', [
         'title' => 'Kisah Jujur di Kantin',
         'content_type' => EducationalContentType::Story->value,
         'description' => 'Cerita pendek tentang jujur saat membeli makanan.',
@@ -44,10 +44,10 @@ test('admin can manage educational contents with indicator mapping', function ()
     $content = EducationalContent::query()->where('title', 'Kisah Jujur di Kantin')->firstOrFail();
 
     expect($content->slug)->toBe('kisah-jujur-di-kantin')
-        ->and($content->created_by)->toBe($this->admin->id);
+        ->and($content->created_by)->toBe($this->teacher->id);
 
-    $this->actingAs($this->admin)
-        ->post("/admin/educational-contents/{$content->id}/indicators", [
+    $this->actingAs($this->teacher)
+        ->post("/teacher/educational-contents/{$content->id}/indicators", [
             'indicator_ids' => [$indicator->id],
         ])
         ->assertRedirect();
@@ -55,28 +55,29 @@ test('admin can manage educational contents with indicator mapping', function ()
     expect($content->fresh()->indicators()->pluck('character_indicators.id')->all())
         ->toBe([$indicator->id]);
 
-    $this->actingAs($this->admin)
-        ->get('/admin/educational-contents')
+    $this->actingAs($this->teacher)
+        ->get('/teacher/educational-contents')
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('admin/educational-contents/index')
+            ->where('basePath', '/teacher/educational-contents')
             ->where('contents.data.0.title', 'Kisah Jujur di Kantin')
             ->where('contents.data.0.indicators.0.name', 'Kejujuran')
             ->where('contentTypes.4', 'story')
         );
 });
 
-test('admin can upload educational content media and thumbnail', function () {
+test('teacher can upload educational content media and thumbnail', function () {
     Storage::fake('public');
 
     $content = EducationalContent::factory()->create([
         'content_type' => EducationalContentType::Image,
         'status' => EducationalContentStatus::Published,
-        'created_by' => $this->admin->id,
+        'created_by' => $this->teacher->id,
     ]);
 
-    $this->actingAs($this->admin)
-        ->post("/admin/educational-contents/{$content->id}/media", [
+    $this->actingAs($this->teacher)
+        ->post("/teacher/educational-contents/{$content->id}/media", [
             'type' => 'thumbnail',
             'media' => UploadedFile::fake()->image('thumb.jpg'),
         ])
@@ -86,8 +87,8 @@ test('admin can upload educational content media and thumbnail', function () {
     expect($content->thumbnail_path)->not->toBeNull();
     Storage::disk('public')->assertExists($content->thumbnail_path);
 
-    $this->actingAs($this->admin)
-        ->post("/admin/educational-contents/{$content->id}/media", [
+    $this->actingAs($this->teacher)
+        ->post("/teacher/educational-contents/{$content->id}/media", [
             'type' => 'media',
             'media' => UploadedFile::fake()->image('materi.png'),
         ])
@@ -98,7 +99,7 @@ test('admin can upload educational content media and thumbnail', function () {
     Storage::disk('public')->assertExists($content->media_path);
 });
 
-test('draft educational content media is only previewable by admin', function () {
+test('draft educational content media is previewable by teacher only', function () {
     Storage::fake('public');
     Storage::disk('public')->put('educational-contents/media/draft.txt', 'materi draft');
 
@@ -113,23 +114,23 @@ test('draft educational content media is only previewable by admin', function ()
 
     $this->actingAs($this->teacher)
         ->get(route('educational-contents.media', ['educationalContent' => $content->id, 'type' => 'media']))
-        ->assertNotFound();
+        ->assertOk();
 
     $this->actingAs($this->admin)
         ->get(route('educational-contents.media', ['educationalContent' => $content->id, 'type' => 'media']))
-        ->assertOk();
+        ->assertNotFound();
 });
 
 test('educational content with interactions cannot be deleted', function () {
     $content = EducationalContent::factory()->create([
-        'created_by' => $this->admin->id,
+        'created_by' => $this->teacher->id,
     ]);
     ContentInteraction::factory()->create([
         'educational_content_id' => $content->id,
     ]);
 
-    $this->actingAs($this->admin)
-        ->delete("/admin/educational-contents/{$content->id}")
+    $this->actingAs($this->teacher)
+        ->delete("/teacher/educational-contents/{$content->id}")
         ->assertSessionHasErrors('content');
 
     expect(EducationalContent::query()->whereKey($content->id)->exists())->toBeTrue();

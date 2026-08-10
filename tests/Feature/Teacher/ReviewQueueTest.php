@@ -2,6 +2,7 @@
 
 use App\Models\AcademicYear;
 use App\Models\AiAssessment;
+use App\Models\AnswerAudioFile;
 use App\Models\Group;
 use App\Models\MoralCase;
 use App\Models\Student;
@@ -10,6 +11,7 @@ use App\Models\TestAnswer;
 use App\Models\TestAttempt;
 use App\Models\TestPackage;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
     $this->teacher = User::factory()->teacher()->create();
@@ -125,6 +127,49 @@ test('api endpoint returns review queue for teacher', function () {
     $response->assertOk()
         ->assertJsonPath('success', true)
         ->assertJsonCount(1, 'data.data');
+});
+
+test('review detail exposes protected teacher audio route instead of public storage url', function () {
+    AnswerAudioFile::factory()->for($this->testAnswer, 'testAnswer')->create([
+        'file_path' => 'student-audio/review-detail-audio.webm',
+    ]);
+
+    $response = $this->actingAs($this->teacher)->get("/teacher/reviews/{$this->testAnswer->id}");
+
+    $response->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->where('review.audio.url', route('teacher.reviews.audio', $this->testAnswer))
+        );
+});
+
+test('teacher can stream answer audio stored on the private local disk', function () {
+    Storage::fake('local');
+    Storage::disk('local')->put('student-audio/review-audio.webm', 'fake-webm-audio');
+    AnswerAudioFile::factory()->for($this->testAnswer, 'testAnswer')->create([
+        'file_path' => 'student-audio/review-audio.webm',
+        'original_name' => 'jawaban-santri.webm',
+        'mime_type' => 'audio/webm',
+    ]);
+
+    $response = $this->actingAs($this->teacher)->get("/teacher/reviews/{$this->testAnswer->id}/audio");
+
+    $response->assertOk()
+        ->assertHeader('content-type', 'audio/webm');
+});
+
+test('teacher can stream answer audio through api endpoint from private local disk', function () {
+    Storage::fake('local');
+    Storage::disk('local')->put('student-audio/review-api-audio.webm', 'fake-webm-audio');
+    AnswerAudioFile::factory()->for($this->testAnswer, 'testAnswer')->create([
+        'file_path' => 'student-audio/review-api-audio.webm',
+        'original_name' => 'jawaban-santri-api.webm',
+        'mime_type' => 'audio/webm',
+    ]);
+
+    $response = $this->actingAs($this->teacher)->get("/api/v1/teacher/reviews/{$this->testAnswer->id}/audio");
+
+    $response->assertOk()
+        ->assertHeader('content-type', 'audio/webm');
 });
 
 test('teacher cannot access audio of other groups', function () {

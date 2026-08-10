@@ -23,6 +23,7 @@ use App\Models\Transcription;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -39,7 +40,7 @@ class ReviewController extends Controller
                 'testAttempt.student.currentGroup',
                 'testAttempt.testPackage',
                 'moralCase',
-                'audioFiles',
+                'audioFiles' => fn ($q) => $q->latest(),
                 'transcriptions' => fn ($q) => $q->latest(),
                 'aiAssessments' => fn ($q) => $q->latest(),
                 'teacherValidations' => fn ($q) => $q->latest(),
@@ -123,7 +124,7 @@ class ReviewController extends Controller
             'testAttempt.testPackage',
             'moralCase.options',
             'selectedOption',
-            'audioFiles',
+            'audioFiles' => fn ($q) => $q->latest(),
             'transcriptions' => fn ($q) => $q->latest(),
             'aiAssessments' => fn ($q) => $q->latest(),
             'teacherValidations' => fn ($q) => $q->latest(),
@@ -150,17 +151,16 @@ class ReviewController extends Controller
         }
 
         /** @var AnswerAudioFile|null $audioFile */
-        $audioFile = $answer->audioFiles()->first();
+        $audioFile = $answer->audioFiles()->latest()->first();
         if (! $audioFile) {
             abort(404, 'Audio file not found.');
         }
 
-        $filePath = storage_path('app/'.$audioFile->file_path);
-        if (! file_exists($filePath)) {
-            $filePath = storage_path('app/public/'.$audioFile->file_path);
-        }
-
-        if (! file_exists($filePath)) {
+        if (Storage::disk('local')->exists($audioFile->file_path)) {
+            $filePath = Storage::disk('local')->path($audioFile->file_path);
+        } elseif (Storage::disk('public')->exists($audioFile->file_path)) {
+            $filePath = Storage::disk('public')->path($audioFile->file_path);
+        } else {
             abort(404, 'Audio physical file does not exist.');
         }
 
@@ -306,7 +306,7 @@ class ReviewController extends Controller
         }
 
         /** @var AnswerAudioFile|null $audioFile */
-        $audioFile = $answer->audioFiles()->first();
+        $audioFile = $answer->audioFiles()->latest()->first();
         if (! $audioFile) {
             if (! $isInertiaRequest) {
                 return response()->json([

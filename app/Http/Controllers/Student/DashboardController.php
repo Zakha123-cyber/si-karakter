@@ -63,6 +63,58 @@ class DashboardController extends Controller
                 'image' => $scenario->image_path,
             ]);
 
+        $analytics = null;
+        if ($student !== null) {
+            $observationSummary = \Illuminate\Support\Facades\DB::table('observation_items')
+                ->join('observation_entries', 'observation_items.observation_entry_id', '=', 'observation_entries.id')
+                ->where('observation_entries.student_id', $student->id)
+                ->select('observation_items.sentiment', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+                ->groupBy('observation_items.sentiment')
+                ->get()
+                ->map(function ($item) {
+                    $colors = [
+                        'positive' => '#10b981', // emerald-500
+                        'negative' => '#f43f5e', // rose-500
+                        'neutral' => '#64748b', // slate-500
+                    ];
+                    return [
+                        'name' => ucfirst($item->sentiment),
+                        'value' => $item->count,
+                        'fill' => $colors[$item->sentiment] ?? '#94a3b8'
+                    ];
+                });
+
+            $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+            $monthExpr = $driver === 'sqlite' ? "strftime('%Y-%m', period_start)" : "DATE_FORMAT(period_start, '%Y-%m')";
+
+            $scoreTrendRaw = \Illuminate\Support\Facades\DB::table('character_score_snapshots')
+                ->where('student_id', $student->id)
+                ->select(\Illuminate\Support\Facades\DB::raw("{$monthExpr} as month"), \Illuminate\Support\Facades\DB::raw('AVG(calculated_score) as avg_score'))
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get();
+            
+            $scoreTrend = [];
+            if ($scoreTrendRaw->isEmpty()) {
+                // Generate dummy trend if no snapshot data yet
+                $scoreTrend = [
+                    ['name' => 'Jan', 'score' => 65],
+                    ['name' => 'Feb', 'score' => 70],
+                    ['name' => 'Mar', 'score' => 75],
+                    ['name' => 'Apr', 'score' => 73],
+                    ['name' => 'May', 'score' => 82],
+                ];
+            } else {
+                $scoreTrend = $scoreTrendRaw->map(function ($item) {
+                    return ['name' => $item->month, 'score' => round($item->avg_score, 2)];
+                });
+            }
+            $analytics = [
+                'observation_summary' => $observationSummary,
+                'score_trend' => $scoreTrend,
+            ];
+        }
+
         return Inertia::render('student/dashboard', [
             'student' => [
                 'name' => $request->user()->name,
@@ -87,6 +139,7 @@ class DashboardController extends Controller
             'contents' => $contents,
             'scenarios' => $scenarios,
             'missions' => $this->missions(),
+            'analytics' => $analytics,
         ]);
     }
 

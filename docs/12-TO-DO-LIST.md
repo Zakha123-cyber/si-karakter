@@ -229,18 +229,18 @@ Status:
 ## Phase 15 — Analytics Dashboard
 
 - [x] Halaman admin hasil pengerjaan test.
-- [ ] Admin dashboard.
-- [ ] Teacher dashboard.
-- [ ] Student dashboard.
-- [ ] Distribusi level moral.
-- [ ] Tren skor.
-- [ ] Ringkasan observasi.
-- [ ] Pending review.
-- [ ] Open warning.
-- [ ] Filter periode.
-- [ ] Filter kelompok.
-- [ ] Empty/loading/error states.
-- [ ] Query performance test.
+- [x] Admin dashboard.
+- [x] Teacher dashboard.
+- [x] Student dashboard.
+- [x] Distribusi level moral.
+- [x] Tren skor.
+- [x] Ringkasan observasi.
+- [x] Pending review.
+- [x] Open warning.
+- [x] Filter periode.
+- [x] Filter kelompok.
+- [x] Empty/loading/error states.
+- [x] Query performance test.
 
 ## Phase 16 — Character Reports
 

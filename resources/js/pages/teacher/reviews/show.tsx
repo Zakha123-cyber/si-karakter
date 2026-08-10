@@ -454,7 +454,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                     <div className="mt-3">
                                         {review.audio ? (
                                             <AudioPlayer
-                                                src={`/teacher/reviews/${review.id}/audio`}
+                                                src={review.audio.url}
                                                 originalName={
                                                     review.audio.original_name
                                                 }

@@ -195,8 +195,11 @@ class DashboardController extends Controller
                 });
 
             // 3. Score Trend (Dummy implementation since character_score_snapshots might be empty, or using real data if exists)
+            $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+            $monthExpr = $driver === 'sqlite' ? "strftime('%Y-%m', period_start)" : "DATE_FORMAT(period_start, '%Y-%m')";
+
             $scoreTrendQuery = \Illuminate\Support\Facades\DB::table('character_score_snapshots')
-                ->select(\Illuminate\Support\Facades\DB::raw("DATE_FORMAT(period_start, '%Y-%m') as month"), \Illuminate\Support\Facades\DB::raw('AVG(calculated_score) as avg_score'));
+                ->select(\Illuminate\Support\Facades\DB::raw("{$monthExpr} as month"), \Illuminate\Support\Facades\DB::raw('AVG(calculated_score) as avg_score'));
 
             if ($isTeacher || $selectedGroupId || $selectedAcademicYearId) {
                 $scoreTrendQuery->join('students', 'character_score_snapshots.student_id', '=', 'students.id')

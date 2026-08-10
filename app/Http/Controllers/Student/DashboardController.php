@@ -84,9 +84,12 @@ class DashboardController extends Controller
                     ];
                 });
 
+            $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+            $monthExpr = $driver === 'sqlite' ? "strftime('%Y-%m', period_start)" : "DATE_FORMAT(period_start, '%Y-%m')";
+
             $scoreTrendRaw = \Illuminate\Support\Facades\DB::table('character_score_snapshots')
                 ->where('student_id', $student->id)
-                ->select(\Illuminate\Support\Facades\DB::raw("DATE_FORMAT(period_start, '%Y-%m') as month"), \Illuminate\Support\Facades\DB::raw('AVG(calculated_score) as avg_score'))
+                ->select(\Illuminate\Support\Facades\DB::raw("{$monthExpr} as month"), \Illuminate\Support\Facades\DB::raw('AVG(calculated_score) as avg_score'))
                 ->groupBy('month')
                 ->orderBy('month')
                 ->get();

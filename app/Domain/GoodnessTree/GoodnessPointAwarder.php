@@ -4,6 +4,7 @@ namespace App\Domain\GoodnessTree;
 
 use App\Models\GoodnessPointTransaction;
 use App\Models\ObservationEntry;
+use App\Models\SimulationAttempt;
 
 class GoodnessPointAwarder
 {
@@ -29,6 +30,26 @@ class GoodnessPointAwarder
             'points' => $totalPoints,
             'description' => 'Poin observasi '.$entry->observed_at->toDateString(),
             'awarded_by' => $entry->teacher_id,
+        ]);
+    }
+
+    public function awardSimulationReward(SimulationAttempt $attempt): ?GoodnessPointTransaction
+    {
+        $points = (int) $attempt->reward_points;
+
+        if ($points <= 0) {
+            return null;
+        }
+
+        $attempt->loadMissing('scenario');
+
+        return GoodnessPointTransaction::query()->create([
+            'student_id' => $attempt->student_id,
+            'source_type' => 'simulation',
+            'source_id' => $attempt->id,
+            'points' => $points,
+            'description' => 'Poin simulasi: '.($attempt->scenario?->title ?? 'Simulasi Berani Menolak'),
+            'awarded_by' => null,
         ]);
     }
 }

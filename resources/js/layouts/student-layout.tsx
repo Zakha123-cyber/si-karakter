@@ -11,7 +11,11 @@ const NAV_ITEMS = [
     { emoji: '🏠', label: 'Beranda', href: '/student/dashboard' },
     { emoji: '🎬', label: 'Bioskop Teladan', href: '/student/contents' },
     { emoji: '🛤', label: 'Pilih Jalanmu', href: '/student/tests' },
-    { emoji: '🛡️', label: 'Simulasi Berani Menolak', href: '/student/tests' },
+    {
+        emoji: '🛡️',
+        label: 'Simulasi Berani Menolak',
+        href: '/student/simulations',
+    },
     { emoji: '🌳', label: 'Pohon Kebaikan', href: '/student/goodness-tree' },
     { emoji: '🏆', label: 'Misi Harian', href: '/student/dashboard' },
     { emoji: '🎁', label: 'Hadiah', href: '/student/dashboard' },

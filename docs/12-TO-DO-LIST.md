@@ -218,13 +218,13 @@ Status:
 - [x] Migration scenarios.
 - [x] Migration options.
 - [x] Migration attempts.
-- [ ] CRUD scenario.
-- [ ] CRUD dynamic options.
-- [ ] Feedback per option.
-- [ ] Reward points.
-- [ ] Student simulation UI.
-- [ ] Save attempt.
-- [ ] Test simulation.
+- [x] CRUD scenario.
+- [x] CRUD dynamic options.
+- [x] Feedback per option.
+- [x] Reward points.
+- [x] Student simulation UI.
+- [x] Save attempt.
+- [x] Test simulation.
 
 ## Phase 15 — Analytics Dashboard
 

@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SimulationScenarioStatus;
 use App\Enums\UserRole;
+use App\Models\AcademicYear;
 use App\Models\CharacterIndicator;
+use App\Models\GoodnessTreeLevel;
+use App\Models\Group;
+use App\Models\SimulationScenario;
 use App\Models\Student;
 use App\Models\StudentWarning;
 use App\Models\TestAnswer;
 use App\Models\TestPackage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -77,6 +83,10 @@ class DashboardController extends Controller
             })
             ->count();
 
+        $totalSimulationsCount = SimulationScenario::query()
+            ->where('status', SimulationScenarioStatus::Published)
+            ->count();
+
         $validatedReviewsCount = TestAnswer::query()
             ->whereHas('teacherValidations')
             ->when($user?->role === UserRole::Teacher, function ($q) use ($user) {
@@ -93,8 +103,8 @@ class DashboardController extends Controller
             $isTeacher = $user?->role === UserRole::Teacher;
 
             // Fetch filter options
-            $academicYears = \App\Models\AcademicYear::select('id', 'name')->orderByDesc('start_date')->get();
-            $groupsQuery = \App\Models\Group::select('id', 'name');
+            $academicYears = AcademicYear::select('id', 'name')->orderByDesc('start_date')->get();
+            $groupsQuery = Group::select('id', 'name');
             if ($isTeacher) {
                 $groupsQuery->where('teacher_id', $user->id);
             }
@@ -108,12 +118,12 @@ class DashboardController extends Controller
             ];
 
             // 1. Moral Level Distribution
-            $studentsPointsQuery = \Illuminate\Support\Facades\DB::table('students')
-                ->leftJoin('goodness_point_transactions', function($join) {
+            $studentsPointsQuery = DB::table('students')
+                ->leftJoin('goodness_point_transactions', function ($join) {
                     $join->on('students.id', '=', 'goodness_point_transactions.student_id')
-                         ->where('goodness_point_transactions.points', '>', 0);
+                        ->where('goodness_point_transactions.points', '>', 0);
                 })
-                ->select('students.id', \Illuminate\Support\Facades\DB::raw('COALESCE(SUM(goodness_point_transactions.points), 0) as total_points'))
+                ->select('students.id', DB::raw('COALESCE(SUM(goodness_point_transactions.points), 0) as total_points'))
                 ->groupBy('students.id');
 
             if ($isTeacher || $selectedGroupId || $selectedAcademicYearId) {
@@ -131,7 +141,7 @@ class DashboardController extends Controller
 
             $studentsPoints = $studentsPointsQuery->get();
 
-            $levels = \App\Models\GoodnessTreeLevel::orderBy('minimum_points')->get();
+            $levels = GoodnessTreeLevel::orderBy('minimum_points')->get();
             $moralDistributionRaw = [];
             foreach ($levels as $level) {
                 $moralDistributionRaw[$level->name] = 0;
@@ -157,19 +167,19 @@ class DashboardController extends Controller
             }
 
             // 2. Observation Summary
-            $observationSummaryQuery = \Illuminate\Support\Facades\DB::table('observation_items')
-                ->select('observation_items.sentiment', \Illuminate\Support\Facades\DB::raw('count(*) as count'));
+            $observationSummaryQuery = DB::table('observation_items')
+                ->select('observation_items.sentiment', DB::raw('count(*) as count'));
 
             if ($isTeacher || $selectedGroupId || $selectedAcademicYearId) {
                 $observationSummaryQuery->join('observation_entries', 'observation_items.observation_entry_id', '=', 'observation_entries.id');
-                
+
                 if ($isTeacher) {
                     $observationSummaryQuery->where('observation_entries.teacher_id', $user->id);
                 }
 
                 if ($selectedGroupId || $selectedAcademicYearId) {
                     $observationSummaryQuery->join('students', 'observation_entries.student_id', '=', 'students.id')
-                                            ->join('groups', 'students.current_group_id', '=', 'groups.id');
+                        ->join('groups', 'students.current_group_id', '=', 'groups.id');
                     if ($selectedGroupId) {
                         $observationSummaryQuery->where('groups.id', $selectedGroupId);
                     }
@@ -187,24 +197,25 @@ class DashboardController extends Controller
                         'negative' => '#f43f5e', // rose-500
                         'neutral' => '#64748b', // slate-500
                     ];
+
                     return [
                         'name' => ucfirst($item->sentiment),
                         'value' => $item->count,
-                        'fill' => $colors[$item->sentiment] ?? '#94a3b8'
+                        'fill' => $colors[$item->sentiment] ?? '#94a3b8',
                     ];
                 });
 
             // 3. Score Trend (Dummy implementation since character_score_snapshots might be empty, or using real data if exists)
-            $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+            $driver = DB::connection()->getDriverName();
             $monthExpr = $driver === 'sqlite' ? "strftime('%Y-%m', period_start)" : "DATE_FORMAT(period_start, '%Y-%m')";
 
-            $scoreTrendQuery = \Illuminate\Support\Facades\DB::table('character_score_snapshots')
-                ->select(\Illuminate\Support\Facades\DB::raw("{$monthExpr} as month"), \Illuminate\Support\Facades\DB::raw('AVG(calculated_score) as avg_score'));
+            $scoreTrendQuery = DB::table('character_score_snapshots')
+                ->select(DB::raw("{$monthExpr} as month"), DB::raw('AVG(calculated_score) as avg_score'));
 
             if ($isTeacher || $selectedGroupId || $selectedAcademicYearId) {
                 $scoreTrendQuery->join('students', 'character_score_snapshots.student_id', '=', 'students.id')
-                                ->join('groups', 'students.current_group_id', '=', 'groups.id');
-                
+                    ->join('groups', 'students.current_group_id', '=', 'groups.id');
+
                 if ($isTeacher) {
                     $scoreTrendQuery->where('groups.teacher_id', $user->id);
                 }
@@ -219,7 +230,7 @@ class DashboardController extends Controller
             $scoreTrendRaw = $scoreTrendQuery->groupBy('month')
                 ->orderBy('month')
                 ->get();
-            
+
             $scoreTrend = [];
             if ($scoreTrendRaw->isEmpty()) {
                 // Generate dummy trend if no snapshot data yet
@@ -251,6 +262,7 @@ class DashboardController extends Controller
                 'active_packages' => $activePackagesCount,
                 'total_indicators' => $totalIndicatorsCount,
                 'open_warnings' => $openWarningsCount,
+                'total_simulations' => $totalSimulationsCount,
             ],
             'recent_pending_reviews' => $recentPendingReviews,
             'analytics' => $analytics,

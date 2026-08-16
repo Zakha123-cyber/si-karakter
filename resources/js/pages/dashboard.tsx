@@ -36,6 +36,7 @@ type Stats = {
     active_packages: number;
     total_indicators: number;
     open_warnings: number;
+    total_simulations: number;
 };
 
 type PendingReview = {
@@ -71,6 +72,7 @@ export default function Dashboard({
         active_packages: 0,
         total_indicators: 0,
         open_warnings: 0,
+        total_simulations: 0,
     },
     recent_pending_reviews = [],
     analytics,
@@ -162,7 +164,12 @@ export default function Dashboard({
             </section>
 
             {isAdmin ? (
-                <AdminDashboard stats={stats} roleTitle={roleTitle} analytics={analytics} filter_options={filter_options} />
+                <AdminDashboard
+                    stats={stats}
+                    roleTitle={roleTitle}
+                    analytics={analytics}
+                    filter_options={filter_options}
+                />
             ) : (
                 <TeacherDashboard
                     stats={stats}
@@ -243,7 +250,10 @@ function AdminDashboard({
                     </div>
                 </Section>
 
-                <AnalyticsSection analytics={analytics} filter_options={filter_options} />
+                <AnalyticsSection
+                    analytics={analytics}
+                    filter_options={filter_options}
+                />
             </div>
 
             <aside className="space-y-6 xl:sticky xl:top-4 xl:self-start">
@@ -480,10 +490,24 @@ function TeacherDashboard({
                             actionHref="/teacher/educational-contents"
                             gradient="from-sky-400 to-emerald-500"
                         />
+
+                        <FeatureCard
+                            emoji="🛡️"
+                            title="Simulasi Berani Menolak"
+                            description="Susun skenario dan respons untuk melatih santri berkata tidak dengan sopan."
+                            actionLabel="Kelola Simulasi"
+                            actionHref="/teacher/simulation-scenarios"
+                            badgeText={`${stats.total_simulations} Terbit`}
+                            badgeColor="bg-rose-100 text-rose-800"
+                            gradient="from-rose-400 to-pink-500"
+                        />
                     </div>
                 </Section>
 
-                <AnalyticsSection analytics={analytics} filter_options={filter_options} />
+                <AnalyticsSection
+                    analytics={analytics}
+                    filter_options={filter_options}
+                />
             </div>
 
             <aside className="space-y-6 xl:sticky xl:top-4 xl:self-start">
@@ -742,17 +766,30 @@ function FeatureCard({
     );
 }
 
-function AnalyticsSection({ analytics, filter_options }: { analytics: DashboardProps['analytics']; filter_options?: DashboardProps['filter_options'] }) {
-    if (!analytics) return null;
+function AnalyticsSection({
+    analytics,
+    filter_options,
+}: {
+    analytics: DashboardProps['analytics'];
+    filter_options?: DashboardProps['filter_options'];
+}) {
+    if (!analytics) {
+        return null;
+    }
 
     const handleFilterChange = (key: string, value: string) => {
         const query = new URLSearchParams(window.location.search);
+
         if (value) {
             query.set(key, value);
         } else {
             query.delete(key);
         }
-        router.get(`/dashboard?${query.toString()}`, undefined, { preserveScroll: true, preserveState: true });
+
+        router.get(`/dashboard?${query.toString()}`, undefined, {
+            preserveScroll: true,
+            preserveState: true,
+        });
     };
 
     return (
@@ -764,30 +801,47 @@ function AnalyticsSection({ analytics, filter_options }: { analytics: DashboardP
             description="Wawasan komprehensif terkait perkembangan moral dan observasi santri."
         >
             {filter_options && (
-                <div className="mb-6 flex flex-wrap items-center gap-4 rounded-2xl bg-slate-50/50 p-4 border border-slate-100">
+                <div className="mb-6 flex flex-wrap items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
                     <div className="flex items-center gap-2">
-                        <label className="text-xs font-bold text-slate-500">Periode (Tahun Ajaran):</label>
+                        <label className="text-xs font-bold text-slate-500">
+                            Periode (Tahun Ajaran):
+                        </label>
                         <select
                             className="rounded-lg border-slate-200 text-sm text-slate-700 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
-                            value={filter_options.selected_academic_year_id ?? ''}
-                            onChange={(e) => handleFilterChange('academic_year_id', e.target.value)}
+                            value={
+                                filter_options.selected_academic_year_id ?? ''
+                            }
+                            onChange={(e) =>
+                                handleFilterChange(
+                                    'academic_year_id',
+                                    e.target.value,
+                                )
+                            }
                         >
                             <option value="">Semua Periode</option>
                             {filter_options.academic_years.map((ay) => (
-                                <option key={ay.id} value={ay.id}>{ay.name}</option>
+                                <option key={ay.id} value={ay.id}>
+                                    {ay.name}
+                                </option>
                             ))}
                         </select>
                     </div>
                     <div className="flex items-center gap-2">
-                        <label className="text-xs font-bold text-slate-500">Kelompok:</label>
+                        <label className="text-xs font-bold text-slate-500">
+                            Kelompok:
+                        </label>
                         <select
                             className="rounded-lg border-slate-200 text-sm text-slate-700 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
                             value={filter_options.selected_group_id ?? ''}
-                            onChange={(e) => handleFilterChange('group_id', e.target.value)}
+                            onChange={(e) =>
+                                handleFilterChange('group_id', e.target.value)
+                            }
                         >
                             <option value="">Semua Kelompok</option>
                             {filter_options.groups.map((g) => (
-                                <option key={g.id} value={g.id}>{g.name}</option>
+                                <option key={g.id} value={g.id}>
+                                    {g.name}
+                                </option>
                             ))}
                         </select>
                     </div>
@@ -814,13 +868,35 @@ function AnalyticsSection({ analytics, filter_options }: { analytics: DashboardP
                                         paddingAngle={5}
                                         dataKey="value"
                                     >
-                                        {analytics.moral_distribution.map((entry, index) => {
-                                            const colors = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'];
-                                            return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
-                                        })}
+                                        {analytics.moral_distribution.map(
+                                            (entry, index) => {
+                                                const colors = [
+                                                    '#10b981',
+                                                    '#3b82f6',
+                                                    '#f59e0b',
+                                                    '#8b5cf6',
+                                                    '#ec4899',
+                                                ];
+
+                                                return (
+                                                    <Cell
+                                                        key={`cell-${index}`}
+                                                        fill={
+                                                            colors[
+                                                                index %
+                                                                    colors.length
+                                                            ]
+                                                        }
+                                                    />
+                                                );
+                                            },
+                                        )}
                                     </Pie>
                                     <Tooltip />
-                                    <Legend verticalAlign="bottom" height={36} />
+                                    <Legend
+                                        verticalAlign="bottom"
+                                        height={36}
+                                    />
                                 </PieChart>
                             </ResponsiveContainer>
                         ) : (
@@ -840,12 +916,39 @@ function AnalyticsSection({ analytics, filter_options }: { analytics: DashboardP
                     <div className="h-72 w-full">
                         {analytics.observation_summary.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={analytics.observation_summary} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
-                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} allowDecimals={false} />
+                                <BarChart
+                                    data={analytics.observation_summary}
+                                    margin={{
+                                        top: 10,
+                                        right: 10,
+                                        left: -20,
+                                        bottom: 0,
+                                    }}
+                                >
+                                    <CartesianGrid
+                                        strokeDasharray="3 3"
+                                        vertical={false}
+                                        stroke="#f1f5f9"
+                                    />
+                                    <XAxis
+                                        dataKey="name"
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fontSize: 12, fill: '#64748b' }}
+                                        dy={10}
+                                    />
+                                    <YAxis
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fontSize: 12, fill: '#64748b' }}
+                                        allowDecimals={false}
+                                    />
                                     <Tooltip cursor={{ fill: '#f8fafc' }} />
-                                    <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={60} />
+                                    <Bar
+                                        dataKey="value"
+                                        radius={[6, 6, 0, 0]}
+                                        maxBarSize={60}
+                                    />
                                 </BarChart>
                             </ResponsiveContainer>
                         ) : (
@@ -865,18 +968,49 @@ function AnalyticsSection({ analytics, filter_options }: { analytics: DashboardP
                     <div className="h-72 w-full">
                         {analytics.score_trend.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={analytics.score_trend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
-                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} domain={[0, 100]} />
+                                <LineChart
+                                    data={analytics.score_trend}
+                                    margin={{
+                                        top: 10,
+                                        right: 10,
+                                        left: -20,
+                                        bottom: 0,
+                                    }}
+                                >
+                                    <CartesianGrid
+                                        strokeDasharray="3 3"
+                                        vertical={false}
+                                        stroke="#f1f5f9"
+                                    />
+                                    <XAxis
+                                        dataKey="name"
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fontSize: 12, fill: '#64748b' }}
+                                        dy={10}
+                                    />
+                                    <YAxis
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fontSize: 12, fill: '#64748b' }}
+                                        domain={[0, 100]}
+                                    />
                                     <Tooltip />
                                     <Line
                                         type="monotone"
                                         dataKey="score"
                                         stroke="#8b5cf6"
                                         strokeWidth={4}
-                                        dot={{ r: 4, strokeWidth: 2, fill: '#fff' }}
-                                        activeDot={{ r: 6, fill: '#8b5cf6', stroke: '#fff' }}
+                                        dot={{
+                                            r: 4,
+                                            strokeWidth: 2,
+                                            fill: '#fff',
+                                        }}
+                                        activeDot={{
+                                            r: 6,
+                                            fill: '#8b5cf6',
+                                            stroke: '#fff',
+                                        }}
                                     />
                                 </LineChart>
                             </ResponsiveContainer>

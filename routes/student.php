@@ -3,6 +3,7 @@
 use App\Http\Controllers\Student\DashboardController;
 use App\Http\Controllers\Student\EducationalContentController;
 use App\Http\Controllers\Student\GoodnessTreeController;
+use App\Http\Controllers\Student\SimulationController;
 use App\Http\Controllers\Student\TestController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,4 +18,9 @@ Route::middleware(['auth', 'active', 'role:student'])->prefix('student')->name('
     Route::get('tests/{testPackage}/attempts/{testAttempt}', [TestController::class, 'showAttempt'])->name('tests.attempts.show');
     Route::post('tests/{testPackage}/attempts/{testAttempt}/answers', [TestController::class, 'storeAnswer'])->name('tests.answers.store');
     Route::post('tests/{testPackage}/attempts/{testAttempt}/submit', [TestController::class, 'submitAttempt'])->name('tests.attempts.submit');
+
+    // Assertiveness Simulation
+    Route::get('simulations', [SimulationController::class, 'index'])->name('simulations.index');
+    Route::get('simulations/{simulationScenario}', [SimulationController::class, 'show'])->name('simulations.show');
+    Route::post('simulations/{simulationScenario}/attempts', [SimulationController::class, 'submit'])->name('simulations.attempts.submit');
 });

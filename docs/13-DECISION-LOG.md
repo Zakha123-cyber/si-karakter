@@ -228,6 +228,24 @@ Gunakan dokumen ini untuk mencatat keputusan produk dan teknis.
   - Tests ditambahkan untuk CRUD admin, upload media, akses role, daftar/detail santri, respons emotikon, rekomendasi berdasarkan indikator, dan missing profile.
 - Approved By: Implementation
 
+## D-024 — Phase 14 Assertiveness Simulation
+
+- Date: 2026-08-11
+- Status: Accepted
+- Context: Phase 14 membutuhkan latihan keberanian menolak ("Simulasi Berani Menolak") agar santri berlatih bersikap asertif lewat skenario cerita dan pilihan respons, dengan feedback edukatif dan reward poin kebaikan tanpa menampilkan label negatif.
+- Decision:
+  - CRUD skenario dan respons dinamis ditempatkan di portal Ustadz melalui `/teacher/simulation-scenarios`, dengan status `draft`, `published`, dan `archived` (enum `SimulationScenarioStatus`).
+  - Setiap skenario memiliki `opening_text` (situasi cerita) dan banyak `simulation_options`; tiap opsi membawa `text`, `feedback_text`, `score`, `reward_points`, dan `sort_order`. Tidak ada kolom `is_correct` — jawaban "terbaik" ditentukan dari opsi dengan `score` tertinggi.
+  - Portal santri memiliki `/student/simulations` dan `/student/simulations/{id}` (hanya skenario published). Pemain memilih respons, kirim ke `/student/simulations/{id}/attempts`, lalu melihat hasil: feedback, skor, poin, dan jawaban terbaik.
+  - Setiap attempt tersimpan di `simulation_attempts` (snapshot `score` dan `reward_points`); reward dibayarkan melalui `GoodnessPointAwarder::awardSimulationReward` dengan `source_type = simulation` sehingga masuk ke Pohon Kebaikan.
+  - Skenario yang sudah punya riwayat attempt tidak dapat dihapus (disarankan diarsipkan); opsi yang pernah dipilih santri juga tidak dapat dihapus. Guard hapus santri mempertimbangkan `simulation_attempts`.
+  - Akun student tanpa profil tetap dapat berlatih, tetapi tidak dapat mengirim attempt (403) hingga profil santri dihubungkan admin.
+- Consequences:
+  - Sidebar ustadz dan santri serta dashboard (card + statistik `total_simulations`) kini mengarah ke modul Simulasi.
+  - `SimulationScenarioSeeder` menyediakan 2 skenario published dengan 3 opsi masing-masing (skor 30–100).
+  - Tests ditambahkan untuk CRUD ustadz, akses role, daftar/detail santri, submit attempt, reward, 403 tanpa profil, draft 404, dan guard hapus.
+- Approved By: Implementation
+
 ## Template Decision Baru
 
 ```md

@@ -122,11 +122,12 @@ class StudentController extends Controller
             || $student->observationEntries()->exists()
             || $student->goodnessPointTransactions()->exists()
             || $student->warnings()->exists()
-            || $student->contentInteractions()->exists();
+            || $student->contentInteractions()->exists()
+            || $student->simulationAttempts()->exists();
 
         if ($hasHistory) {
             return back()->withErrors([
-                'student' => 'Santri memiliki riwayat tes, observasi, reward, peringatan, atau interaksi materi sehingga tidak dapat dihapus. Nonaktifkan status santri jika tidak lagi digunakan.',
+                'student' => 'Santri memiliki riwayat tes, observasi, reward, peringatan, interaksi materi, atau simulasi sehingga tidak dapat dihapus. Nonaktifkan status santri jika tidak lagi digunakan.',
             ]);
         }
 

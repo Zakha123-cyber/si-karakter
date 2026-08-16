@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             WarningRuleSeeder::class,
             GoodnessTreeLevelSeeder::class,
             EducationalContentSeeder::class,
+            SimulationScenarioSeeder::class,
             TestReviewSeeder::class,
         ]);
     }

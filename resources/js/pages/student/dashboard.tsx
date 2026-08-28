@@ -13,7 +13,6 @@ import {
     Bar,
     BarChart,
     CartesianGrid,
-    Cell,
     Line,
     LineChart,
     ResponsiveContainer,
@@ -230,7 +229,7 @@ export default function StudentDashboard({
                         color="text-rose-600"
                         description="Latih keberanian menolak ajakan yang tidak baik."
                         actionLabel="Lihat semua"
-                        onAction={() => {}}
+                        actionHref="/student/simulations"
                     >
                         <div className="grid gap-4 sm:grid-cols-3">
                             {(scenarios.length > 0
@@ -261,14 +260,57 @@ export default function StudentDashboard({
                                         Ringkasan Observasi
                                     </h3>
                                     <div className="h-64 w-full">
-                                        {analytics.observation_summary.length > 0 ? (
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <BarChart data={analytics.observation_summary} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
-                                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} allowDecimals={false} />
-                                                    <Tooltip cursor={{ fill: '#f8fafc' }} />
-                                                    <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={60} />
+                                        {analytics.observation_summary.length >
+                                        0 ? (
+                                            <ResponsiveContainer
+                                                width="100%"
+                                                height="100%"
+                                            >
+                                                <BarChart
+                                                    data={
+                                                        analytics.observation_summary
+                                                    }
+                                                    margin={{
+                                                        top: 10,
+                                                        right: 10,
+                                                        left: -20,
+                                                        bottom: 0,
+                                                    }}
+                                                >
+                                                    <CartesianGrid
+                                                        strokeDasharray="3 3"
+                                                        vertical={false}
+                                                        stroke="#f1f5f9"
+                                                    />
+                                                    <XAxis
+                                                        dataKey="name"
+                                                        axisLine={false}
+                                                        tickLine={false}
+                                                        tick={{
+                                                            fontSize: 12,
+                                                            fill: '#64748b',
+                                                        }}
+                                                        dy={10}
+                                                    />
+                                                    <YAxis
+                                                        axisLine={false}
+                                                        tickLine={false}
+                                                        tick={{
+                                                            fontSize: 12,
+                                                            fill: '#64748b',
+                                                        }}
+                                                        allowDecimals={false}
+                                                    />
+                                                    <Tooltip
+                                                        cursor={{
+                                                            fill: '#f8fafc',
+                                                        }}
+                                                    />
+                                                    <Bar
+                                                        dataKey="value"
+                                                        radius={[6, 6, 0, 0]}
+                                                        maxBarSize={60}
+                                                    />
                                                 </BarChart>
                                             </ResponsiveContainer>
                                         ) : (
@@ -287,19 +329,59 @@ export default function StudentDashboard({
                                     </h3>
                                     <div className="h-64 w-full">
                                         {analytics.score_trend.length > 0 ? (
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <LineChart data={analytics.score_trend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
-                                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} domain={[0, 100]} />
+                                            <ResponsiveContainer
+                                                width="100%"
+                                                height="100%"
+                                            >
+                                                <LineChart
+                                                    data={analytics.score_trend}
+                                                    margin={{
+                                                        top: 10,
+                                                        right: 10,
+                                                        left: -20,
+                                                        bottom: 0,
+                                                    }}
+                                                >
+                                                    <CartesianGrid
+                                                        strokeDasharray="3 3"
+                                                        vertical={false}
+                                                        stroke="#f1f5f9"
+                                                    />
+                                                    <XAxis
+                                                        dataKey="name"
+                                                        axisLine={false}
+                                                        tickLine={false}
+                                                        tick={{
+                                                            fontSize: 12,
+                                                            fill: '#64748b',
+                                                        }}
+                                                        dy={10}
+                                                    />
+                                                    <YAxis
+                                                        axisLine={false}
+                                                        tickLine={false}
+                                                        tick={{
+                                                            fontSize: 12,
+                                                            fill: '#64748b',
+                                                        }}
+                                                        domain={[0, 100]}
+                                                    />
                                                     <Tooltip />
                                                     <Line
                                                         type="monotone"
                                                         dataKey="score"
                                                         stroke="#8b5cf6"
                                                         strokeWidth={4}
-                                                        dot={{ r: 4, strokeWidth: 2, fill: '#fff' }}
-                                                        activeDot={{ r: 6, fill: '#8b5cf6', stroke: '#fff' }}
+                                                        dot={{
+                                                            r: 4,
+                                                            strokeWidth: 2,
+                                                            fill: '#fff',
+                                                        }}
+                                                        activeDot={{
+                                                            r: 6,
+                                                            fill: '#8b5cf6',
+                                                            stroke: '#fff',
+                                                        }}
                                                     />
                                                 </LineChart>
                                             </ResponsiveContainer>
@@ -614,8 +696,8 @@ function MovieCard({ content }: { content: Content }) {
 }
 
 function ScenarioCard({ scenario }: { scenario: Scenario }) {
-    return (
-        <button className="rounded-[24px] bg-rose-50 p-4 text-left transition-transform duration-200 hover:-translate-y-1">
+    const card = (
+        <div className="rounded-[24px] bg-rose-50 p-4 text-left transition-transform duration-200 hover:-translate-y-1">
             <div className="mb-3 flex h-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-200 to-pink-200 text-3xl">
                 {scenario.image ? (
                     <img
@@ -633,8 +715,14 @@ function ScenarioCard({ scenario }: { scenario: Scenario }) {
             <p className="mt-1 line-clamp-2 text-xs text-slate-500">
                 {scenario.opening_text ?? scenario.description}
             </p>
-        </button>
+        </div>
     );
+
+    if (scenario.id > 0) {
+        return <Link href={`/student/simulations/${scenario.id}`}>{card}</Link>;
+    }
+
+    return card;
 }
 
 function TreeIllustration({ progress }: { progress: number }) {

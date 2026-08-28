@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Domain\EducationalContent\EducationalContentRecommendationService;
 use App\Domain\GoodnessTree\GoodnessTreeService;
+use App\Enums\SimulationScenarioStatus;
 use App\Enums\TestPackageStatus;
 use App\Http\Controllers\Controller;
 use App\Models\EducationalContent;
@@ -14,6 +15,7 @@ use App\Models\TestAttempt;
 use App\Models\TestPackage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -51,7 +53,7 @@ class DashboardController extends Controller
             ]);
 
         $scenarios = SimulationScenario::query()
-            ->where('status', 'published')
+            ->where('status', SimulationScenarioStatus::Published)
             ->orderByDesc('created_at')
             ->limit(3)
             ->get(['id', 'title', 'description', 'opening_text', 'image_path'])
@@ -65,10 +67,10 @@ class DashboardController extends Controller
 
         $analytics = null;
         if ($student !== null) {
-            $observationSummary = \Illuminate\Support\Facades\DB::table('observation_items')
+            $observationSummary = DB::table('observation_items')
                 ->join('observation_entries', 'observation_items.observation_entry_id', '=', 'observation_entries.id')
                 ->where('observation_entries.student_id', $student->id)
-                ->select('observation_items.sentiment', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+                ->select('observation_items.sentiment', DB::raw('count(*) as count'))
                 ->groupBy('observation_items.sentiment')
                 ->get()
                 ->map(function ($item) {
@@ -77,23 +79,24 @@ class DashboardController extends Controller
                         'negative' => '#f43f5e', // rose-500
                         'neutral' => '#64748b', // slate-500
                     ];
+
                     return [
                         'name' => ucfirst($item->sentiment),
                         'value' => $item->count,
-                        'fill' => $colors[$item->sentiment] ?? '#94a3b8'
+                        'fill' => $colors[$item->sentiment] ?? '#94a3b8',
                     ];
                 });
 
-            $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+            $driver = DB::connection()->getDriverName();
             $monthExpr = $driver === 'sqlite' ? "strftime('%Y-%m', period_start)" : "DATE_FORMAT(period_start, '%Y-%m')";
 
-            $scoreTrendRaw = \Illuminate\Support\Facades\DB::table('character_score_snapshots')
+            $scoreTrendRaw = DB::table('character_score_snapshots')
                 ->where('student_id', $student->id)
-                ->select(\Illuminate\Support\Facades\DB::raw("{$monthExpr} as month"), \Illuminate\Support\Facades\DB::raw('AVG(calculated_score) as avg_score'))
+                ->select(DB::raw("{$monthExpr} as month"), DB::raw('AVG(calculated_score) as avg_score'))
                 ->groupBy('month')
                 ->orderBy('month')
                 ->get();
-            
+
             $scoreTrend = [];
             if ($scoreTrendRaw->isEmpty()) {
                 // Generate dummy trend if no snapshot data yet

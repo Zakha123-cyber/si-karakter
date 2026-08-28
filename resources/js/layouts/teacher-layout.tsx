@@ -75,6 +75,11 @@ const getNavItems = (role?: string) => {
             label: 'Materi Edukasi',
             href: '/teacher/educational-contents',
         },
+        {
+            emoji: '🛡️',
+            label: 'Simulasi Berani Menolak',
+            href: '/teacher/simulation-scenarios',
+        },
         { emoji: '⚙️', label: 'Pengaturan', href: '/settings/profile' },
     ];
 };

@@ -14,6 +14,7 @@ use App\Http\Controllers\Teacher\ObservationController;
 use App\Http\Controllers\Teacher\ReportController;
 use App\Http\Controllers\Teacher\ReviewController;
 use App\Http\Controllers\Teacher\ScoringConfigurationController;
+use App\Http\Controllers\Teacher\SimulationScenarioController;
 use App\Http\Controllers\Teacher\TestPackageController;
 use App\Http\Controllers\Teacher\WarningController;
 use Illuminate\Support\Facades\Route;
@@ -98,6 +99,15 @@ Route::middleware(['auth', 'active', 'role:teacher'])->prefix('teacher')->name('
     Route::delete('educational-contents/{educationalContent}', [EducationalContentController::class, 'destroy'])->name('educational-contents.destroy');
     Route::post('educational-contents/{educationalContent}/indicators', [EducationalContentController::class, 'assignIndicators'])->name('educational-contents.indicators');
     Route::post('educational-contents/{educationalContent}/media', [EducationalContentController::class, 'uploadMedia'])->name('educational-contents.media');
+
+    // Assertiveness Simulation
+    Route::get('simulation-scenarios', [SimulationScenarioController::class, 'index'])->name('simulation-scenarios.index');
+    Route::post('simulation-scenarios', [SimulationScenarioController::class, 'store'])->name('simulation-scenarios.store');
+    Route::put('simulation-scenarios/{simulationScenario}', [SimulationScenarioController::class, 'update'])->name('simulation-scenarios.update');
+    Route::delete('simulation-scenarios/{simulationScenario}', [SimulationScenarioController::class, 'destroy'])->name('simulation-scenarios.destroy');
+    Route::post('simulation-scenarios/{simulationScenario}/options', [SimulationScenarioController::class, 'storeOption'])->name('simulation-scenarios.options.store');
+    Route::put('simulation-scenarios/{simulationScenario}/options/{option}', [SimulationScenarioController::class, 'updateOption'])->name('simulation-scenarios.options.update');
+    Route::delete('simulation-scenarios/{simulationScenario}/options/{option}', [SimulationScenarioController::class, 'destroyOption'])->name('simulation-scenarios.options.destroy');
 });
 
 Route::middleware(['auth', 'active', 'role:teacher,admin'])->prefix('teacher')->name('teacher.')->group(function () {

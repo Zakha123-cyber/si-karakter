@@ -4,6 +4,7 @@ use App\Http\Controllers\Student\DashboardController;
 use App\Http\Controllers\Student\EducationalContentController;
 use App\Http\Controllers\Student\GoodnessTreeController;
 use App\Http\Controllers\Student\SimulationController;
+use App\Http\Controllers\Student\StoryTtsController;
 use App\Http\Controllers\Student\TestController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,4 +24,5 @@ Route::middleware(['auth', 'active', 'role:student'])->prefix('student')->name('
     Route::get('simulations', [SimulationController::class, 'index'])->name('simulations.index');
     Route::get('simulations/{simulationScenario}', [SimulationController::class, 'show'])->name('simulations.show');
     Route::post('simulations/{simulationScenario}/attempts', [SimulationController::class, 'submit'])->name('simulations.attempts.submit');
+    Route::get('stories/{moralCase}/tts', StoryTtsController::class)->name('stories.tts');
 });

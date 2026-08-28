@@ -2,55 +2,58 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Domain\EducationalContent\EducationalContentRecommendationService;
+use App\Domain\GoodnessTree\GoodnessTreeService;
+use App\Enums\SimulationScenarioStatus;
 use App\Enums\TestPackageStatus;
 use App\Http\Controllers\Controller;
 use App\Models\EducationalContent;
 use App\Models\GoodnessPointTransaction;
-use App\Models\GoodnessTreeLevel;
 use App\Models\SimulationScenario;
 use App\Models\Student;
 use App\Models\TestAttempt;
 use App\Models\TestPackage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
+    public function __construct(
+        private readonly GoodnessTreeService $treeService,
+        private readonly EducationalContentRecommendationService $contentRecommendationService,
+    ) {}
+
     public function __invoke(Request $request): Response
     {
         $student = Student::query()->where('user_id', $request->user()->id)->first();
 
-        $points = $this->pointsFor($student);
-        $treeLevels = GoodnessTreeLevel::query()
-            ->orderBy('level')
-            ->get(['id', 'level', 'name', 'minimum_points', 'description']);
-        $currentLevel = $treeLevels->filter(fn ($level) => $points >= $level->minimum_points)->last();
-        $nextLevel = $treeLevels->filter(function ($level) use ($points) {
-            return $level->minimum_points !== null && $level->minimum_points > $points;
-        })->first();
+        $treeProgress = $student === null
+            ? $this->treeService->progressForPoints(0)
+            : $this->treeService->progressForStudent($student);
+        $points = $treeProgress->points;
 
         $streak = $this->streakFor($student);
         $starCount = $this->starCountFor($student);
 
         $testPackages = $this->visiblePackages($student);
 
-        $contents = EducationalContent::query()
-            ->where('status', 'published')
-            ->orderByDesc('created_at')
-            ->limit(4)
-            ->get(['id', 'title', 'description', 'thumbnail_path', 'duration_seconds'])
+        $contents = $this->contentRecommendationService
+            ->recommendedForStudent($student, 4)
             ->map(fn (EducationalContent $content) => [
                 'id' => $content->id,
                 'title' => $content->title,
+                'slug' => $content->slug,
+                'content_type' => $content->content_type->value,
                 'description' => $content->description,
-                'thumbnail' => $content->thumbnail_path,
+                'thumbnail' => $content->thumbnail_path === null ? null : route('educational-contents.media', ['educationalContent' => $content->id, 'type' => 'thumbnail']),
                 'duration_seconds' => $content->duration_seconds,
             ]);
 
         $scenarios = SimulationScenario::query()
-            ->where('status', 'published')
+            ->where('status', SimulationScenarioStatus::Published)
             ->orderByDesc('created_at')
             ->limit(3)
             ->get(['id', 'title', 'description', 'opening_text', 'image_path'])
@@ -62,6 +65,59 @@ class DashboardController extends Controller
                 'image' => $scenario->image_path,
             ]);
 
+        $analytics = null;
+        if ($student !== null) {
+            $observationSummary = DB::table('observation_items')
+                ->join('observation_entries', 'observation_items.observation_entry_id', '=', 'observation_entries.id')
+                ->where('observation_entries.student_id', $student->id)
+                ->select('observation_items.sentiment', DB::raw('count(*) as count'))
+                ->groupBy('observation_items.sentiment')
+                ->get()
+                ->map(function ($item) {
+                    $colors = [
+                        'positive' => '#10b981', // emerald-500
+                        'negative' => '#f43f5e', // rose-500
+                        'neutral' => '#64748b', // slate-500
+                    ];
+
+                    return [
+                        'name' => ucfirst($item->sentiment),
+                        'value' => $item->count,
+                        'fill' => $colors[$item->sentiment] ?? '#94a3b8',
+                    ];
+                });
+
+            $driver = DB::connection()->getDriverName();
+            $monthExpr = $driver === 'sqlite' ? "strftime('%Y-%m', period_start)" : "DATE_FORMAT(period_start, '%Y-%m')";
+
+            $scoreTrendRaw = DB::table('character_score_snapshots')
+                ->where('student_id', $student->id)
+                ->select(DB::raw("{$monthExpr} as month"), DB::raw('AVG(calculated_score) as avg_score'))
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get();
+
+            $scoreTrend = [];
+            if ($scoreTrendRaw->isEmpty()) {
+                // Generate dummy trend if no snapshot data yet
+                $scoreTrend = [
+                    ['name' => 'Jan', 'score' => 65],
+                    ['name' => 'Feb', 'score' => 70],
+                    ['name' => 'Mar', 'score' => 75],
+                    ['name' => 'Apr', 'score' => 73],
+                    ['name' => 'May', 'score' => 82],
+                ];
+            } else {
+                $scoreTrend = $scoreTrendRaw->map(function ($item) {
+                    return ['name' => $item->month, 'score' => round($item->avg_score, 2)];
+                });
+            }
+            $analytics = [
+                'observation_summary' => $observationSummary,
+                'score_trend' => $scoreTrend,
+            ];
+        }
+
         return Inertia::render('student/dashboard', [
             'student' => [
                 'name' => $request->user()->name,
@@ -70,34 +126,24 @@ class DashboardController extends Controller
                 'points' => $points,
                 'streak' => $streak,
                 'stars' => $starCount,
-                'tree_level' => $currentLevel === null ? null : [
-                    'level' => $currentLevel->level,
-                    'name' => $currentLevel->name,
-                    'description' => $currentLevel->description,
+                'tree_level' => $treeProgress->currentLevel === null ? null : [
+                    'level' => $treeProgress->currentLevel->level,
+                    'name' => $treeProgress->currentLevel->name,
+                    'description' => $treeProgress->currentLevel->description,
                 ],
-                'tree_progress' => $this->treeProgress($points, $currentLevel, $nextLevel),
-                'next_level' => $nextLevel === null ? null : [
-                    'level' => $nextLevel->level,
-                    'name' => $nextLevel->name,
-                    'minimum_points' => $nextLevel->minimum_points,
+                'tree_progress' => $treeProgress->progressPercent,
+                'next_level' => $treeProgress->nextLevel === null ? null : [
+                    'level' => $treeProgress->nextLevel->level,
+                    'name' => $treeProgress->nextLevel->name,
+                    'minimum_points' => $treeProgress->nextLevel->minimum_points,
                 ],
             ],
             'test_packages' => $testPackages,
             'contents' => $contents,
             'scenarios' => $scenarios,
             'missions' => $this->missions(),
+            'analytics' => $analytics,
         ]);
-    }
-
-    private function pointsFor(?Student $student): int
-    {
-        if ($student === null) {
-            return 0;
-        }
-
-        return (int) GoodnessPointTransaction::query()
-            ->where('student_id', $student->id)
-            ->sum('points');
     }
 
     private function streakFor(?Student $student): int
@@ -122,8 +168,8 @@ class DashboardController extends Controller
             ->unique()
             ->values();
 
-        $cursor = clone $validDays->contains($today->format('Y-m-d'))
-            ? $today
+        $cursor = $validDays->contains($today->format('Y-m-d'))
+            ? $today->copy()
             : $today->copy()->subDay();
 
         $streak = 0;
@@ -147,22 +193,9 @@ class DashboardController extends Controller
             ->count();
     }
 
-    private function treeProgress(int $points, ?object $currentLevel, ?object $nextLevel): int
-    {
-        if ($currentLevel === null) {
-            return 0;
-        }
-
-        if ($nextLevel === null) {
-            return 100;
-        }
-
-        $span = max(1, $nextLevel->minimum_points - $currentLevel->minimum_points);
-        $position = max(0, $points - $currentLevel->minimum_points);
-
-        return (int) round(min(100, ($position / $span) * 100));
-    }
-
+    /**
+     * @return array<int, array{id: int, title: string, description: string|null, cases_count: int, can_start: bool}>
+     */
     private function visiblePackages(?Student $student): array
     {
         if ($student === null || $student->current_group_id === null) {
@@ -206,6 +239,9 @@ class DashboardController extends Controller
         return true;
     }
 
+    /**
+     * @return array<int, array{id: string, icon: string, title: string, description: string, reward: int, completed: bool}>
+     */
     private function missions(): array
     {
         return [

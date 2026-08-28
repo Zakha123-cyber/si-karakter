@@ -175,6 +175,92 @@ Gunakan dokumen ini untuk mencatat keputusan produk dan teknis.
 - Consequences: Total test 265, semuanya hijau; Pint & PHPStan lulus. Item rekomendasi (wiring scoring, transisi status attempt, refactor duplikasi web/API, guard self-lockout admin, revoke sesi saat ganti password) menunggu persetujuan sebelum dikerjakan.
 - Approved By: Implementation
 
+## D-021 — Phase 11 Early Warning Pendampingan
+
+- Date: 2026-08-09
+- Status: Accepted
+- Context: Phase 11 membutuhkan early warning awal menggunakan indikator dummy, hanya tampil kepada admin/ustadz, memakai bahasa pendampingan, serta tidak boleh tampil pada portal santri.
+- Decision:
+  - Rule awal memakai tipe `observation_negative_indicator` dengan kondisi JSON: jendela hari, minimum item negatif, indikator warning, dan daftar kode indikator opsional.
+  - Seeder `WarningRuleSeeder` membuat rule dummy idempotent untuk indikator `dishonesty_warning`.
+  - `WarningRuleEngine` mengevaluasi pola observasi negatif, dan `StudentWarningGenerator` membuat `student_warnings` tanpa duplikasi selama warning masih `open` atau `reviewed`.
+  - Generate warning dapat dijalankan manual dari halaman `/teacher/warnings` untuk semua santri yang terlihat atau satu santri tertentu, dan juga dijalankan otomatis setelah observasi dibuat/diperbarui.
+  - Dashboard warning ditempatkan di portal teacher/admin dengan aksi review dan resolve; resolve wajib catatan tindak lanjut.
+  - Portal santri tidak diberi route/props warning.
+- Consequences:
+  - Early warning fase awal sudah usable end-to-end tetapi belum berupa rule builder kompleks.
+  - Audit dicatat untuk `warning.generated`, `warning.reviewed`, dan `warning.resolved`.
+  - Tests ditambahkan untuk rule engine, generate, authorization, review/resolve, bahasa pendampingan, dan non-eksposur pada santri.
+- Approved By: Implementation
+
+## D-022 — Phase 12 Goodness Tree
+
+- Date: 2026-08-09
+- Status: Accepted
+- Context: Phase 12 membutuhkan gamifikasi positif berupa pohon virtual yang tumbuh dari reward points, terpisah dari skor asesmen karakter, dan aman dilihat santri tanpa label negatif.
+- Decision:
+  - Level pohon disimpan di `goodness_tree_levels` dan diisi idempotent melalui `GoodnessTreeLevelSeeder` dengan threshold awal 0, 25, 60, 120, dan 200 poin.
+  - Kalkulasi total poin, level aktif, level berikutnya, progress, dan sisa poin dipusatkan di `GoodnessTreeService`.
+  - Transaksi poin positif dari observasi disinkronkan melalui `GoodnessPointAwarder`, sementara skor asesmen tetap terpisah.
+  - Santri mendapat halaman khusus `/student/goodness-tree` berisi representasi positif, level journey, dan riwayat reward positif; warning tidak dikirim pada props halaman ini.
+  - Portal santri memakai bahasa motivasional dan tidak menampilkan hukuman visual saat poin rendah.
+- Consequences:
+  - Dashboard santri dan halaman Pohon Kebaikan memakai kalkulasi level yang sama.
+  - Halaman Goodness Tree siap dikembangkan lagi untuk reward dari simulasi/misi pada fase berikutnya.
+  - Tests ditambahkan untuk threshold, akses, riwayat reward positif, non-eksposur warning, dan idempotency seeder.
+- Approved By: Implementation
+
+## D-023 — Phase 13 Educational Content
+
+- Date: 2026-08-09
+- Status: Accepted
+- Context: Phase 13 membutuhkan pengelolaan materi edukasi berupa video, komik, gambar, audio, dan cerita; materi perlu dipetakan ke indikator karakter, direkomendasikan ke santri, dan menerima respons emotikon dari santri.
+- Decision:
+  - CRUD materi edukasi ditempatkan di portal Admin melalui `/admin/educational-contents`, dengan status `draft`, `published`, dan `archived`.
+  - Tipe materi dikontrol melalui enum `video`, `comic`, `image`, `audio`, dan `story`; media utama serta thumbnail disimpan di disk `public` Laravel dan disajikan melalui route terautentikasi.
+  - Materi `draft`/`archived` hanya dapat dipreview Admin; santri dan ustadz hanya dapat membuka media materi yang sudah `published`.
+  - Mapping rekomendasi memakai pivot `educational_content_indicators`; rekomendasi santri mengutamakan konten yang terkait indikator hasil validasi ustadz dan observasi, dengan fallback ke materi published terbaru.
+  - Portal santri memiliki `/student/contents` dan `/student/contents/{slug}` dengan bahasa motivasional, daftar/detail materi, related content, dan respons emotikon positif (`happy`, `inspired`, `curious`, `calm`).
+  - Jika akun student belum punya row profil `students`, materi tetap dapat dibaca tetapi respons emotikon tidak disimpan sampai profil santri lengkap.
+- Consequences:
+  - Dashboard santri dan sidebar kini mengarah ke Bioskop Teladan berbasis Educational Content.
+  - Interaksi materi menjadi riwayat santri sehingga guard hapus santri ikut mempertimbangkan `content_interactions`.
+  - Tests ditambahkan untuk CRUD admin, upload media, akses role, daftar/detail santri, respons emotikon, rekomendasi berdasarkan indikator, dan missing profile.
+- Approved By: Implementation
+
+## D-024 — Phase 14 Assertiveness Simulation
+
+- Date: 2026-08-11
+- Status: Accepted
+- Context: Phase 14 membutuhkan latihan keberanian menolak ("Simulasi Berani Menolak") agar santri berlatih bersikap asertif lewat skenario cerita dan pilihan respons, dengan feedback edukatif dan reward poin kebaikan tanpa menampilkan label negatif.
+- Decision:
+  - CRUD skenario dan respons dinamis ditempatkan di portal Ustadz melalui `/teacher/simulation-scenarios`, dengan status `draft`, `published`, dan `archived` (enum `SimulationScenarioStatus`).
+  - Setiap skenario memiliki `opening_text` (situasi cerita) dan banyak `simulation_options`; tiap opsi membawa `text`, `feedback_text`, `score`, `reward_points`, dan `sort_order`. Tidak ada kolom `is_correct` — jawaban "terbaik" ditentukan dari opsi dengan `score` tertinggi.
+  - Portal santri memiliki `/student/simulations` dan `/student/simulations/{id}` (hanya skenario published). Pemain memilih respons, kirim ke `/student/simulations/{id}/attempts`, lalu melihat hasil: feedback, skor, poin, dan jawaban terbaik.
+  - Setiap attempt tersimpan di `simulation_attempts` (snapshot `score` dan `reward_points`); reward dibayarkan melalui `GoodnessPointAwarder::awardSimulationReward` dengan `source_type = simulation` sehingga masuk ke Pohon Kebaikan.
+  - Skenario yang sudah punya riwayat attempt tidak dapat dihapus (disarankan diarsipkan); opsi yang pernah dipilih santri juga tidak dapat dihapus. Guard hapus santri mempertimbangkan `simulation_attempts`.
+  - Akun student tanpa profil tetap dapat berlatih, tetapi tidak dapat mengirim attempt (403) hingga profil santri dihubungkan admin.
+- Consequences:
+  - Sidebar ustadz dan santri serta dashboard (card + statistik `total_simulations`) kini mengarah ke modul Simulasi.
+  - `SimulationScenarioSeeder` menyediakan 2 skenario published dengan 3 opsi masing-masing (skor 30–100).
+  - Tests ditambahkan untuk CRUD ustadz, akses role, daftar/detail santri, submit attempt, reward, 403 tanpa profil, draft 404, dan guard hapus.
+## D-025 — Phase 16 Character Reports
+
+- Date: 2026-08-10
+- Status: Accepted
+- Context: Phase 16 membutuhkan laporan karakter santri per periode: rekap skor tes dan observasi, narasi manual atau dibantu LLM, konfirmasi ustadz, penerbitan beserta PDF, dan unduhan hanya untuk yang berwenang.
+- Decision:
+  - Generate draft laporan memakai `ReportSummaryBuilder` yang memanfaatkan `TestScoreCalculator` dan `ObservationScoreCalculator` pada rentang periode; hasil rekap disimpan dalam `test_summary_json` dan `observation_summary_json`.
+  - Narasi LLM disimpan sebagai `ai_generated_narrative` (draft), bukan narasi final; ustadz wajib mengonfirmasi narasi final melalui status `reviewed` sebelum laporan dapat `published`.
+  - PDF digenerate dengan barryvdh/laravel-dompdf dan disimpan di disk `local` (`storage/app/private/reports`); akses unduhan diverifikasi per laporan berdasarkan kelompok santri ustadz.
+  - Endpoint laporan tersedia di portal web (`/teacher/reports`) dan API v1 (`/reports`), keduanya membatasi santri pada kelompok tanggung jawab ustadz; admin dapat melihat seluruh kelompok.
+  - Draft narasi AI menggunakan provider `google_gemini` atau `fake` via `ReportNarrativeService`; hasil AI bukan keputusan final.
+- Consequences:
+  - Alur laporan mengikuti status draft → reviewed → published; pengulangan review diblokir.
+  - Laporan yang sudah diterbitkan tidak bisa diubah narasinya (status reviewed/published).
+  - Tests ditambahkan untuk permission, generate, narasi AI, review, publish, PDF download, dan unit domain service.
+- Approved By: Implementation
+
 ## Template Decision Baru
 
 ```md

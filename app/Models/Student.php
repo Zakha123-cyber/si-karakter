@@ -85,6 +85,22 @@ class Student extends Model
     }
 
     /**
+     * @return HasMany<ContentInteraction, $this>
+     */
+    public function contentInteractions(): HasMany
+    {
+        return $this->hasMany(ContentInteraction::class);
+    }
+
+    /**
+     * @return HasMany<SimulationAttempt, $this>
+     */
+    public function simulationAttempts(): HasMany
+    {
+        return $this->hasMany(SimulationAttempt::class);
+    }
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array

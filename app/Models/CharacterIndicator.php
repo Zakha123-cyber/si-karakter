@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -29,6 +30,14 @@ class CharacterIndicator extends Model
 {
     /** @use HasFactory<CharacterIndicatorFactory> */
     use HasFactory;
+
+    /**
+     * @return BelongsToMany<EducationalContent, $this>
+     */
+    public function educationalContents(): BelongsToMany
+    {
+        return $this->belongsToMany(EducationalContent::class, 'educational_content_indicators')->withTimestamps();
+    }
 
     /**
      * @return array<string, string>

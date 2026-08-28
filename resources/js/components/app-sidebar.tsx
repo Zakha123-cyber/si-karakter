@@ -3,12 +3,13 @@ import {
     BookMarked,
     BookOpenCheck,
     CalendarDays,
+    Clapperboard,
     ClipboardCheck,
     ClipboardList,
-    FileSearch,
     FileText,
     LayoutGrid,
     Scale,
+    Settings,
     Tag,
     TreePine,
     UserCheck,
@@ -77,29 +78,24 @@ function getNavItems(role: string): NavItem[] {
                 icon: CalendarDays,
             },
             {
-                title: 'User Management',
-                href: '/admin/users',
-                icon: UserCheck,
-            },
-            {
-                title: 'Santri',
-                href: '/admin/students',
-                icon: Users,
-            },
-            {
                 title: 'Kelompok',
                 href: '/admin/groups',
                 icon: BookMarked,
             },
             {
-                title: 'Hasil Test',
-                href: '/admin/test-results',
-                icon: FileSearch,
+                title: 'Data Santri',
+                href: '/admin/students',
+                icon: Users,
             },
             {
-                title: 'Observasi',
-                href: '/teacher/observations',
-                icon: FileText,
+                title: 'Manajemen User',
+                href: '/admin/users',
+                icon: UserCheck,
+            },
+            {
+                title: 'Pengaturan',
+                href: '/settings/profile',
+                icon: Settings,
             },
         ];
     }
@@ -136,6 +132,11 @@ function getNavItems(role: string): NavItem[] {
                 title: 'Observasi',
                 href: '/teacher/observations',
                 icon: FileText,
+            },
+            {
+                title: 'Materi Edukasi',
+                href: '/teacher/educational-contents',
+                icon: Clapperboard,
             },
         ];
     }

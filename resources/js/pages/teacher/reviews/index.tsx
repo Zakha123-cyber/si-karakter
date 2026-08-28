@@ -11,8 +11,6 @@ import {
     User,
 } from 'lucide-react';
 import { useState } from 'react';
-import type { BreadcrumbItem } from '@/types';
-import AppLayout from '@/layouts/app-layout';
 
 interface ReviewItem {
     id: number;

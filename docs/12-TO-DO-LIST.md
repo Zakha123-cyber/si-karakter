@@ -177,85 +177,85 @@ Status:
 
 - [x] Migration warning rules.
 - [x] Migration student warnings.
-- [ ] Seeder rule dummy.
-- [ ] Rule engine awal.
-- [ ] Generate warning.
-- [ ] Warning dashboard.
-- [ ] Review warning.
-- [ ] Resolve warning.
-- [ ] Gunakan bahasa pendampingan.
-- [ ] Pastikan tidak tampil ke santri.
-- [ ] Test warning rules.
+- [x] Seeder rule dummy.
+- [x] Rule engine awal.
+- [x] Generate warning.
+- [x] Warning dashboard.
+- [x] Review warning.
+- [x] Resolve warning.
+- [x] Gunakan bahasa pendampingan.
+- [x] Pastikan tidak tampil ke santri.
+- [x] Test warning rules.
 
 ## Phase 12 — Goodness Tree
 
 - [x] Migration point transactions.
 - [x] Migration tree levels.
-- [ ] Seeder tree levels.
-- [ ] Award reward points.
-- [ ] Hitung total points.
-- [ ] Tentukan level pohon.
-- [ ] Halaman pohon santri.
-- [ ] Riwayat reward positif.
-- [ ] Unit test threshold.
-- [ ] Responsive test.
+- [x] Seeder tree levels.
+- [x] Award reward points.
+- [x] Hitung total points.
+- [x] Tentukan level pohon.
+- [x] Halaman pohon santri.
+- [x] Riwayat reward positif.
+- [x] Unit test threshold.
+- [x] Responsive test.
 
 ## Phase 13 — Educational Content
 
 - [x] Migration educational contents.
 - [x] Migration content indicators.
 - [x] Migration interactions.
-- [ ] CRUD content.
-- [ ] Upload media.
-- [ ] Daftar materi santri.
-- [ ] Detail materi.
-- [ ] Emoticon response.
-- [ ] Recommendation mapping.
-- [ ] Test access.
+- [x] CRUD content.
+- [x] Upload media.
+- [x] Daftar materi santri.
+- [x] Detail materi.
+- [x] Emoticon response.
+- [x] Recommendation mapping.
+- [x] Test access.
 
 ## Phase 14 — Assertiveness Simulation
 
 - [x] Migration scenarios.
 - [x] Migration options.
 - [x] Migration attempts.
-- [ ] CRUD scenario.
-- [ ] CRUD dynamic options.
-- [ ] Feedback per option.
-- [ ] Reward points.
-- [ ] Student simulation UI.
-- [ ] Save attempt.
-- [ ] Test simulation.
+- [x] CRUD scenario.
+- [x] CRUD dynamic options.
+- [x] Feedback per option.
+- [x] Reward points.
+- [x] Student simulation UI.
+- [x] Save attempt.
+- [x] Test simulation.
 
 ## Phase 15 — Analytics Dashboard
 
 - [x] Halaman admin hasil pengerjaan test.
-- [ ] Admin dashboard.
-- [ ] Teacher dashboard.
-- [ ] Student dashboard.
-- [ ] Distribusi level moral.
-- [ ] Tren skor.
-- [ ] Ringkasan observasi.
-- [ ] Pending review.
-- [ ] Open warning.
-- [ ] Filter periode.
-- [ ] Filter kelompok.
-- [ ] Empty/loading/error states.
-- [ ] Query performance test.
+- [x] Admin dashboard.
+- [x] Teacher dashboard.
+- [x] Student dashboard.
+- [x] Distribusi level moral.
+- [x] Tren skor.
+- [x] Ringkasan observasi.
+- [x] Pending review.
+- [x] Open warning.
+- [x] Filter periode.
+- [x] Filter kelompok.
+- [x] Empty/loading/error states.
+- [x] Query performance test.
 
 ## Phase 16 — Character Reports
 
 - [x] Migration reports.
-- [ ] Generate report draft.
-- [ ] Rekap tes.
-- [ ] Rekap observasi.
-- [ ] Narasi manual.
-- [ ] Draft narasi LLM.
-- [ ] Validasi ustadz.
-- [ ] Publish.
-- [ ] Generate PDF.
-- [ ] Authorized PDF download.
-- [ ] Test PDF.
-- [ ] Test report permissions.
+- [x] Generate report draft.
+- [x] Rekap tes.
+- [x] Rekap observasi.
+- [x] Narasi manual.
+- [x] Draft narasi LLM.
+- [x] Validasi ustadz.
+- [x] Publish.
+- [x] Generate PDF.
+- [x] Authorized PDF download.
+- [x] Test PDF.
+- [x] Test report permissions.
 
 ## Phase 17 — Security and Audit
 

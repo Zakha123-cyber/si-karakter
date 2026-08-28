@@ -39,7 +39,7 @@ export default function Profile({
                 <Heading
                     variant="small"
                     title="Profile"
-                    description="Update your name and email address"
+                    description="Perbarui nama dan alamat email Anda"
                 />
 
                 <Form
@@ -47,12 +47,12 @@ export default function Profile({
                     options={{
                         preserveScroll: true,
                     }}
-                    className="space-y-6"
+                    className="space-y-5"
                 >
                     {({ processing, errors }) => (
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                                <Label htmlFor="name" className="text-xs font-extrabold text-slate-600">Nama</Label>
 
                                 <Input
                                     id="name"
@@ -61,7 +61,7 @@ export default function Profile({
                                     name="name"
                                     required
                                     autoComplete="name"
-                                    placeholder="Full name"
+                                    placeholder="Nama lengkap"
                                 />
 
                                 <InputError
@@ -71,7 +71,7 @@ export default function Profile({
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email" className="text-xs font-extrabold text-slate-600">Alamat Email</Label>
 
                                 <Input
                                     id="email"
@@ -81,7 +81,7 @@ export default function Profile({
                                     name="email"
                                     required
                                     autoComplete="username"
-                                    placeholder="Email address"
+                                    placeholder="Alamat email"
                                 />
 
                                 <InputError
@@ -94,22 +94,22 @@ export default function Profile({
                                 user.email_verified_at === null && (
                                     <div>
                                         <p className="-mt-4 text-sm text-muted-foreground">
-                                            Your email address is unverified.{' '}
+                                            Alamat email Anda belum diverifikasi.{' '}
                                             <Link
                                                 href={send()}
                                                 as="button"
                                                 className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                                             >
-                                                Click here to re-send the
-                                                verification email.
+                                                Klik di sini untuk mengirim
+                                                ulang email verifikasi.
                                             </Link>
                                         </p>
 
                                         {status ===
                                             'verification-link-sent' && (
-                                            <div className="mt-2 text-sm font-medium text-green-600">
-                                                A new verification link has been
-                                                sent to your email address.
+                                            <div className="mt-2 text-sm font-medium text-emerald-600">
+                                                Tautan verifikasi baru telah
+                                                dikirim ke alamat email Anda.
                                             </div>
                                         )}
                                     </div>
@@ -120,7 +120,7 @@ export default function Profile({
                                     disabled={processing}
                                     data-test="update-profile-button"
                                 >
-                                    Save
+                                    Simpan
                                 </Button>
                             </div>
                         </>

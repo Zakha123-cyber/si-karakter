@@ -21,6 +21,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CharacterIndicatorSeeder::class,
             ScoringConfigurationSeeder::class,
+            WarningRuleSeeder::class,
+            GoodnessTreeLevelSeeder::class,
+            EducationalContentSeeder::class,
+            SimulationScenarioSeeder::class,
             TestReviewSeeder::class,
         ]);
     }

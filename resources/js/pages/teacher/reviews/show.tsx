@@ -15,8 +15,6 @@ import {
     X,
 } from 'lucide-react';
 import { useState } from 'react';
-import type { BreadcrumbItem } from '@/types';
-import AppLayout from '@/layouts/app-layout';
 import { AudioPlayer } from '@/components/audio-player';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -456,7 +454,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                     <div className="mt-3">
                                         {review.audio ? (
                                             <AudioPlayer
-                                                src={`/teacher/reviews/${review.id}/audio`}
+                                                src={review.audio.url}
                                                 originalName={
                                                     review.audio.original_name
                                                 }

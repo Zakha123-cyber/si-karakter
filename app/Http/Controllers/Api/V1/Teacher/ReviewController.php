@@ -21,6 +21,7 @@ use App\Models\TestAttempt;
 use App\Models\Transcription;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReviewController extends Controller
@@ -37,7 +38,7 @@ class ReviewController extends Controller
                 'testAttempt.student.currentGroup',
                 'testAttempt.testPackage',
                 'moralCase',
-                'audioFiles',
+                'audioFiles' => fn ($q) => $q->latest(),
                 'transcriptions' => fn ($q) => $q->latest(),
                 'aiAssessments' => fn ($q) => $q->latest(),
                 'teacherValidations' => fn ($q) => $q->latest(),
@@ -104,7 +105,7 @@ class ReviewController extends Controller
             'testAttempt.testPackage',
             'moralCase.options',
             'selectedOption',
-            'audioFiles',
+            'audioFiles' => fn ($q) => $q->latest(),
             'transcriptions' => fn ($q) => $q->latest(),
             'aiAssessments' => fn ($q) => $q->latest(),
             'teacherValidations' => fn ($q) => $q->latest(),
@@ -131,17 +132,16 @@ class ReviewController extends Controller
         }
 
         /** @var AnswerAudioFile|null $audioFile */
-        $audioFile = $answer->audioFiles()->first();
+        $audioFile = $answer->audioFiles()->latest()->first();
         if (! $audioFile) {
             return $this->error('Audio file not found', 404);
         }
 
-        $filePath = storage_path('app/'.$audioFile->file_path);
-        if (! file_exists($filePath)) {
-            $filePath = storage_path('app/public/'.$audioFile->file_path);
-        }
-
-        if (! file_exists($filePath)) {
+        if (Storage::disk('local')->exists($audioFile->file_path)) {
+            $filePath = Storage::disk('local')->path($audioFile->file_path);
+        } elseif (Storage::disk('public')->exists($audioFile->file_path)) {
+            $filePath = Storage::disk('public')->path($audioFile->file_path);
+        } else {
             return $this->error('Audio file storage path does not exist on disk', 404);
         }
 
@@ -207,7 +207,7 @@ class ReviewController extends Controller
         }
 
         /** @var AnswerAudioFile|null $audioFile */
-        $audioFile = $answer->audioFiles()->first();
+        $audioFile = $answer->audioFiles()->latest()->first();
         if (! $audioFile) {
             return $this->error('No audio file found for this answer', 422);
         }

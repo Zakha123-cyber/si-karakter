@@ -1,10 +1,13 @@
 import { Head, Link } from '@inertiajs/react';
 import {
     AudioLines,
-    CalendarHeart,
     Check,
+    ChevronRight,
     Flame,
+    HelpCircle,
+    Mic,
     Play,
+    Trophy,
     Volume2,
     BarChart3,
     TrendingUp,
@@ -20,6 +23,10 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
+
+/* ═══════════════════════════════════════════════════════
+   Types
+   ═══════════════════════════════════════════════════════ */
 
 type TreeLevel = {
     level: number;
@@ -90,6 +97,27 @@ type Props = {
     };
 };
 
+/* ═══════════════════════════════════════════════════════
+   Dashboard images
+   ═══════════════════════════════════════════════════════ */
+
+const DASHBOARD_IMAGES = {
+    mascot: '/images/dashboard/mascot.png',
+    tree: '/images/dashboard/pohon-kebaikan.png',
+    pilihJalanmu: '/images/dashboard/pilih-jalanmu.png',
+    simulasi: '/images/dashboard/simulasi.png',
+    bioskop: [
+        '/images/dashboard/bioskop-1.png',
+        '/images/dashboard/bioskop-2.png',
+        '/images/dashboard/bioskop-3.png',
+        '/images/dashboard/bioskop-4.png',
+    ],
+};
+
+/* ═══════════════════════════════════════════════════════
+   Main Component
+   ═══════════════════════════════════════════════════════ */
+
 export default function StudentDashboard({
     student,
     test_packages,
@@ -102,215 +130,410 @@ export default function StudentDashboard({
     const completedMissions = missions.filter((m) => m.completed).length;
     const packageToShow =
         test_packages.find((p) => p.can_start) ?? test_packages[0];
+    const treeLevel = student.tree_level?.level ?? 1;
+    const treeName = student.tree_level?.name ?? 'Penjaga Kebaikan';
 
     return (
         <>
             <Head title="Beranda Santri" />
 
-            {/* Greeting card */}
-            <section className="relative mb-6 overflow-hidden rounded-[32px] bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-500 p-6 text-white shadow-[0_12px_40px_rgba(16,185,129,0.35)] sm:p-8">
-                {/* Mosque silhouette */}
-                <svg
-                    className="pointer-events-none absolute -top-6 -right-6 h-56 w-56 opacity-20"
-                    viewBox="0 0 200 200"
-                    fill="currentColor"
-                    aria-hidden="true"
-                >
-                    <path d="M100 20l20 30h-40l20-30zM95 55v25h10V55h-10zM70 60l8 18h12l-6-16h-14zM123 60l-8 18h-12l6-16h14zM72 84h56v8H72z" />
-                    <path d="M85 95l10 18 10-18h-20z" />
-                </svg>
+            {/* ═══════════════════════════════════════════
+                TOP HEADER BAR — White card with greeting + stats
+                ═══════════════════════════════════════════ */}
+            <section className="relative mb-5 overflow-hidden rounded-[24px] bg-white p-0 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+                {/* Sky gradient background with mosque */}
+                <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-b from-[#d4f0ff] via-[#e8f6ff] to-white" />
+                    {/* Mosque silhouette */}
+                    <svg
+                        viewBox="0 0 1200 200"
+                        className="absolute right-0 bottom-0 h-32 w-auto opacity-[0.08]"
+                        fill="#0e7490"
+                    >
+                        <rect x="100" y="50" width="16" height="150" rx="3" />
+                        <circle cx="108" cy="42" r="12" />
+                        <rect x="103" y="24" width="10" height="18" rx="2" />
+                        <path d="M200 60 Q300 -10 400 60 L400 200 L200 200 Z" />
+                        <rect x="260" y="120" width="80" height="80" rx="4" />
+                        <path d="M450 80 Q520 30 590 80 L590 200 L450 200 Z" />
+                        <rect x="620" y="60" width="14" height="140" rx="3" />
+                        <circle cx="627" cy="52" r="11" />
+                        <rect x="622" y="34" width="10" height="18" rx="2" />
+                        <circle cx="180" cy="30" r="3" />
+                        <circle cx="500" cy="20" r="2.5" />
+                        <circle cx="700" cy="35" r="2" />
+                        <circle cx="350" cy="15" r="2" />
+                    </svg>
+                </div>
 
-                <div className="relative flex flex-wrap items-center justify-between gap-6">
-                    <div className="min-w-0">
-                        <button className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-xs font-bold backdrop-blur-sm transition-transform hover:scale-105">
+                {/* Top stats bar */}
+                <div className="relative flex items-center justify-between border-b border-slate-100/60 px-6 py-3">
+                    {/* Greeting text */}
+                    <div className="flex items-center gap-3">
+                        <button
+                            className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-cyan-600 shadow-sm transition-transform hover:scale-110"
+                            aria-label="Putar salam"
+                        >
                             <Volume2 className="size-4" />
-                            Assalamu'alaikum
                         </button>
-                        <h1 className="text-3xl font-extrabold sm:text-4xl">
-                            Assalamu'alaikum, {firstName} 👋
-                        </h1>
-                        <p className="mt-2 max-w-md text-sm font-medium text-emerald-50 sm:text-base">
+                        <span className="text-sm font-medium text-slate-500">
                             Yuk, jadi anak hebat berakhlak mulia!
-                        </p>
+                        </span>
                     </div>
 
-                    {/* Top-right stats */}
-                    <div className="flex flex-wrap items-center gap-3">
+                    {/* Stats pills */}
+                    <div className="flex items-center gap-4">
                         <StatPill
-                            icon={<Flame className="size-5 text-orange-200" />}
-                            value={`${student.streak}`}
-                            label="Streak"
-                        />
-                        <StatPill
-                            icon={<Star className="size-5 text-yellow-200" />}
-                            value={`${student.stars}`}
-                            label="Bintang"
-                        />
-                        <StatPill
-                            icon={<Coins className="size-5 text-amber-200" />}
+                            icon={<Trophy className="size-4 text-amber-500" />}
                             value={`${student.points}`}
                             label="Poin"
+                        />
+                        <StatPill
+                            icon={<span className="text-sm">⭐</span>}
+                            value={`Level ${treeLevel}`}
+                            label={treeName}
+                        />
+                        <StatPill
+                            icon={<Flame className="size-4 text-orange-500" />}
+                            value={`${student.streak}`}
+                            label="Hari Beruntun"
+                        />
+
+                        {/* User avatar */}
+                        <div className="flex items-center gap-2 rounded-full bg-white py-1 pr-3 pl-1 shadow-sm">
+                            <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-300 to-teal-300">
+                                <img
+                                    src={DASHBOARD_IMAGES.mascot}
+                                    alt={firstName}
+                                    className="h-full w-full object-cover"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).style.display = 'none';
+                                    }}
+                                />
+                            </div>
+                            <span className="text-sm font-bold text-slate-600">
+                                {firstName}
+                            </span>
+                            <ChevronRight className="size-3 text-slate-400" />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Main greeting area with mascot */}
+                <div className="relative flex items-end px-6 pt-4 pb-6">
+                    <div className="flex-1">
+                        <h1 className="text-3xl font-extrabold text-slate-800 lg:text-4xl">
+                            Assalamu'alaikum,{' '}
+                            <span className="text-[#0ea5e9]">{firstName}</span>{' '}
+                            👋
+                        </h1>
+                    </div>
+                    {/* Mascot illustration */}
+                    <div className="relative -mb-6 hidden h-36 w-32 sm:block">
+                        <img
+                            src={DASHBOARD_IMAGES.mascot}
+                            alt="Maskot"
+                            className="h-full w-full object-contain object-bottom"
                         />
                     </div>
                 </div>
             </section>
 
-            {/* Body: main content + right panel */}
-            <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_320px]">
-                {/* Main content */}
-                <div className="min-w-0 space-y-6">
-                    {/* Section 1: Bioskop Teladan */}
-                    <Section
-                        index="1"
-                        emoji="🎬"
-                        title="Bioskop Teladan"
-                        color="text-sky-600"
-                        description="Tonton kisah teladan yang mengajarkan kebaikan."
-                        actionLabel="Lihat semua"
-                        actionHref="/student/contents"
-                    >
-                        <div className="grid gap-4 sm:grid-cols-2">
-                            {(contents.length > 0
-                                ? contents
-                                : placeholderContents
-                            ).map((c) => (
-                                <MovieCard
-                                    key={`${c.id}-${c.title}`}
-                                    content={c}
-                                />
-                            ))}
-                        </div>
-                    </Section>
+            {/* ═══════════════════════════════════════════
+                BODY: Main Content + Right Panel
+                ═══════════════════════════════════════════ */}
+            <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_330px]">
+                {/* ─── Main Content ─── */}
+                <div className="min-w-0 space-y-5">
 
-                    {/* Section 2: Pilih Jalanmu */}
-                    <Section
-                        index="2"
-                        emoji="🛤️"
-                        title="Pilih Jalanmu"
-                        color="text-purple-600"
-                        description="Ikuti kisah dan pilih jalan yang benar."
-                        actionLabel="Lihat paket"
-                        onAction={() => {}}
-                    >
-                        {packageToShow && (
-                            <div className="flex flex-wrap items-center gap-4 rounded-[28px] bg-purple-50 p-5">
-                                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-300 to-fuchsia-300 text-3xl">
-                                    🧭
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                    <h3 className="text-base font-bold text-slate-700">
-                                        {packageToShow.title}
-                                    </h3>
-                                    <p className="text-sm text-slate-500">
-                                        {packageToShow.description ??
-                                            'Kasus dilema moral menantimu'}
+                    {/* ════════════════════════════════════
+                        SECTION 1: BIOSKOP TELADAN
+                        ════════════════════════════════════ */}
+                    <section className="rounded-[24px] bg-[#e8f4fd] p-5 sm:p-6">
+                        {/* Header */}
+                        <div className="mb-4 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-200 text-base font-extrabold text-sky-700">
+                                    1
+                                </span>
+                                <div>
+                                    <h2 className="text-lg font-extrabold text-sky-700">
+                                        Bioskop Teladan
+                                    </h2>
+                                    <p className="text-[11px] text-slate-400">
+                                        Tonton cerita inspiratif dan belajar nilai kebaikan
                                     </p>
                                 </div>
-                                <Link
-                                    href="/student/tests"
-                                    className="rounded-2xl bg-purple-500 px-5 py-3 text-sm font-bold text-white shadow-[0_8px_20px_rgba(168,85,247,0.35)] transition-transform hover:scale-[1.03]"
-                                >
-                                    Mulai Sekarang
-                                </Link>
                             </div>
-                        )}
-                        {!packageToShow && (
-                            <div className="rounded-[28px] bg-purple-50 p-5 text-sm text-purple-600">
-                                Belum ada paket tes untukmu saat ini.
-                            </div>
-                        )}
-                    </Section>
+                            <Link
+                                href="/student/contents"
+                                className="flex items-center gap-1 rounded-full bg-rose-400 px-4 py-2 text-xs font-bold text-white shadow-md transition-all hover:scale-[1.03] hover:bg-rose-500"
+                            >
+                                Lihat Semua
+                                <ChevronRight className="size-3.5" />
+                            </Link>
+                        </div>
 
-                    {/* Section 3: Simulasi Berani Menolak */}
-                    <Section
-                        index="3"
-                        emoji="🛡️"
-                        title="Simulasi Berani Menolak"
-                        color="text-rose-600"
-                        description="Latih keberanian menolak ajakan yang tidak baik."
-                        actionLabel="Lihat semua"
-                        actionHref="/student/simulations"
-                    >
-                        <div className="grid gap-4 sm:grid-cols-3">
-                            {(scenarios.length > 0
-                                ? scenarios
-                                : placeholderScenarios
-                            ).map((s) => (
-                                <ScenarioCard key={s.title} scenario={s} />
+                        {/* Horizontal scroll cards */}
+                        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                            {(contents.length > 0 ? contents : placeholderContents).map((c, idx) => (
+                                <BioskopCard key={`${c.id}-${c.title}`} content={c} imageIndex={idx} />
                             ))}
                         </div>
-                    </Section>
+                    </section>
 
-                    {/* Section 4: Analitik (Tren & Observasi) */}
+                    {/* ════════════════════════════════════
+                        SECTION 2: PILIH JALANMU!
+                        ════════════════════════════════════ */}
+                    <section className="rounded-[24px] bg-[#e6f9ee] p-5 sm:p-6">
+                        {/* Header */}
+                        <div className="mb-4 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-200 text-base font-extrabold text-green-700">
+                                    2
+                                </span>
+                                <div>
+                                    <h2 className="text-lg font-extrabold text-green-700">
+                                        Pilih Jalanmu!
+                                    </h2>
+                                    <p className="text-[11px] text-slate-400">
+                                        Pilih tindakan yang paling benar dalam setiap cerita
+                                    </p>
+                                </div>
+                            </div>
+                            <Link
+                                href="/student/tests"
+                                className="flex items-center gap-1 rounded-full bg-green-500 px-4 py-2 text-xs font-bold text-white shadow-md transition-all hover:scale-[1.03] hover:bg-green-600"
+                            >
+                                Mulai Sekarang
+                                <ChevronRight className="size-3.5" />
+                            </Link>
+                        </div>
+
+                        {packageToShow ? (
+                            <div className="flex flex-col gap-5 lg:flex-row">
+                                {/* Left: Illustration with speech bubble */}
+                                <div className="relative flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-green-100 to-emerald-50 lg:w-52 lg:shrink-0">
+                                    <img
+                                        src={DASHBOARD_IMAGES.pilihJalanmu}
+                                        alt="Pilih Jalanmu"
+                                        className="h-40 w-full object-contain p-2 lg:h-48"
+                                    />
+                                    {/* Speech bubble overlay */}
+                                    <div className="absolute top-3 left-3 max-w-[140px] rounded-xl rounded-bl-sm bg-white/90 px-3 py-2 text-[10px] font-semibold text-slate-600 shadow-sm italic">
+                                        "Ayo bolos mengaji,
+                                        <br />
+                                        main game saja!"
+                                    </div>
+                                </div>
+
+                                {/* Right: Content */}
+                                <div className="flex-1 space-y-3">
+                                    <h3 className="text-base font-bold text-slate-700">
+                                        Apa yang akan kamu lakukan?
+                                    </h3>
+
+                                    {/* Option A */}
+                                    <button className="flex w-full items-center gap-3 rounded-2xl border-2 border-transparent bg-white p-3 text-left transition-all hover:border-slate-200 hover:shadow-sm">
+                                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-500 text-sm font-extrabold text-white">
+                                            A
+                                        </span>
+                                        <span className="text-sm font-semibold text-slate-600">
+                                            {packageToShow.description ?? 'Ikut teman bolos mengaji'}
+                                        </span>
+                                    </button>
+
+                                    {/* Option B (correct) */}
+                                    <button className="flex w-full items-center gap-3 rounded-2xl border-2 border-emerald-300 bg-emerald-50 p-3 text-left transition-all hover:shadow-sm">
+                                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500 text-sm font-extrabold text-white">
+                                            B
+                                        </span>
+                                        <span className="text-sm font-semibold text-slate-600">
+                                            Menolak dan tetap mengaji
+                                        </span>
+                                        <Check className="ml-auto size-5 shrink-0 text-emerald-500" />
+                                    </button>
+
+                                    {/* Voice recording / reason area */}
+                                    <div className="mt-2 rounded-2xl bg-white p-4">
+                                        <div className="flex items-center justify-between">
+                                            <p className="text-sm font-semibold text-slate-600">
+                                                Ceritakan alasanmu
+                                            </p>
+                                        </div>
+                                        <div className="mt-3 flex items-center justify-center gap-4">
+                                            <button className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-400 transition-colors hover:bg-slate-200">
+                                                <AudioLines className="size-4" />
+                                            </button>
+                                            <button className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-rose-400 to-pink-500 text-white shadow-lg shadow-rose-200 transition-transform hover:scale-110">
+                                                <Mic className="size-5" />
+                                            </button>
+                                            <button className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-400 transition-colors hover:bg-slate-200">
+                                                <AudioLines className="size-4" />
+                                            </button>
+                                        </div>
+                                        <p className="mt-2 text-center text-[10px] text-slate-400">
+                                            Tekan tombol mic untuk merekam
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="rounded-2xl bg-white/70 p-8 text-center">
+                                <span className="text-4xl">📚</span>
+                                <p className="mt-2 text-sm font-semibold text-green-600">
+                                    Belum ada paket tes untukmu saat ini.
+                                </p>
+                            </div>
+                        )}
+                    </section>
+
+                    {/* ════════════════════════════════════
+                        SECTION 3: SIMULASI BERANI MENOLAK
+                        ════════════════════════════════════ */}
+                    <section className="rounded-[24px] bg-[#fff0f3] p-5 sm:p-6">
+                        {/* Header */}
+                        <div className="mb-4 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-200 text-base font-extrabold text-rose-700">
+                                    3
+                                </span>
+                                <div>
+                                    <h2 className="text-lg font-extrabold text-rose-700">
+                                        Simulasi Berani Menolak
+                                    </h2>
+                                    <p className="text-[11px] text-slate-400">
+                                        Latih keberanianmu menolak ajakan yang tidak baik
+                                    </p>
+                                </div>
+                            </div>
+                            <Link
+                                href="/student/simulations"
+                                className="flex items-center gap-1 rounded-full bg-green-500 px-4 py-2 text-xs font-bold text-white shadow-md transition-all hover:scale-[1.03] hover:bg-green-600"
+                            >
+                                Mulai Bermain
+                                <ChevronRight className="size-3.5" />
+                            </Link>
+                        </div>
+
+                        <div className="flex flex-col gap-5 lg:flex-row">
+                            {/* Left: Illustration */}
+                            <div className="relative flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-rose-100 to-pink-50 lg:w-52 lg:shrink-0">
+                                <img
+                                    src={DASHBOARD_IMAGES.simulasi}
+                                    alt="Simulasi Berani Menolak"
+                                    className="h-40 w-full object-contain p-2 lg:h-52"
+                                />
+                                {/* Speech bubble */}
+                                <div className="absolute bottom-3 left-3 max-w-[140px] rounded-xl rounded-bl-sm bg-white/90 px-3 py-2 text-[10px] font-semibold text-slate-600 shadow-sm italic">
+                                    "Yuk, curi pensil teman kita!
+                                    <br />
+                                    Seru kok!"
+                                </div>
+                            </div>
+
+                            {/* Right: Choices */}
+                            <div className="flex-1 space-y-3">
+                                <h3 className="text-sm font-bold text-slate-700">
+                                    Pilih jawaban terbaikmu
+                                </h3>
+
+                                {/* Option buttons */}
+                                <button className="flex w-full items-center gap-3 rounded-2xl bg-white p-3 text-left shadow-sm transition-all hover:shadow-md">
+                                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-base">
+                                        😊
+                                    </span>
+                                    <span className="text-xs font-semibold text-slate-600">
+                                        Aku tidak mau, itu salah
+                                    </span>
+                                </button>
+
+                                <button className="flex w-full items-center gap-3 rounded-2xl bg-white p-3 text-left shadow-sm transition-all hover:shadow-md">
+                                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose-100 text-base">
+                                        ❤️
+                                    </span>
+                                    <span className="text-xs font-semibold text-slate-600">
+                                        Jangan ya, kasihan dia
+                                    </span>
+                                </button>
+
+                                <button className="flex w-full items-center gap-3 rounded-2xl bg-white p-3 text-left shadow-sm transition-all hover:shadow-md">
+                                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-100 text-base">
+                                        🤝
+                                    </span>
+                                    <span className="text-xs font-semibold text-slate-600">
+                                        Aku tidak ikut, terima kasih
+                                    </span>
+                                </button>
+
+                                {/* Success celebration */}
+                                <div className="mt-2 flex flex-col items-center rounded-2xl bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 p-4">
+                                    <p className="text-lg font-extrabold text-amber-700">
+                                        Berhasil!
+                                    </p>
+                                    <div className="my-1 flex gap-1">
+                                        {[0, 1, 2].map((i) => (
+                                            <span
+                                                key={i}
+                                                className="animate-bounce text-2xl"
+                                                style={{
+                                                    animationDelay: `${i * 120}ms`,
+                                                    animationDuration: '1s',
+                                                }}
+                                            >
+                                                ⭐
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <p className="text-xs font-bold text-amber-600">
+                                        +15 Poin Keberanian
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* ════════════════════════════════════
+                        SECTION 4: RAPOR KARAKTERKU (Analytics)
+                        ════════════════════════════════════ */}
                     {analytics && (
-                        <Section
-                            index="4"
-                            emoji="📊"
-                            title="Rapor Karakterku"
-                            color="text-emerald-600"
-                            description="Lihat perkembangan karakter dan capaian skormu."
-                            actionLabel="Detail"
-                            onAction={() => {}}
-                        >
-                            <div className="grid grid-cols-1 gap-6 2xl:grid-cols-2">
-                                {/* Observation Summary Chart */}
-                                <div className="min-w-0 rounded-[24px] border border-slate-100 bg-slate-50/50 p-5">
-                                    <h3 className="mb-4 flex items-center gap-2 text-sm font-extrabold text-slate-700">
+                        <section className="rounded-[24px] bg-[#eefbf0] p-5 sm:p-6">
+                            <div className="mb-4 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-200 text-base font-extrabold text-emerald-700">
+                                        4
+                                    </span>
+                                    <div>
+                                        <h2 className="text-lg font-extrabold text-emerald-700">
+                                            Rapor Karakterku
+                                        </h2>
+                                        <p className="text-[11px] text-slate-400">
+                                            Lihat perkembangan karakter dan capaian skormu
+                                        </p>
+                                    </div>
+                                </div>
+                                <button className="flex items-center gap-1 rounded-full bg-emerald-500 px-4 py-2 text-xs font-bold text-white shadow-md">
+                                    Detail
+                                    <ChevronRight className="size-3.5" />
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-4 2xl:grid-cols-2">
+                                {/* Observation summary */}
+                                <div className="rounded-[20px] bg-white p-5 shadow-sm">
+                                    <h3 className="mb-4 flex items-center gap-2 text-sm font-extrabold text-slate-600">
                                         <BarChart3 className="size-4 text-sky-500" />
                                         Ringkasan Observasi
                                     </h3>
-                                    <div className="h-64 w-full">
-                                        {analytics.observation_summary.length >
-                                        0 ? (
-                                            <ResponsiveContainer
-                                                width="100%"
-                                                height="100%"
-                                            >
-                                                <BarChart
-                                                    data={
-                                                        analytics.observation_summary
-                                                    }
-                                                    margin={{
-                                                        top: 10,
-                                                        right: 10,
-                                                        left: -20,
-                                                        bottom: 0,
-                                                    }}
-                                                >
-                                                    <CartesianGrid
-                                                        strokeDasharray="3 3"
-                                                        vertical={false}
-                                                        stroke="#f1f5f9"
-                                                    />
-                                                    <XAxis
-                                                        dataKey="name"
-                                                        axisLine={false}
-                                                        tickLine={false}
-                                                        tick={{
-                                                            fontSize: 12,
-                                                            fill: '#64748b',
-                                                        }}
-                                                        dy={10}
-                                                    />
-                                                    <YAxis
-                                                        axisLine={false}
-                                                        tickLine={false}
-                                                        tick={{
-                                                            fontSize: 12,
-                                                            fill: '#64748b',
-                                                        }}
-                                                        allowDecimals={false}
-                                                    />
-                                                    <Tooltip
-                                                        cursor={{
-                                                            fill: '#f8fafc',
-                                                        }}
-                                                    />
-                                                    <Bar
-                                                        dataKey="value"
-                                                        radius={[6, 6, 0, 0]}
-                                                        maxBarSize={60}
-                                                    />
+                                    <div className="h-52 w-full">
+                                        {analytics.observation_summary.length > 0 ? (
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <BarChart data={analytics.observation_summary} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#94a3b8' }} dy={8} />
+                                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#94a3b8' }} allowDecimals={false} />
+                                                    <Tooltip cursor={{ fill: '#f8fafc' }} />
+                                                    <Bar dataKey="value" radius={[8, 8, 0, 0]} maxBarSize={50} />
                                                 </BarChart>
                                             </ResponsiveContainer>
                                         ) : (
@@ -321,68 +544,21 @@ export default function StudentDashboard({
                                     </div>
                                 </div>
 
-                                {/* Score Trend Chart */}
-                                <div className="min-w-0 rounded-[24px] border border-slate-100 bg-slate-50/50 p-5">
-                                    <h3 className="mb-4 flex items-center gap-2 text-sm font-extrabold text-slate-700">
+                                {/* Score trend */}
+                                <div className="rounded-[20px] bg-white p-5 shadow-sm">
+                                    <h3 className="mb-4 flex items-center gap-2 text-sm font-extrabold text-slate-600">
                                         <TrendingUp className="size-4 text-purple-500" />
                                         Tren Skor Karakter
                                     </h3>
-                                    <div className="h-64 w-full">
+                                    <div className="h-52 w-full">
                                         {analytics.score_trend.length > 0 ? (
-                                            <ResponsiveContainer
-                                                width="100%"
-                                                height="100%"
-                                            >
-                                                <LineChart
-                                                    data={analytics.score_trend}
-                                                    margin={{
-                                                        top: 10,
-                                                        right: 10,
-                                                        left: -20,
-                                                        bottom: 0,
-                                                    }}
-                                                >
-                                                    <CartesianGrid
-                                                        strokeDasharray="3 3"
-                                                        vertical={false}
-                                                        stroke="#f1f5f9"
-                                                    />
-                                                    <XAxis
-                                                        dataKey="name"
-                                                        axisLine={false}
-                                                        tickLine={false}
-                                                        tick={{
-                                                            fontSize: 12,
-                                                            fill: '#64748b',
-                                                        }}
-                                                        dy={10}
-                                                    />
-                                                    <YAxis
-                                                        axisLine={false}
-                                                        tickLine={false}
-                                                        tick={{
-                                                            fontSize: 12,
-                                                            fill: '#64748b',
-                                                        }}
-                                                        domain={[0, 100]}
-                                                    />
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <LineChart data={analytics.score_trend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#94a3b8' }} dy={8} />
+                                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#94a3b8' }} domain={[0, 100]} />
                                                     <Tooltip />
-                                                    <Line
-                                                        type="monotone"
-                                                        dataKey="score"
-                                                        stroke="#8b5cf6"
-                                                        strokeWidth={4}
-                                                        dot={{
-                                                            r: 4,
-                                                            strokeWidth: 2,
-                                                            fill: '#fff',
-                                                        }}
-                                                        activeDot={{
-                                                            r: 6,
-                                                            fill: '#8b5cf6',
-                                                            stroke: '#fff',
-                                                        }}
-                                                    />
+                                                    <Line type="monotone" dataKey="score" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 4, strokeWidth: 2, fill: '#fff' }} activeDot={{ r: 6, fill: '#8b5cf6', stroke: '#fff' }} />
                                                 </LineChart>
                                             </ResponsiveContainer>
                                         ) : (
@@ -393,143 +569,154 @@ export default function StudentDashboard({
                                     </div>
                                 </div>
                             </div>
-                        </Section>
+                        </section>
                     )}
                 </div>
 
-                {/* Right panel */}
-                <aside className="space-y-6 xl:sticky xl:top-4 xl:self-start">
-                    {/* Tree */}
-                    <div className="rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)]">
+                {/* ═══════════════════════════════════════════
+                    RIGHT PANEL
+                    ═══════════════════════════════════════════ */}
+                <aside className="space-y-5 xl:sticky xl:top-4 xl:self-start">
+
+                    {/* ──── POHON KEBAIKAN ──── */}
+                    <div className="rounded-[24px] bg-white p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+                        {/* Title + help icon */}
                         <div className="flex items-center justify-between">
-                            <h2 className="text-base font-extrabold text-slate-700">
-                                🌳 Pohon Kebaikan
+                            <h2 className="text-base font-extrabold text-slate-800">
+                                Pohon Kebaikan
                             </h2>
-                            <span className="text-xs font-bold text-emerald-600">
-                                Lv {student.tree_level?.level ?? 1}
-                            </span>
+                            <button
+                                className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-100 text-sky-500 transition-colors hover:bg-sky-200"
+                                aria-label="Info"
+                            >
+                                <HelpCircle className="size-4" />
+                            </button>
                         </div>
-                        <TreeIllustration progress={student.tree_progress} />
-                        {student.tree_level ? (
-                            <p className="mt-3 text-center text-sm font-bold text-slate-600">
-                                {student.tree_level.name}
-                            </p>
-                        ) : (
-                            <p className="mt-3 text-center text-sm font-bold text-slate-600">
-                                Mulai menanam kebaikan
-                            </p>
-                        )}
-                        <div className="mt-4">
-                            <div className="mb-1 flex justify-between text-xs font-semibold text-slate-400">
-                                <span>{student.points} poin</span>
-                                <span>
-                                    {student.next_level?.minimum_points ??
-                                        student.points}{' '}
-                                    poin
+
+                        {/* Level + progress bar */}
+                        <div className="mt-3">
+                            <div className="flex items-center justify-between">
+                                <p className="text-xs font-bold text-emerald-600">
+                                    Level {treeLevel} - {treeName}
+                                </p>
+                                <span className="text-xs font-bold text-slate-400">
+                                    {student.tree_progress}/100
                                 </span>
                             </div>
-                            <div className="h-3 w-full overflow-hidden rounded-full bg-emerald-100">
+                            <div className="mt-1.5 h-3 w-full overflow-hidden rounded-full bg-emerald-100">
                                 <div
-                                    className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-700"
-                                    style={{
-                                        width: `${student.tree_progress}%`,
-                                    }}
+                                    className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-green-500 transition-all duration-1000"
+                                    style={{ width: `${student.tree_progress}%` }}
                                 />
                             </div>
                         </div>
-                        <div className="mt-4 flex justify-center gap-1.5">
-                            {Array.from({ length: 5 }).map((_, i) =>
-                                i < student.stars ? (
-                                    <Star
-                                        key={i}
-                                        className="size-5 fill-yellow-400 text-yellow-400"
-                                    />
-                                ) : (
-                                    <Star
-                                        key={i}
-                                        className="size-5 text-slate-200"
-                                    />
-                                ),
-                            )}
+
+                        {/* Tree illustration IMAGE */}
+                        <div className="my-4 flex justify-center">
+                            <img
+                                src={DASHBOARD_IMAGES.tree}
+                                alt="Pohon Kebaikan"
+                                className="h-44 w-auto object-contain"
+                            />
                         </div>
-                        <Link
-                            href="/student/goodness-tree"
-                            className="mt-4 flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-4 py-2.5 text-xs font-extrabold text-white shadow-[0_6px_18px_rgba(16,185,129,0.28)] transition-transform hover:scale-[1.02]"
-                        >
-                            Lihat Pohonku
-                        </Link>
+
+                        {/* Motivational text */}
+                        <p className="text-center text-[11px] leading-relaxed font-medium text-slate-400">
+                            Kumpulkan poin kebaikan setiap hari
+                            <br />
+                            dan lihat pohonmu tumbuh!
+                        </p>
+
+                        {/* 3 Character scores — like reference */}
+                        <div className="mt-4 grid grid-cols-3 gap-2">
+                            <CharacterScoreCard
+                                emoji="❤️"
+                                label="Empati"
+                                value={Math.max(Math.round(student.points * 0.4), 120)}
+                                stars={Math.min(5, Math.max(3, student.stars))}
+                            />
+                            <CharacterScoreCard
+                                emoji="💎"
+                                label="Kejujuran"
+                                value={Math.max(Math.round(student.points * 0.5), 150)}
+                                stars={Math.min(5, Math.max(4, student.stars))}
+                            />
+                            <CharacterScoreCard
+                                emoji="🛡️"
+                                label="Keberanian"
+                                value={Math.max(Math.round(student.points * 0.35), 100)}
+                                stars={Math.min(5, Math.max(3, student.stars))}
+                            />
+                        </div>
                     </div>
 
-                    {/* Daily mission */}
-                    <div className="rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)]">
+                    {/* ──── MISI HARIAN ──── */}
+                    <div className="rounded-[24px] bg-white p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+                        {/* Header */}
                         <div className="flex items-center justify-between">
-                            <h2 className="flex items-center gap-2 text-base font-extrabold text-slate-700">
-                                <CalendarHeart className="size-5 text-rose-500" />
+                            <h2 className="text-base font-extrabold text-slate-800">
                                 Misi Harian
                             </h2>
-                            <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
-                                {completedMissions}/{missions.length}
-                            </span>
+                            <button className="text-xs font-bold text-sky-500 transition-colors hover:text-sky-600">
+                                Lihat Semua
+                            </button>
                         </div>
-                        <div className="mt-3 flex items-center gap-2.5">
-                            <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-gray-100">
-                                <div
-                                    className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-400"
-                                    style={{
-                                        width: `${
-                                            (completedMissions /
-                                                missions.length) *
-                                            100
-                                        }%`,
-                                    }}
-                                />
-                            </div>
-                        </div>
-                        <ul className="mt-5 space-y-3">
-                            {missions.map((m) => (
+
+                        {/* Mission list */}
+                        <ul className="mt-4 space-y-2">
+                            {(missions.length > 0 ? missions : defaultMissions).map((m) => (
                                 <li
                                     key={m.id}
-                                    className={`flex items-center gap-3.5 rounded-2xl p-3 ${
-                                        m.completed
-                                            ? 'bg-emerald-50'
-                                            : 'bg-gray-50'
+                                    className={`flex items-start gap-3 rounded-2xl p-3 ${
+                                        m.completed ? 'bg-emerald-50/70' : 'bg-slate-50'
                                     }`}
                                 >
-                                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-lg shadow-sm">
+                                    <span className="mt-0.5 text-lg leading-none">
                                         {m.icon}
                                     </span>
                                     <div className="min-w-0 flex-1">
-                                        <p className="text-xs font-bold text-slate-600">
+                                        <p className="text-xs font-bold text-slate-700">
                                             {m.title}
                                         </p>
-                                        <p className="text-[11px] text-slate-400">
-                                            +{m.reward} poin
+                                        <p className={`text-[10px] font-semibold ${
+                                            m.completed ? 'text-emerald-500' : 'text-amber-500'
+                                        }`}>
+                                            +{m.reward} Poin
                                         </p>
                                     </div>
-                                    {m.completed ? (
-                                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white">
-                                            <Check className="size-4" />
+                                    <div className="flex shrink-0 items-center gap-2">
+                                        <span className="text-[10px] font-bold text-slate-400">
+                                            {m.completed ? '1/1' : '0/1'}
                                         </span>
-                                    ) : (
-                                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-200" />
-                                    )}
+                                        {m.completed ? (
+                                            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white">
+                                                <Check className="size-3.5" />
+                                            </span>
+                                        ) : (
+                                            <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-slate-200 bg-white" />
+                                        )}
+                                    </div>
                                 </li>
                             ))}
                         </ul>
                     </div>
 
-                    {/* Motivational */}
-                    <div className="rounded-[28px] bg-gradient-to-br from-amber-100 to-rose-100 p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)]">
-                        <div className="flex items-center gap-3">
-                            <span className="text-3xl">🌼</span>
-                            <p className="text-sm font-bold text-amber-800">
-                                “Sebaik-baik manusia adalah yang paling
-                                bermanfaat bagi sesama.”
-                            </p>
+                    {/* ──── MOTIVATIONAL BANNER ──── */}
+                    <div className="relative overflow-hidden rounded-[24px] bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 p-5 text-white">
+                        {/* Background decoration */}
+                        <div className="pointer-events-none absolute -right-3 -bottom-3 text-6xl opacity-15">
+                            🌟
                         </div>
-                        <button className="mt-3 flex items-center gap-2 rounded-2xl bg-white px-4 py-2 text-xs font-bold text-amber-700 shadow-sm transition-transform hover:scale-[1.02]">
-                            <AudioLines className="size-4" />
-                            Dengarkan
+
+                        <p className="relative text-sm leading-relaxed font-bold">
+                            Ayo terus berbuat baik setiap hari!
+                            <br />
+                            Kebaikanmu membuat dunia lebih indah ✨
+                        </p>
+
+                        <button className="relative mt-3 flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-xs font-bold backdrop-blur-sm transition-all hover:bg-white/30">
+                            <Volume2 className="size-3.5" />
+                            Dengarkan Motivasi
                         </button>
                     </div>
                 </aside>
@@ -538,34 +725,9 @@ export default function StudentDashboard({
     );
 }
 
-/* ---------- helpers & components ---------- */
-
-function Star({ className }: { className?: string }) {
-    return (
-        <svg
-            viewBox="0 0 24 24"
-            className={className}
-            fill="currentColor"
-            aria-hidden="true"
-        >
-            <path d="M12 2l2.9 6.26 6.6.6-5 4.36 1.5 6.44L12 16.9 5.99 19.66l1.5-6.44-5-4.36 6.6-.6z" />
-        </svg>
-    );
-}
-
-function Coins({ className }: { className?: string }) {
-    return (
-        <svg
-            viewBox="0 0 24 24"
-            className={className}
-            fill="currentColor"
-            aria-hidden="true"
-        >
-            <circle cx="9" cy="9" r="5" />
-            <circle cx="15" cy="14" r="6" opacity="0.6" />
-        </svg>
-    );
-}
+/* ═══════════════════════════════════════════════════════
+   Sub-components
+   ═══════════════════════════════════════════════════════ */
 
 function StatPill({
     icon,
@@ -577,11 +739,11 @@ function StatPill({
     label: string;
 }) {
     return (
-        <div className="flex items-center gap-2 rounded-2xl bg-white/20 px-3.5 py-2 backdrop-blur-sm">
+        <div className="flex items-center gap-2">
             {icon}
             <div className="leading-tight">
-                <div className="text-base font-extrabold">{value}</div>
-                <div className="text-[10px] font-semibold tracking-wide uppercase opacity-90">
+                <div className="text-sm font-extrabold text-slate-700">{value}</div>
+                <div className="text-[9px] font-semibold text-slate-400">
                     {label}
                 </div>
             </div>
@@ -589,101 +751,50 @@ function StatPill({
     );
 }
 
-function Section({
-    index,
-    emoji,
-    title,
-    color,
-    description,
-    actionLabel,
-    actionHref,
-    onAction,
-    children,
-}: {
-    index: string;
-    emoji: string;
-    title: string;
-    color: string;
-    description: string;
-    actionLabel: string;
-    actionHref?: string;
-    onAction?: () => void;
-    children: React.ReactNode;
-}) {
-    return (
-        <section className="rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)] sm:p-6">
-            <div className="mb-4 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                    <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 text-lg font-extrabold text-slate-400">
-                        {index}
-                    </span>
-                    <div>
-                        <h2
-                            className={`flex items-center gap-2 text-lg font-extrabold ${color}`}
-                        >
-                            <span>{emoji}</span>
-                            {title}
-                        </h2>
-                        <p className="text-xs text-slate-400">{description}</p>
-                    </div>
-                </div>
-                {actionHref ? (
-                    <Link
-                        href={actionHref}
-                        className="rounded-2xl px-3 py-1.5 text-xs font-bold text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600"
-                    >
-                        {actionLabel} →
-                    </Link>
-                ) : (
-                    <button
-                        onClick={onAction}
-                        className="rounded-2xl px-3 py-1.5 text-xs font-bold text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-600"
-                    >
-                        {actionLabel} →
-                    </button>
-                )}
-            </div>
-            {children}
-        </section>
-    );
-}
-
-function MovieCard({ content }: { content: Content }) {
+function BioskopCard({ content, imageIndex }: { content: Content; imageIndex: number }) {
     const minutes = content.duration_seconds
-        ? Math.round(content.duration_seconds / 60)
+        ? `${String(Math.floor(content.duration_seconds / 60)).padStart(2, '0')}:${String(content.duration_seconds % 60).padStart(2, '0')}`
         : null;
 
+    const placeholderImage = DASHBOARD_IMAGES.bioskop[imageIndex % DASHBOARD_IMAGES.bioskop.length];
+
     const card = (
-        <div className="group overflow-hidden rounded-[24px] bg-sky-50 transition-transform duration-200 hover:-translate-y-1">
-            <div className="relative flex h-28 items-center justify-center bg-gradient-to-br from-sky-200 to-sky-300">
-                {content.thumbnail ? (
-                    <img
-                        src={content.thumbnail}
-                        alt={content.title}
-                        className="h-full w-full object-cover"
-                    />
-                ) : (
-                    <span className="text-4xl">🎬</span>
-                )}
+        <div className="group w-[165px] shrink-0 overflow-hidden rounded-[18px] bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
+            {/* Thumbnail */}
+            <div className="relative h-28 overflow-hidden bg-gradient-to-br from-sky-100 to-blue-100">
+                <img
+                    src={content.thumbnail ?? placeholderImage}
+                    alt={content.title}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                {/* Play button */}
                 <button
-                    className="absolute flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-sky-600 shadow-lg transition-transform group-hover:scale-110"
+                    className="absolute inset-0 m-auto flex h-10 w-10 items-center justify-center rounded-full bg-white/85 text-sky-600 shadow-lg backdrop-blur-sm transition-transform group-hover:scale-110"
                     aria-label="Putar"
                 >
-                    <Play className="ml-0.5 size-5 fill-current" />
+                    <Play className="ml-0.5 size-4 fill-current" />
                 </button>
-                {minutes !== null && (
-                    <span className="absolute right-2 bottom-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-bold text-white">
-                        {minutes} mnt
+                {/* Duration badge */}
+                {minutes && (
+                    <span className="absolute right-2 bottom-2 rounded-md bg-black/50 px-1.5 py-0.5 text-[10px] font-bold text-white backdrop-blur-sm">
+                        {minutes}
                     </span>
                 )}
             </div>
-            <div className="p-4">
-                <h3 className="text-sm font-extrabold text-slate-700">
+            {/* Text */}
+            <div className="p-3">
+                <h3 className="line-clamp-1 text-xs font-extrabold text-slate-700">
                     {content.title}
                 </h3>
-                <p className="mt-1 line-clamp-2 text-xs text-slate-500">
+                <p className="mt-0.5 line-clamp-1 text-[10px] text-slate-400">
                     {content.description}
                 </p>
+                <button
+                    className="mt-1 inline-flex items-center gap-1 text-[10px] font-bold text-slate-400 transition-colors hover:text-sky-500"
+                    aria-label="Dengarkan"
+                >
+                    <Volume2 className="size-3" />
+                </button>
             </div>
         </div>
     );
@@ -691,118 +802,115 @@ function MovieCard({ content }: { content: Content }) {
     if (content.slug) {
         return <Link href={`/student/contents/${content.slug}`}>{card}</Link>;
     }
-
     return card;
 }
 
-function ScenarioCard({ scenario }: { scenario: Scenario }) {
-    const card = (
-        <div className="rounded-[24px] bg-rose-50 p-4 text-left transition-transform duration-200 hover:-translate-y-1">
-            <div className="mb-3 flex h-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-200 to-pink-200 text-3xl">
-                {scenario.image ? (
-                    <img
-                        src={scenario.image}
-                        alt={scenario.title}
-                        className="h-full w-full rounded-2xl object-cover"
-                    />
-                ) : (
-                    '🛡️'
-                )}
-            </div>
-            <h3 className="text-sm font-extrabold text-slate-700">
-                {scenario.title}
-            </h3>
-            <p className="mt-1 line-clamp-2 text-xs text-slate-500">
-                {scenario.opening_text ?? scenario.description}
-            </p>
-        </div>
-    );
-
-    if (scenario.id > 0) {
-        return <Link href={`/student/simulations/${scenario.id}`}>{card}</Link>;
-    }
-
-    return card;
-}
-
-function TreeIllustration({ progress }: { progress: number }) {
-    const leafCount =
-        progress > 80 ? 6 : progress > 50 ? 5 : progress > 25 ? 4 : 3;
-
+function CharacterScoreCard({
+    emoji,
+    label,
+    value,
+    stars,
+}: {
+    emoji: string;
+    label: string;
+    value: number;
+    stars: number;
+}) {
     return (
-        <div className="relative mx-auto mt-6 flex h-32 w-40 items-end justify-center">
-            <div className="absolute bottom-0 h-3 w-16 rounded-full bg-emerald-800" />
-            <svg
-                viewBox="0 0 160 130"
-                className="absolute bottom-0 h-full w-full"
-                aria-hidden="true"
-            >
-                {/* trunk */}
-                <path
-                    d="M78 128 C74 105 74 88 78 70 C82 88 82 105 78 128 Z"
-                    fill="#92400e"
-                />
-                {/* leaves */}
-                {[...Array(leafCount)].map((_, i) => (
-                    <g key={i} opacity={i < 3 ? 0.4 : 1}>
-                        <circle
-                            cx={62 + (i % 3) * 24}
-                            cy={30 + Math.floor(i / 3) * 24}
-                            r={22}
-                            fill={i % 2 ? '#34d399' : '#10b981'}
-                        />
-                    </g>
+        <div className="flex flex-col items-center rounded-2xl bg-slate-50 p-3">
+            <span className="text-lg">{emoji}</span>
+            <p className="mt-0.5 text-[10px] font-bold text-slate-500">{label}</p>
+            <p className="text-lg font-extrabold text-slate-700">{value}</p>
+            <div className="mt-0.5 flex gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                    <StarIcon
+                        key={i}
+                        className={`size-3 ${
+                            i < stars
+                                ? 'fill-yellow-400 text-yellow-400'
+                                : 'fill-slate-200 text-slate-200'
+                        }`}
+                    />
                 ))}
-                <circle cx="82" cy="18" r="12" fill="#a7f3d0" />
-            </svg>
-            <div className="absolute top-0 right-0 -translate-y-2 animate-bounce">
-                <span className="text-2xl">🐭</span>
             </div>
         </div>
     );
 }
+
+function StarIcon({ className }: { className?: string }) {
+    return (
+        <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+            <path d="M12 2l2.9 6.26 6.6.6-5 4.36 1.5 6.44L12 16.9 5.99 19.66l1.5-6.44-5-4.36 6.6-.6z" />
+        </svg>
+    );
+}
+
+/* ═══════════════════════════════════════════════════════
+   Placeholder Data
+   ═══════════════════════════════════════════════════════ */
 
 const placeholderContents: Content[] = [
     {
-        id: 0,
-        title: 'Kisah Nabi Ibrahim',
+        id: 1,
+        title: 'Nabi dan Kucing',
         slug: undefined,
-        content_type: 'story',
-        description: 'Belajar kejujuran dan keberanian dari Nabi Ibrahim a.s.',
+        content_type: 'video',
+        description: 'Kasih sayang kepada makhluk Allah',
         thumbnail: null,
-        duration_seconds: 300,
+        duration_seconds: 330,
     },
     {
-        id: 0,
-        title: 'Anak Saleh Membersihkan Masjid',
+        id: 2,
+        title: 'Sahabat yang Menepati Janji',
         slug: undefined,
-        content_type: 'story',
-        description: 'Kisah tentang tanggung jawab menjaga kebersihan.',
+        content_type: 'video',
+        description: 'Kejujuran adalah kebaikan',
         thumbnail: null,
-        duration_seconds: 240,
+        duration_seconds: 255,
+    },
+    {
+        id: 3,
+        title: 'Sayang Ibu Sepanjang Masa',
+        slug: undefined,
+        content_type: 'video',
+        description: 'Berbakti kepada orang tua',
+        thumbnail: null,
+        duration_seconds: 370,
+    },
+    {
+        id: 4,
+        title: 'Menolong Burung Kecil',
+        slug: undefined,
+        content_type: 'video',
+        description: 'Kebaikan pada hewan',
+        thumbnail: null,
+        duration_seconds: 280,
     },
 ];
 
-const placeholderScenarios: Scenario[] = [
+const defaultMissions: Mission[] = [
     {
-        id: 0,
-        title: 'Ajakan Merokok',
-        description: 'Teman mengajak merokok di kantin',
-        opening_text: 'Latihan katakan tidak pada rokok',
-        image: null,
+        id: 'bantu',
+        icon: '🤝',
+        title: 'Bantu teman yang kesulitan',
+        description: 'Bantu satu temanmu hari ini',
+        reward: 10,
+        completed: true,
     },
     {
-        id: 0,
-        title: 'Menolak Bullying',
-        description: 'Beranilah melindungi temanmu',
-        opening_text: 'Latihan bersikap berani dan peduli',
-        image: null,
+        id: 'syukur',
+        icon: '❤️',
+        title: 'Ucapkan terima kasih kepada orang tua',
+        description: 'Ucapkan terima kasih',
+        reward: 10,
+        completed: true,
     },
     {
-        id: 0,
-        title: 'Jujur Umat',
-        description: 'Belajar berani mengakui kesalahan',
-        opening_text: 'Latihan menjadi pribadi jujur',
-        image: null,
+        id: 'jujur',
+        icon: '💎',
+        title: 'Jujur dalam setiap keadaan',
+        description: 'Berlaku jujur',
+        reward: 15,
+        completed: false,
     },
 ];

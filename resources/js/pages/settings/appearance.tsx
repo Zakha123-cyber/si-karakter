@@ -13,8 +13,8 @@ export default function Appearance() {
             <div className="space-y-6">
                 <Heading
                     variant="small"
-                    title="Appearance settings"
-                    description="Update the appearance settings for your account"
+                    title="Pengaturan Tampilan"
+                    description="Perbarui pengaturan tampilan untuk akun Anda"
                 />
                 <AppearanceTabs />
             </div>

@@ -30,8 +30,8 @@ export default function Security(props: Props) {
             <div className="space-y-6">
                 <Heading
                     variant="small"
-                    title="Update password"
-                    description="Ensure your account is using a long, random password to stay secure"
+                    title="Perbarui Password"
+                    description="Pastikan akun Anda menggunakan kata sandi yang panjang dan acak untuk keamanan"
                 />
 
                 <Form
@@ -54,13 +54,13 @@ export default function Security(props: Props) {
                             currentPasswordInput.current?.focus();
                         }
                     }}
-                    className="space-y-6"
+                    className="space-y-5"
                 >
                     {({ errors, processing }) => (
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="current_password">
-                                    Current password
+                                <Label htmlFor="current_password" className="text-xs font-extrabold text-slate-600">
+                                    Password saat ini
                                 </Label>
 
                                 <PasswordInput
@@ -69,14 +69,14 @@ export default function Security(props: Props) {
                                     name="current_password"
                                     className="mt-1 block w-full"
                                     autoComplete="current-password"
-                                    placeholder="Current password"
+                                    placeholder="Password saat ini"
                                 />
 
                                 <InputError message={errors.current_password} />
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password">New password</Label>
+                                <Label htmlFor="password" className="text-xs font-extrabold text-slate-600">Password baru</Label>
 
                                 <PasswordInput
                                     id="password"
@@ -84,7 +84,7 @@ export default function Security(props: Props) {
                                     name="password"
                                     className="mt-1 block w-full"
                                     autoComplete="new-password"
-                                    placeholder="New password"
+                                    placeholder="Password baru"
                                     passwordrules={props.passwordRules}
                                 />
 
@@ -92,8 +92,8 @@ export default function Security(props: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password_confirmation">
-                                    Confirm password
+                                <Label htmlFor="password_confirmation" className="text-xs font-extrabold text-slate-600">
+                                    Konfirmasi password
                                 </Label>
 
                                 <PasswordInput
@@ -101,7 +101,7 @@ export default function Security(props: Props) {
                                     name="password_confirmation"
                                     className="mt-1 block w-full"
                                     autoComplete="new-password"
-                                    placeholder="Confirm password"
+                                    placeholder="Konfirmasi password"
                                     passwordrules={props.passwordRules}
                                 />
 
@@ -115,7 +115,7 @@ export default function Security(props: Props) {
                                     disabled={processing}
                                     data-test="update-password-button"
                                 >
-                                    Save
+                                    Simpan
                                 </Button>
                             </div>
                         </>

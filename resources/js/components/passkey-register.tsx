@@ -58,8 +58,8 @@ export default function PasskeyRegistration({ onSuccess }: Props) {
 
     if (!isSupported) {
         return (
-            <div className="text-sm text-muted-foreground">
-                Passkeys are not supported in this browser.
+            <div className="rounded-xl bg-slate-50 p-3 text-sm text-slate-500">
+                Passkey tidak didukung di browser ini.
             </div>
         );
     }
@@ -67,7 +67,7 @@ export default function PasskeyRegistration({ onSuccess }: Props) {
     if (!showForm) {
         return (
             <Button variant="outline" onClick={() => setShowForm(true)}>
-                Add passkey
+                Tambah Passkey
             </Button>
         );
     }
@@ -75,21 +75,21 @@ export default function PasskeyRegistration({ onSuccess }: Props) {
     return (
         <form
             onSubmit={handleSubmit}
-            className="space-y-4 rounded-lg border border-border bg-muted/50 p-4"
+            className="space-y-4 rounded-[20px] border border-slate-100 bg-slate-50/50 p-4"
         >
             <div className="grid gap-2">
-                <Label htmlFor="passkey-name">Passkey name</Label>
+                <Label htmlFor="passkey-name">Nama Passkey</Label>
                 <Input
                     id="passkey-name"
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g., MacBook Pro, iPhone"
+                    placeholder="contoh: MacBook Pro, iPhone"
                     className="mt-1 block w-full border-foreground/20"
                     autoFocus
                 />
-                <p className="text-xs text-muted-foreground">
-                    A name helps you identify this passkey later.
+                <p className="text-xs text-slate-400">
+                    Nama membantu Anda mengidentifikasi passkey ini nanti.
                 </p>
             </div>
 
@@ -97,10 +97,10 @@ export default function PasskeyRegistration({ onSuccess }: Props) {
 
             <div className="flex gap-2">
                 <Button type="submit" disabled={isLoading || !name.trim()}>
-                    {isLoading ? 'Registering...' : 'Register passkey'}
+                    {isLoading ? 'Mendaftarkan...' : 'Daftarkan Passkey'}
                 </Button>
                 <Button type="button" variant="ghost" onClick={handleCancel}>
-                    Cancel
+                    Batal
                 </Button>
             </div>
         </form>

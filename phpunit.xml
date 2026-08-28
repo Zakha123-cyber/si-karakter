@@ -33,6 +33,7 @@
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
         <env name="AI_PROVIDER" value="fake"/>
+        <env name="AI_REPORT_PROVIDER" value="fake"/>
         <env name="STT_PROVIDER" value="fake"/>
     </php>
 </phpunit>

@@ -66,6 +66,11 @@ const getNavItems = (role?: string) => {
             href: '/teacher/warnings',
         },
         {
+            emoji: '📄',
+            label: 'Laporan Karakter',
+            href: '/teacher/reports',
+        },
+        {
             emoji: '🎬',
             label: 'Materi Edukasi',
             href: '/teacher/educational-contents',

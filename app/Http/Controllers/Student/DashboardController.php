@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Student;
 
 use App\Domain\EducationalContent\EducationalContentRecommendationService;
+use App\Domain\GoodnessTree\DailyMissionService;
 use App\Domain\GoodnessTree\GoodnessTreeService;
 use App\Enums\SimulationScenarioStatus;
 use App\Enums\TestPackageStatus;
@@ -24,6 +25,7 @@ class DashboardController extends Controller
     public function __construct(
         private readonly GoodnessTreeService $treeService,
         private readonly EducationalContentRecommendationService $contentRecommendationService,
+        private readonly DailyMissionService $missionService,
     ) {}
 
     public function __invoke(Request $request): Response
@@ -141,7 +143,7 @@ class DashboardController extends Controller
             'test_packages' => $testPackages,
             'contents' => $contents,
             'scenarios' => $scenarios,
-            'missions' => $this->missions(),
+            'missions' => $this->missionService->missionsFor($student),
             'analytics' => $analytics,
         ]);
     }
@@ -237,38 +239,5 @@ class DashboardController extends Controller
         }
 
         return true;
-    }
-
-    /**
-     * @return array<int, array{id: string, icon: string, title: string, description: string, reward: int, completed: bool}>
-     */
-    private function missions(): array
-    {
-        return [
-            [
-                'id' => 'sholat',
-                'icon' => '🕌',
-                'title' => 'Kerjakan Misi Baik',
-                'description' => 'Selesaikan satu misi baikmu hari ini',
-                'reward' => 10,
-                'completed' => false,
-            ],
-            [
-                'id' => 'baca',
-                'icon' => '📖',
-                'title' => 'Tonton Bioskop Teladan',
-                'description' => 'Saksikan satu kisah teladan',
-                'reward' => 15,
-                'completed' => false,
-            ],
-            [
-                'id' => 'tes',
-                'icon' => '🧭',
-                'title' => 'Selesaikan Pilih Jalanmu',
-                'description' => 'Selasaikan satu kasus moral',
-                'reward' => 20,
-                'completed' => false,
-            ],
-        ];
     }
 }

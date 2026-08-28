@@ -10,7 +10,7 @@ import {
     Search,
     Sparkles,
 } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { toast } from 'sonner';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';

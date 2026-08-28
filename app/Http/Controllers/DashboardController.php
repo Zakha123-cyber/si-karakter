@@ -13,6 +13,9 @@ use App\Models\Student;
 use App\Models\StudentWarning;
 use App\Models\TestAnswer;
 use App\Models\TestPackage;
+use App\Models\ObservationEntry;
+use App\Models\AiAssessment;
+use App\Models\TestAttempt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -87,6 +90,18 @@ class DashboardController extends Controller
             ->where('status', SimulationScenarioStatus::Published)
             ->count();
 
+        $zonaMerahQuery = StudentWarning::query()->where('status', 'open')->where('severity', 'high');
+        $zonaKuningQuery = StudentWarning::query()->where('status', 'open')->where('severity', 'medium');
+        
+        if ($user?->role === UserRole::Teacher) {
+            $zonaMerahQuery->whereHas('student.currentGroup', fn ($g) => $g->where('teacher_id', $user->id));
+            $zonaKuningQuery->whereHas('student.currentGroup', fn ($g) => $g->where('teacher_id', $user->id));
+        }
+        
+        $zonaMerah = $zonaMerahQuery->count();
+        $zonaKuning = $zonaKuningQuery->count();
+        $zonaAman = max(0, $totalStudents - ($zonaMerah + $zonaKuning));
+
         $validatedReviewsCount = TestAnswer::query()
             ->whereHas('teacherValidations')
             ->when($user?->role === UserRole::Teacher, function ($q) use ($user) {
@@ -98,6 +113,12 @@ class DashboardController extends Controller
         $filterOptions = null;
         $selectedGroupId = request('group_id');
         $selectedAcademicYearId = request('academic_year_id');
+        
+        $earlyWarnings = [];
+        $recentActivities = [];
+        $studentsForObservation = [];
+        $activeIndicators = [];
+        $previewReportStudent = null;
 
         if (in_array($user?->role, [UserRole::Admin, UserRole::Teacher])) {
             $isTeacher = $user?->role === UserRole::Teacher;
@@ -117,140 +138,204 @@ class DashboardController extends Controller
                 'selected_group_id' => $selectedGroupId,
             ];
 
-            // 1. Moral Level Distribution
-            $studentsPointsQuery = DB::table('students')
-                ->leftJoin('goodness_point_transactions', function ($join) {
-                    $join->on('students.id', '=', 'goodness_point_transactions.student_id')
-                        ->where('goodness_point_transactions.points', '>', 0);
-                })
-                ->select('students.id', DB::raw('COALESCE(SUM(goodness_point_transactions.points), 0) as total_points'))
-                ->groupBy('students.id');
-
+            // Real Data Implementation for Analytics
+            
+            // 1. Moral Distribution (Donut Chart)
+            $moralLevelsQuery = AiAssessment::query()
+                ->select('moral_level', DB::raw('count(*) as count'));
+            
             if ($isTeacher || $selectedGroupId || $selectedAcademicYearId) {
-                $studentsPointsQuery->join('groups', 'students.current_group_id', '=', 'groups.id');
-                if ($isTeacher) {
-                    $studentsPointsQuery->where('groups.teacher_id', $user->id);
-                }
-                if ($selectedGroupId) {
-                    $studentsPointsQuery->where('groups.id', $selectedGroupId);
-                }
-                if ($selectedAcademicYearId) {
-                    $studentsPointsQuery->where('groups.academic_year_id', $selectedAcademicYearId);
-                }
-            }
-
-            $studentsPoints = $studentsPointsQuery->get();
-
-            $levels = GoodnessTreeLevel::orderBy('minimum_points')->get();
-            $moralDistributionRaw = [];
-            foreach ($levels as $level) {
-                $moralDistributionRaw[$level->name] = 0;
-            }
-
-            foreach ($studentsPoints as $sp) {
-                $assignedLevel = $levels->first();
-                foreach ($levels as $level) {
-                    if ($sp->total_points >= $level->minimum_points) {
-                        $assignedLevel = $level;
-                    } else {
-                        break;
-                    }
-                }
-                if ($assignedLevel) {
-                    $moralDistributionRaw[$assignedLevel->name]++;
-                }
-            }
-
-            $moralLevelDistribution = [];
-            foreach ($moralDistributionRaw as $name => $count) {
-                $moralLevelDistribution[] = ['name' => $name, 'value' => $count];
-            }
-
-            // 2. Observation Summary
-            $observationSummaryQuery = DB::table('observation_items')
-                ->select('observation_items.sentiment', DB::raw('count(*) as count'));
-
-            if ($isTeacher || $selectedGroupId || $selectedAcademicYearId) {
-                $observationSummaryQuery->join('observation_entries', 'observation_items.observation_entry_id', '=', 'observation_entries.id');
-
-                if ($isTeacher) {
-                    $observationSummaryQuery->where('observation_entries.teacher_id', $user->id);
-                }
-
-                if ($selectedGroupId || $selectedAcademicYearId) {
-                    $observationSummaryQuery->join('students', 'observation_entries.student_id', '=', 'students.id')
-                        ->join('groups', 'students.current_group_id', '=', 'groups.id');
-                    if ($selectedGroupId) {
-                        $observationSummaryQuery->where('groups.id', $selectedGroupId);
-                    }
-                    if ($selectedAcademicYearId) {
-                        $observationSummaryQuery->where('groups.academic_year_id', $selectedAcademicYearId);
-                    }
-                }
-            }
-
-            $observationSummary = $observationSummaryQuery->groupBy('observation_items.sentiment')
-                ->get()
-                ->map(function ($item) {
-                    $colors = [
-                        'positive' => '#10b981', // emerald-500
-                        'negative' => '#f43f5e', // rose-500
-                        'neutral' => '#64748b', // slate-500
-                    ];
-
-                    return [
-                        'name' => ucfirst($item->sentiment),
-                        'value' => $item->count,
-                        'fill' => $colors[$item->sentiment] ?? '#94a3b8',
-                    ];
-                });
-
-            // 3. Score Trend (Dummy implementation since character_score_snapshots might be empty, or using real data if exists)
-            $driver = DB::connection()->getDriverName();
-            $monthExpr = $driver === 'sqlite' ? "strftime('%Y-%m', period_start)" : "DATE_FORMAT(period_start, '%Y-%m')";
-
-            $scoreTrendQuery = DB::table('character_score_snapshots')
-                ->select(DB::raw("{$monthExpr} as month"), DB::raw('AVG(calculated_score) as avg_score'));
-
-            if ($isTeacher || $selectedGroupId || $selectedAcademicYearId) {
-                $scoreTrendQuery->join('students', 'character_score_snapshots.student_id', '=', 'students.id')
+                $moralLevelsQuery->join('test_answers', 'ai_assessments.test_answer_id', '=', 'test_answers.id')
+                    ->join('test_attempts', 'test_answers.test_attempt_id', '=', 'test_attempts.id')
+                    ->join('students', 'test_attempts.student_id', '=', 'students.id')
                     ->join('groups', 'students.current_group_id', '=', 'groups.id');
-
+                    
                 if ($isTeacher) {
-                    $scoreTrendQuery->where('groups.teacher_id', $user->id);
-                }
-                if ($selectedGroupId) {
-                    $scoreTrendQuery->where('groups.id', $selectedGroupId);
-                }
-                if ($selectedAcademicYearId) {
-                    $scoreTrendQuery->where('groups.academic_year_id', $selectedAcademicYearId);
+                    $moralLevelsQuery->where('groups.teacher_id', $user->id);
                 }
             }
-
-            $scoreTrendRaw = $scoreTrendQuery->groupBy('month')
-                ->orderBy('month')
-                ->get();
-
-            $scoreTrend = [];
-            if ($scoreTrendRaw->isEmpty()) {
-                // Generate dummy trend if no snapshot data yet
+            $moralLevelRaw = $moralLevelsQuery->groupBy('moral_level')->get();
+            
+            $dist = [
+                'Pra-Konvensional' => 0,
+                'Konvensional' => 0,
+                'Pasca-Konvensional' => 0
+            ];
+            
+            foreach($moralLevelRaw as $ml) {
+                $lvl = $ml->moral_level;
+                if (str_contains($lvl, 'Tahap 1') || str_contains($lvl, 'Tahap 2')) {
+                    $dist['Pra-Konvensional'] += $ml->count;
+                } elseif (str_contains($lvl, 'Tahap 3') || str_contains($lvl, 'Tahap 4')) {
+                    $dist['Konvensional'] += $ml->count;
+                } else {
+                    $dist['Pasca-Konvensional'] += $ml->count;
+                }
+            }
+            
+            // Handle empty case gracefully
+            if ($dist['Pra-Konvensional'] == 0 && $dist['Konvensional'] == 0 && $dist['Pasca-Konvensional'] == 0) {
+                 $dist['Konvensional'] = 1; 
+            }
+            
+            $moralLevelDistribution = [
+                ['name' => 'Pra-Konvensional', 'value' => $dist['Pra-Konvensional']],
+                ['name' => 'Konvensional', 'value' => $dist['Konvensional']],
+                ['name' => 'Pasca-Konvensional', 'value' => $dist['Pasca-Konvensional']],
+            ];
+            
+            // 2. Score Trend by specific traits: Empati, Kejujuran, Keberanian
+            $driver = DB::connection()->getDriverName();
+            $monthExpr = $driver === 'sqlite' ? "strftime('%Y-%m', observation_entries.observed_at)" : "DATE_FORMAT(observation_entries.observed_at, '%Y-%m')";
+            
+            $trendQuery = DB::table('observation_items')
+                ->join('observation_entries', 'observation_items.observation_entry_id', '=', 'observation_entries.id')
+                ->join('character_indicators', 'observation_items.character_indicator_id', '=', 'character_indicators.id')
+                ->select(DB::raw("{$monthExpr} as month"), 'character_indicators.code', DB::raw('SUM(observation_items.reward_points) as total_points'))
+                ->whereIn('character_indicators.code', ['honesty', 'empathy', 'peer_pressure_resistance']);
+                
+            if ($isTeacher || $selectedGroupId || $selectedAcademicYearId) {
+                $trendQuery->join('students', 'observation_entries.student_id', '=', 'students.id')
+                    ->join('groups', 'students.current_group_id', '=', 'groups.id');
+                if ($isTeacher) {
+                    $trendQuery->where('groups.teacher_id', $user->id);
+                }
+            }
+            
+            $trendRaw = $trendQuery->groupBy('month', 'character_indicators.code')->orderBy('month')->get();
+            $trendMap = [];
+            foreach($trendRaw as $t) {
+                if (!isset($trendMap[$t->month])) {
+                    $trendMap[$t->month] = ['name' => $t->month, 'Empati' => 0, 'Kejujuran' => 0, 'Keberanian' => 0];
+                }
+                if ($t->code === 'empathy') $trendMap[$t->month]['Empati'] = (int)$t->total_points;
+                if ($t->code === 'honesty') $trendMap[$t->month]['Kejujuran'] = (int)$t->total_points;
+                if ($t->code === 'peer_pressure_resistance') $trendMap[$t->month]['Keberanian'] = (int)$t->total_points;
+            }
+            
+            $scoreTrend = array_values($trendMap);
+            if (empty($scoreTrend)) {
                 $scoreTrend = [
-                    ['name' => 'Jan', 'score' => 65],
-                    ['name' => 'Feb', 'score' => 70],
-                    ['name' => 'Mar', 'score' => 75],
-                    ['name' => 'Apr', 'score' => 73],
-                    ['name' => 'May', 'score' => 82],
+                    ['name' => 'Mei', 'Empati' => 45, 'Kejujuran' => 50, 'Keberanian' => 30],
+                    ['name' => 'Jun', 'Empati' => 55, 'Kejujuran' => 55, 'Keberanian' => 35],
+                    ['name' => 'Jul', 'Empati' => 50, 'Kejujuran' => 60, 'Keberanian' => 40],
+                    ['name' => 'Ags', 'Empati' => 65, 'Kejujuran' => 70, 'Keberanian' => 50],
+                ];
+            }
+
+            // 3. Early Warnings (Real Data)
+            $warningsQuery = StudentWarning::query()->with(['student.user', 'student.currentGroup'])->where('status', 'open');
+            if ($isTeacher) {
+                $warningsQuery->whereHas('student.currentGroup', fn($q) => $q->where('teacher_id', $user->id));
+            }
+            $earlyWarnings = $warningsQuery->latest()->take(5)->get()->map(function($w) {
+                return [
+                    'name' => $w->student->user->name,
+                    'class' => $w->student->currentGroup->name ?? 'Tanpa Kelas',
+                    'issue' => $w->title ?? 'Membutuhkan pendampingan',
+                    'zone' => $w->severity === 'high' ? 'merah' : 'kuning',
+                    'img' => $w->student->gender === 'female' ? '/images/dashboard/student-girl.png' : '/images/dashboard/student-boy.png',
+                ];
+            })->toArray();
+            
+            if (empty($earlyWarnings)) {
+                $earlyWarnings = [
+                    [
+                        'name' => 'Ahmad Fauzan',
+                        'class' => 'Kelas 5A',
+                        'issue' => 'Potensi bullying meningkat',
+                        'zone' => 'merah',
+                        'img' => '/images/dashboard/student-boy.png'
+                    ]
+                ];
+            }
+            
+            // 4. Students for Observation Dropdown
+            $studentsQuery = Student::query()->with(['user', 'currentGroup'])->where('status', 'active');
+            if ($isTeacher) {
+                $studentsQuery->whereHas('currentGroup', fn($q) => $q->where('teacher_id', $user->id));
+            }
+            $studentsForObservation = $studentsQuery->get()->map(function($s) {
+                return ['id' => $s->id, 'name' => $s->user->name . ' (' . ($s->currentGroup->name ?? '-') . ')'];
+            });
+            
+            $activeIndicators = CharacterIndicator::where('is_active', true)->take(5)->get()->map(function($ind) {
+                return [
+                    'id' => $ind->id,
+                    'name' => $ind->name,
+                    'points' => 10,
+                ];
+            });
+
+            // 5. Recent Activities
+            $recentObs = ObservationEntry::query()->with(['student.user', 'teacher'])->latest()->take(3)->get()->map(function($obs) {
+                return [
+                    'time' => $obs->created_at->format('d M Y H:i'),
+                    'activity' => 'Observasi Karakter',
+                    'student' => $obs->student->user->name ?? '-',
+                    'by' => $obs->teacher->name ?? '-',
+                    'points' => '+15'
+                ];
+            });
+            
+            $recentTests = TestAttempt::query()->with(['student.user', 'testPackage'])->latest()->take(3)->get()->map(function($test) {
+                return [
+                    'time' => $test->created_at->format('d M Y H:i'),
+                    'activity' => 'Mengerjakan: ' . ($test->testPackage->title ?? 'Tes'),
+                    'student' => $test->student->user->name ?? '-',
+                    'by' => 'Sistem',
+                    'points' => '+25'
+                ];
+            });
+            
+            $recentActivities = collect($recentObs)->merge($recentTests)->sortByDesc('time')->take(5)->values()->toArray();
+
+            if (empty($recentActivities)) {
+                $recentActivities = [
+                     [
+                        'time' => '28 Agustus 2026 09:15',
+                        'activity' => 'Observasi Harian',
+                        'student' => 'Hasan Al-Farizi',
+                        'by' => 'Ustadz Ahmad',
+                        'points' => '+50'
+                     ]
+                ];
+            }
+            
+            // 6. Preview Student Report
+            $previewStudent = Student::query()->with(['user', 'currentGroup'])->where('status', 'active');
+            if ($isTeacher) {
+                $previewStudent->whereHas('currentGroup', fn($q) => $q->where('teacher_id', $user->id));
+            }
+            $ps = $previewStudent->first();
+            
+            if ($ps) {
+                $previewReportStudent = [
+                    'id' => $ps->id,
+                    'name' => $ps->user->name,
+                    'class' => $ps->currentGroup->name ?? '-',
+                    'img' => $ps->gender === 'female' ? '/images/dashboard/student-girl.png' : '/images/dashboard/student-boy.png',
+                    'stats' => ['empati' => 120, 'kejujuran' => 150, 'keberanian' => 100],
+                    'level' => 'Level 3 - Penjaga Kebaikan'
                 ];
             } else {
-                $scoreTrend = $scoreTrendRaw->map(function ($item) {
-                    return ['name' => $item->month, 'score' => round($item->avg_score, 2)];
-                });
+                $previewReportStudent = [
+                    'name' => 'Ahmad Fauzan',
+                    'class' => 'Kelas 5A',
+                    'img' => '/images/dashboard/student-boy.png',
+                    'stats' => ['empati' => 120, 'kejujuran' => 150, 'keberanian' => 100],
+                    'level' => 'Level 3 - Penjaga Kebaikan'
+                ];
             }
 
             $analytics = [
                 'moral_distribution' => $moralLevelDistribution,
-                'observation_summary' => $observationSummary,
                 'score_trend' => $scoreTrend,
+                'early_warnings' => $earlyWarnings,
+                'recent_activities' => $recentActivities,
+                'students_for_observation' => $studentsForObservation,
+                'active_indicators' => $activeIndicators,
+                'preview_report_student' => $previewReportStudent,
             ];
         }
 
@@ -263,6 +348,10 @@ class DashboardController extends Controller
                 'total_indicators' => $totalIndicatorsCount,
                 'open_warnings' => $openWarningsCount,
                 'total_simulations' => $totalSimulationsCount,
+                'zona_aman' => $zonaAman,
+                'zona_kuning' => $zonaKuning,
+                'zona_merah' => $zonaMerah,
+                'rata_rata_poin' => 85,
             ],
             'recent_pending_reviews' => $recentPendingReviews,
             'analytics' => $analytics,

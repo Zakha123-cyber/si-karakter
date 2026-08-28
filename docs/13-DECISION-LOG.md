@@ -228,6 +228,23 @@ Gunakan dokumen ini untuk mencatat keputusan produk dan teknis.
   - Tests ditambahkan untuk CRUD admin, upload media, akses role, daftar/detail santri, respons emotikon, rekomendasi berdasarkan indikator, dan missing profile.
 - Approved By: Implementation
 
+## D-024 — Phase 16 Character Reports
+
+- Date: 2026-08-10
+- Status: Accepted
+- Context: Phase 16 membutuhkan laporan karakter santri per periode: rekap skor tes dan observasi, narasi manual atau dibantu LLM, konfirmasi ustadz, penerbitan beserta PDF, dan unduhan hanya untuk yang berwenang.
+- Decision:
+  - Generate draft laporan memakai `ReportSummaryBuilder` yang memanfaatkan `TestScoreCalculator` dan `ObservationScoreCalculator` pada rentang periode; hasil rekap disimpan dalam `test_summary_json` dan `observation_summary_json`.
+  - Narasi LLM disimpan sebagai `ai_generated_narrative` (draft), bukan narasi final; ustadz wajib mengonfirmasi narasi final melalui status `reviewed` sebelum laporan dapat `published`.
+  - PDF digenerate dengan barryvdh/laravel-dompdf dan disimpan di disk `local` (`storage/app/private/reports`); akses unduhan diverifikasi per laporan berdasarkan kelompok santri ustadz.
+  - Endpoint laporan tersedia di portal web (`/teacher/reports`) dan API v1 (`/reports`), keduanya membatasi santri pada kelompok tanggung jawab ustadz; admin dapat melihat seluruh kelompok.
+  - Draft narasi AI menggunakan provider `google_gemini` atau `fake` via `ReportNarrativeService`; hasil AI bukan keputusan final.
+- Consequences:
+  - Alur laporan mengikuti status draft → reviewed → published; pengulangan review diblokir.
+  - Laporan yang sudah diterbitkan tidak bisa diubah narasinya (status reviewed/published).
+  - Tests ditambahkan untuk permission, generate, narasi AI, review, publish, PDF download, dan unit domain service.
+- Approved By: Implementation
+
 ## Template Decision Baru
 
 ```md

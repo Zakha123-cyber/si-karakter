@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CharacterIndicatorController as ApiCharacterIndicatorController;
 use App\Http\Controllers\Api\V1\GroupController;
 use App\Http\Controllers\Api\V1\StudentController;
+use App\Http\Controllers\Api\V1\Teacher\ReportController;
 use App\Http\Controllers\Api\V1\Teacher\ReviewController;
 use App\Http\Controllers\Api\V1\Teacher\ScoringConfigurationController as ApiScoringConfigurationController;
 use App\Http\Controllers\Api\V1\UserController;
@@ -40,6 +41,16 @@ Route::prefix('v1')->middleware('web')->group(function () {
         Route::middleware('role:teacher')->group(function () {
             Route::apiResource('character-indicators', ApiCharacterIndicatorController::class);
             Route::apiResource('scoring-configurations', ApiScoringConfigurationController::class);
+            Route::prefix('reports')->group(function () {
+                Route::get('/', [ReportController::class, 'index'])->name('api.reports.index');
+                Route::post('generate', [ReportController::class, 'store'])->name('api.reports.generate');
+                Route::get('{report}', [ReportController::class, 'show'])->name('api.reports.show');
+                Route::put('{report}', [ReportController::class, 'update'])->name('api.reports.update');
+                Route::post('{report}/generate-narrative', [ReportController::class, 'generateNarrative'])->name('api.reports.generate-narrative');
+                Route::post('{report}/review', [ReportController::class, 'review'])->name('api.reports.review');
+                Route::post('{report}/publish', [ReportController::class, 'publish'])->name('api.reports.publish');
+                Route::get('{report}/pdf', [ReportController::class, 'pdf'])->name('api.reports.pdf');
+            });
         });
 
         Route::middleware('role:teacher,admin')->prefix('teacher')->group(function () {

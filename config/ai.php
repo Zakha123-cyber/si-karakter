@@ -21,6 +21,24 @@ return [
 
     'prompt_file' => env('AI_PROMPT_FILE') ?: base_path('prompts'.DIRECTORY_SEPARATOR.'moral-classifier-v1.txt'),
 
+    'report_narrative' => [
+        'provider' => env('AI_REPORT_PROVIDER') ?: 'google_gemini',
+        'prompt_version' => env('AI_REPORT_PROMPT_VERSION') ?: 'report-narrative-v1',
+        'prompt_file' => env('AI_REPORT_PROMPT_FILE') ?: base_path('prompts'.DIRECTORY_SEPARATOR.'report-narrative-v1.txt'),
+        'json_schema' => [
+            'type' => 'object',
+            'properties' => [
+                'narrative' => [
+                    'type' => 'string',
+                ],
+                'recommendation' => [
+                    'type' => 'string',
+                ],
+            ],
+            'required' => ['narrative', 'recommendation'],
+        ],
+    ],
+
     'json_schema' => [
         'type' => 'object',
         'properties' => [

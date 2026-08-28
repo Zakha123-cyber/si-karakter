@@ -67,7 +67,7 @@ const NAV_ITEMS = [
     {
         emoji: '⚙️',
         label: 'Pengaturan',
-        href: '/student/dashboard',
+        href: '/student/settings',
         color: 'from-slate-400 to-slate-500',
         bgActive: 'bg-slate-500',
         bgHover: 'hover:bg-slate-50',

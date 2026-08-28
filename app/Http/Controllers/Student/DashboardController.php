@@ -5,17 +5,16 @@ namespace App\Http\Controllers\Student;
 use App\Domain\EducationalContent\EducationalContentRecommendationService;
 use App\Domain\GoodnessTree\DailyMissionService;
 use App\Domain\GoodnessTree\GoodnessTreeService;
+use App\Domain\GoodnessTree\StudentStatsService;
 use App\Enums\SimulationScenarioStatus;
 use App\Enums\TestPackageStatus;
 use App\Http\Controllers\Controller;
 use App\Models\EducationalContent;
-use App\Models\GoodnessPointTransaction;
 use App\Models\SimulationScenario;
 use App\Models\Student;
 use App\Models\TestAttempt;
 use App\Models\TestPackage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -26,6 +25,7 @@ class DashboardController extends Controller
         private readonly GoodnessTreeService $treeService,
         private readonly EducationalContentRecommendationService $contentRecommendationService,
         private readonly DailyMissionService $missionService,
+        private readonly StudentStatsService $statsService,
     ) {}
 
     public function __invoke(Request $request): Response
@@ -37,8 +37,8 @@ class DashboardController extends Controller
             : $this->treeService->progressForStudent($student);
         $points = $treeProgress->points;
 
-        $streak = $this->streakFor($student);
-        $starCount = $this->starCountFor($student);
+        $streak = $this->statsService->streakFor($student);
+        $starCount = $this->statsService->starCountFor($student);
 
         $testPackages = $this->visiblePackages($student);
 
@@ -146,53 +146,6 @@ class DashboardController extends Controller
             'missions' => $this->missionService->missionsFor($student),
             'analytics' => $analytics,
         ]);
-    }
-
-    private function streakFor(?Student $student): int
-    {
-        if ($student === null) {
-            return 0;
-        }
-
-        $days = GoodnessPointTransaction::query()
-            ->where('student_id', $student->id)
-            ->where('points', '>', 0)
-            ->distinct()
-            ->pluck('created_at');
-
-        if ($days->isEmpty()) {
-            return 0;
-        }
-
-        $today = now()->startOfDay();
-        $validDays = $days
-            ->map(fn ($date) => Carbon::parse($date)->startOfDay()->format('Y-m-d'))
-            ->unique()
-            ->values();
-
-        $cursor = $validDays->contains($today->format('Y-m-d'))
-            ? $today->copy()
-            : $today->copy()->subDay();
-
-        $streak = 0;
-        while ($validDays->contains($cursor->format('Y-m-d'))) {
-            $streak++;
-            $cursor->subDay();
-        }
-
-        return $streak;
-    }
-
-    private function starCountFor(?Student $student): int
-    {
-        if ($student === null) {
-            return 0;
-        }
-
-        return (int) TestAttempt::query()
-            ->where('student_id', $student->id)
-            ->where('status', 'submitted')
-            ->count();
     }
 
     /**

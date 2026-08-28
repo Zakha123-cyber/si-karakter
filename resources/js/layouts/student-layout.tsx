@@ -18,7 +18,7 @@ const NAV_ITEMS = [
     },
     { emoji: '🌳', label: 'Pohon Kebaikan', href: '/student/goodness-tree' },
     { emoji: '🏆', label: 'Misi Harian', href: '/student/missions' },
-    { emoji: '🎁', label: 'Hadiah', href: '/student/dashboard' },
+    { emoji: '🎁', label: 'Hadiah', href: '/student/rewards' },
     { emoji: '⚙️', label: 'Pengaturan', href: '/student/dashboard' },
 ];
 

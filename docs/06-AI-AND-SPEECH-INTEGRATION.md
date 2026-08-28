@@ -159,3 +159,62 @@ Gunakan bahasa netral.
 Hasil adalah rekomendasi yang harus dikonfirmasi ustadz.
 Kembalikan JSON sesuai schema.
 ```
+
+## 11. Text-to-Speech (TTS)
+
+### 11.1 Tujuan
+
+- Menghasilkan narasi cerita bahasa Indonesia (6–10 tahun) dari teks `story`.
+- Audio disintesis sekali per cerita lalu di-cache agar hemat komputasi.
+
+### 11.2 Arsitektur
+
+- Layanan kecil Python FastAPI di `services/tts/` menjalankan model
+  `facebook/mms-tts-ind` (VITS, ~36M parameter, berjalan di CPU).
+- Laravel memanggil layanan ini lewat `App\Services\TextToSpeech\MmsTtsService`
+  dan menyimpan hasil WAV di disk `local` (private):
+  `storage/app/private/tts/stories/{sha1(story)}.wav`.
+- Route santri `GET /student/stories/{moralCase}/tts` mengembalikan file
+  tersebut sebagai `audio/wav` setelah memvalidasi bahwa cerita milik paket
+  published yang terlihat oleh group santri.
+- Frontend (`resources/js/pages/student/tests/work.tsx`) memutar audio lewat
+  elemen `<audio>`; jika layanan gagal, fallback ke Web Speech API browser.
+
+### 11.3 Service Contract
+
+```php
+interface TextToSpeechService
+{
+    public function synthesize(string $text): TtsResult;
+}
+```
+
+`TtsResult` berisi: `audio` (bytes WAV), `provider`, `model`, `samplingRate`.
+
+### 11.4 Menjalankan Layanan TTS
+
+```bash
+cd services/tts
+pip install -r requirements.txt
+uvicorn main:app --host 127.0.0.1 --port 8001
+```
+
+Endpoint: `POST /synthesize` dengan body `{"text": "..."}` -> `audio/wav`.
+
+### 11.5 Konfigurasi Laravel
+
+```env
+TTS_PROVIDER=mms
+TTS_BASE_URL=http://127.0.0.1:8001
+TTS_MODEL=facebook/mms-tts-ind
+TTS_TIMEOUT=60
+TTS_CACHE_DISK=local
+TTS_CACHE_PATH=tts/stories
+```
+
+### 11.6 Guardrails
+
+- Cache menggunakan lock atomik agar satu cerita hanya disintesis satu kali.
+- File audio disimpan di disk private, tidak pernah di folder public.
+- Kegagalan provider menghasilkan 502 dan tidak merusak cache lama.
+- Model `facebook/mms-tts-ind` berlisensi **CC-BY-NC 4.0** (non-komersial).

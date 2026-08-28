@@ -73,6 +73,10 @@ export default function StudentTestWork({
     const [recordedUrl, setRecordedUrl] = useState<string | null>(null);
     const [filePreviewUrl, setFilePreviewUrl] = useState<string | null>(null);
 
+    const [isStoryLoading, setIsStoryLoading] = useState(false);
+    const [isStoryPlaying, setIsStoryPlaying] = useState(false);
+    const storyAudioRef = useRef<HTMLAudioElement | null>(null);
+
     const nextCase = case_index + 1;
     const isLastCase = nextCase >= total_cases;
     const answerState = current_case
@@ -332,13 +336,48 @@ export default function StudentTestWork({
             return;
         }
 
+        const audio = storyAudioRef.current;
+
+        if (audio && !audio.paused) {
+            audio.pause();
+            audio.currentTime = 0;
+            setIsStoryPlaying(false);
+
+            return;
+        }
+
+        if (!audio) {
+            return;
+        }
+
+        setIsStoryLoading(true);
+        audio.src = `/student/stories/${current_case.id}/tts`;
+        audio.onended = () => setIsStoryPlaying(false);
+        audio.onerror = () => {
+            setIsStoryLoading(false);
+            setIsStoryPlaying(false);
+            playWithBrowserSpeech(current_case.story);
+        };
+        audio
+            .play()
+            .then(() => {
+                setIsStoryPlaying(true);
+                setIsStoryLoading(false);
+            })
+            .catch(() => {
+                setIsStoryLoading(false);
+                setIsStoryPlaying(false);
+            });
+    };
+
+    const playWithBrowserSpeech = (text: string) => {
         if (!('speechSynthesis' in window)) {
             alert('Browser Anda tidak mendukung Text-to-Speech.');
 
             return;
         }
 
-        const utter = new SpeechSynthesisUtterance(current_case.story);
+        const utter = new SpeechSynthesisUtterance(text);
         utter.lang = 'id-ID';
         utter.rate = 0.9;
         window.speechSynthesis.cancel();
@@ -467,11 +506,25 @@ export default function StudentTestWork({
                                 <Button
                                     type="button"
                                     onClick={playStory}
-                                    className="h-11 rounded-2xl bg-sky-500 px-4 text-sm font-black text-white hover:bg-sky-600"
+                                    disabled={isStoryLoading}
+                                    className="h-11 rounded-2xl bg-sky-500 px-4 text-sm font-black text-white hover:bg-sky-600 disabled:cursor-wait disabled:opacity-70"
                                 >
-                                    <Volume2 className="mr-2 size-4" />
-                                    Putar Cerita
+                                    {isStoryLoading ? (
+                                        <LoaderCircle className="mr-2 size-4 animate-spin" />
+                                    ) : (
+                                        <Volume2 className="mr-2 size-4" />
+                                    )}
+                                    {isStoryLoading
+                                        ? 'Menyiapkan Suara...'
+                                        : isStoryPlaying
+                                          ? 'Hentikan Cerita'
+                                          : 'Putar Cerita'}
                                 </Button>
+                                <audio
+                                    ref={storyAudioRef}
+                                    className="hidden"
+                                    preload="none"
+                                />
                             </div>
 
                             <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-sky-50 via-purple-50 to-emerald-50 p-5 sm:p-6">

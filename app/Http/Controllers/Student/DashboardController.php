@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\Student;
 
 use App\Domain\EducationalContent\EducationalContentRecommendationService;
+use App\Domain\GoodnessTree\DailyMissionService;
 use App\Domain\GoodnessTree\GoodnessTreeService;
+use App\Domain\GoodnessTree\StudentStatsService;
 use App\Enums\SimulationScenarioStatus;
 use App\Enums\TestPackageStatus;
 use App\Http\Controllers\Controller;
 use App\Models\EducationalContent;
-use App\Models\GoodnessPointTransaction;
 use App\Models\SimulationScenario;
 use App\Models\Student;
 use App\Models\TestAttempt;
 use App\Models\TestPackage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -24,6 +24,8 @@ class DashboardController extends Controller
     public function __construct(
         private readonly GoodnessTreeService $treeService,
         private readonly EducationalContentRecommendationService $contentRecommendationService,
+        private readonly DailyMissionService $missionService,
+        private readonly StudentStatsService $statsService,
     ) {}
 
     public function __invoke(Request $request): Response
@@ -35,8 +37,8 @@ class DashboardController extends Controller
             : $this->treeService->progressForStudent($student);
         $points = $treeProgress->points;
 
-        $streak = $this->streakFor($student);
-        $starCount = $this->starCountFor($student);
+        $streak = $this->statsService->streakFor($student);
+        $starCount = $this->statsService->starCountFor($student);
 
         $testPackages = $this->visiblePackages($student);
 
@@ -141,56 +143,9 @@ class DashboardController extends Controller
             'test_packages' => $testPackages,
             'contents' => $contents,
             'scenarios' => $scenarios,
-            'missions' => $this->missions(),
+            'missions' => $this->missionService->missionsFor($student),
             'analytics' => $analytics,
         ]);
-    }
-
-    private function streakFor(?Student $student): int
-    {
-        if ($student === null) {
-            return 0;
-        }
-
-        $days = GoodnessPointTransaction::query()
-            ->where('student_id', $student->id)
-            ->where('points', '>', 0)
-            ->distinct()
-            ->pluck('created_at');
-
-        if ($days->isEmpty()) {
-            return 0;
-        }
-
-        $today = now()->startOfDay();
-        $validDays = $days
-            ->map(fn ($date) => Carbon::parse($date)->startOfDay()->format('Y-m-d'))
-            ->unique()
-            ->values();
-
-        $cursor = $validDays->contains($today->format('Y-m-d'))
-            ? $today->copy()
-            : $today->copy()->subDay();
-
-        $streak = 0;
-        while ($validDays->contains($cursor->format('Y-m-d'))) {
-            $streak++;
-            $cursor->subDay();
-        }
-
-        return $streak;
-    }
-
-    private function starCountFor(?Student $student): int
-    {
-        if ($student === null) {
-            return 0;
-        }
-
-        return (int) TestAttempt::query()
-            ->where('student_id', $student->id)
-            ->where('status', 'submitted')
-            ->count();
     }
 
     /**
@@ -237,38 +192,5 @@ class DashboardController extends Controller
         }
 
         return true;
-    }
-
-    /**
-     * @return array<int, array{id: string, icon: string, title: string, description: string, reward: int, completed: bool}>
-     */
-    private function missions(): array
-    {
-        return [
-            [
-                'id' => 'sholat',
-                'icon' => '🕌',
-                'title' => 'Kerjakan Misi Baik',
-                'description' => 'Selesaikan satu misi baikmu hari ini',
-                'reward' => 10,
-                'completed' => false,
-            ],
-            [
-                'id' => 'baca',
-                'icon' => '📖',
-                'title' => 'Tonton Bioskop Teladan',
-                'description' => 'Saksikan satu kisah teladan',
-                'reward' => 15,
-                'completed' => false,
-            ],
-            [
-                'id' => 'tes',
-                'icon' => '🧭',
-                'title' => 'Selesaikan Pilih Jalanmu',
-                'description' => 'Selasaikan satu kasus moral',
-                'reward' => 20,
-                'completed' => false,
-            ],
-        ];
     }
 }

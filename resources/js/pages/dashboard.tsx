@@ -11,6 +11,18 @@ import {
     PieChart as PieChartIcon,
     BarChart3,
     TrendingUp,
+    Calendar,
+    ChevronDown,
+    CheckCircle2,
+    AlertTriangle,
+    AlertOctagon,
+    Download,
+    Send,
+    Printer,
+    Link2,
+    Star,
+    CheckSquare,
+    Square
 } from 'lucide-react';
 import {
     PieChart,
@@ -37,6 +49,10 @@ type Stats = {
     total_indicators: number;
     open_warnings: number;
     total_simulations: number;
+    zona_aman?: number;
+    zona_kuning?: number;
+    zona_merah?: number;
+    rata_rata_poin?: number;
 };
 
 type PendingReview = {
@@ -55,6 +71,11 @@ type DashboardProps = {
         moral_distribution: { name: string; value: number }[];
         observation_summary: { name: string; value: number; fill: string }[];
         score_trend: { name: string; score: number }[];
+        early_warnings?: any[];
+        recent_activities?: any[];
+        students_for_observation?: any[];
+        active_indicators?: any[];
+        preview_report_student?: any;
     };
     filter_options?: {
         academic_years: { id: number; name: string }[];
@@ -94,82 +115,41 @@ export default function Dashboard({
         <>
             <Head title={`Dashboard ${roleTitle}`} />
 
-            {/* Greeting Hero Card */}
-            <section className="relative mb-6 overflow-hidden rounded-[32px] bg-gradient-to-br from-teal-600 via-emerald-600 to-teal-700 p-6 text-white shadow-[0_12px_40px_rgba(13,148,136,0.35)] sm:p-8">
-                {/* Mosque silhouette background SVG */}
-                <svg
-                    className="pointer-events-none absolute -top-6 -right-6 h-56 w-56 opacity-20"
-                    viewBox="0 0 200 200"
-                    fill="currentColor"
-                    aria-hidden="true"
-                >
-                    <path d="M100 20l20 30h-40l20-30zM95 55v25h10V55h-10zM70 60l8 18h12l-6-16h-14zM123 60l-8 18h-12l6-16h14zM72 84h56v8H72z" />
-                    <path d="M85 95l10 18 10-18h-20z" />
-                </svg>
-
-                <div className="relative flex flex-wrap items-center justify-between gap-6">
-                    <div className="max-w-2xl min-w-0">
-                        <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1.5 text-xs font-bold backdrop-blur-sm">
-                            <Volume2 className="size-4 text-emerald-200" />
-                            <span>Portal {roleTitle} TeladanKu</span>
-                        </div>
-                        <h1 className="text-3xl font-extrabold sm:text-4xl">
-                            Assalamu'alaikum, {roleTitle} {firstName} 👋
-                        </h1>
-                        <p className="mt-2 text-sm leading-relaxed font-medium text-emerald-50 sm:text-base">
-                            {isAdmin
-                                ? 'Kelola struktur akademik, data santri, akun pengguna, dan pengaturan sistem.'
-                                : 'Bimbing dan bina santri menjadi generasi berakhlak mulia melalui evaluasi dan pendampingan karakter.'}
-                        </p>
-                    </div>
-
-                    {!isAdmin && (
-                        <div className="flex flex-wrap items-center gap-3">
-                            <StatPill
-                                icon={<Users className="size-5 text-sky-200" />}
-                                value={`${stats.total_students}`}
-                                label="Santri Binaan"
-                            />
-                            <StatPill
-                                icon={
-                                    <Clock className="size-5 text-amber-200" />
-                                }
-                                value={`${stats.pending_reviews}`}
-                                label="Perlu Review"
-                            />
-                            <StatPill
-                                icon={
-                                    <BookOpen className="size-5 text-teal-200" />
-                                }
-                                value={`${stats.active_packages}`}
-                                label="Paket Tes"
-                            />
-                            <StatPill
-                                icon={
-                                    <TreePine className="size-5 text-emerald-200" />
-                                }
-                                value={`${stats.total_indicators}`}
-                                label="Indikator"
-                            />
-                            <StatPill
-                                icon={
-                                    <ShieldCheck className="size-5 text-rose-200" />
-                                }
-                                value={`${stats.open_warnings}`}
-                                label="Pendampingan"
-                            />
-                        </div>
-                    )}
-                </div>
-            </section>
-
             {isAdmin ? (
-                <AdminDashboard
-                    stats={stats}
-                    roleTitle={roleTitle}
-                    analytics={analytics}
-                    filter_options={filter_options}
-                />
+                <>
+                    {/* Greeting Hero Card for Admin */}
+                    <section className="relative mb-6 overflow-hidden rounded-[32px] bg-gradient-to-br from-teal-600 via-emerald-600 to-teal-700 p-6 text-white shadow-[0_12px_40px_rgba(13,148,136,0.35)] sm:p-8">
+                        <svg
+                            className="pointer-events-none absolute -top-6 -right-6 h-56 w-56 opacity-20"
+                            viewBox="0 0 200 200"
+                            fill="currentColor"
+                            aria-hidden="true"
+                        >
+                            <path d="M100 20l20 30h-40l20-30zM95 55v25h10V55h-10zM70 60l8 18h12l-6-16h-14zM123 60l-8 18h-12l6-16h14zM72 84h56v8H72z" />
+                            <path d="M85 95l10 18 10-18h-20z" />
+                        </svg>
+                        <div className="relative flex flex-wrap items-center justify-between gap-6">
+                            <div className="max-w-2xl min-w-0">
+                                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1.5 text-xs font-bold backdrop-blur-sm">
+                                    <Volume2 className="size-4 text-emerald-200" />
+                                    <span>Portal {roleTitle} TeladanKu</span>
+                                </div>
+                                <h1 className="text-3xl font-extrabold sm:text-4xl">
+                                    Assalamu'alaikum, {roleTitle} {firstName} 👋
+                                </h1>
+                                <p className="mt-2 text-sm leading-relaxed font-medium text-emerald-50 sm:text-base">
+                                    Kelola struktur akademik, data santri, akun pengguna, dan pengaturan sistem.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                    <AdminDashboard
+                        stats={stats}
+                        roleTitle={roleTitle}
+                        analytics={analytics}
+                        filter_options={filter_options}
+                    />
+                </>
             ) : (
                 <TeacherDashboard
                     stats={stats}
@@ -177,6 +157,8 @@ export default function Dashboard({
                     roleTitle={roleTitle}
                     analytics={analytics}
                     filter_options={filter_options}
+                    firstName={firstName}
+                    user={user}
                 />
             )}
         </>
@@ -326,294 +308,449 @@ function TeacherDashboard({
     roleTitle,
     analytics,
     filter_options,
+    firstName,
+    user,
 }: {
     stats: Stats;
     recentPendingReviews: PendingReview[];
     roleTitle: string;
     analytics?: DashboardProps['analytics'];
     filter_options?: DashboardProps['filter_options'];
+    firstName: string;
+    user?: any;
 }) {
-    const totalReviews = stats.validated_reviews + stats.pending_reviews;
-    const validationPercentage =
-        totalReviews > 0
-            ? Math.round((stats.validated_reviews / totalReviews) * 100)
-            : 100;
+    // Constants for layout
+    const today = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
+
+    // Extract real data from analytics prop
+    const moralDistribution = analytics?.moral_distribution || [
+        { name: 'Pra-Konvensional', value: 0 },
+        { name: 'Konvensional', value: 1 },
+        { name: 'Pasca-Konvensional', value: 0 },
+    ];
+    
+    // Calculate percentages and SVG strokes for Donut Chart
+    const totalMoral = moralDistribution.reduce((acc: number, curr: any) => acc + curr.value, 0);
+    const praKonv = moralDistribution.find((m: any) => m.name === 'Pra-Konvensional')?.value || 0;
+    const konv = moralDistribution.find((m: any) => m.name === 'Konvensional')?.value || 0;
+    const pascaKonv = moralDistribution.find((m: any) => m.name === 'Pasca-Konvensional')?.value || 0;
+    
+    const praPct = totalMoral > 0 ? (praKonv / totalMoral) * 100 : 0;
+    const konvPct = totalMoral > 0 ? (konv / totalMoral) * 100 : 100;
+    const pascaPct = totalMoral > 0 ? (pascaKonv / totalMoral) * 100 : 0;
+    
+    const praStroke = `${praPct} 100`;
+    const konvStroke = `${konvPct} 100`;
+    const pascaStroke = `${pascaPct} 100`;
+    
+    const scoreTrend = analytics?.score_trend || [];
+    const earlyWarnings = analytics?.early_warnings || [];
+    const recentActivities = analytics?.recent_activities || [];
+    const studentsForObservation = analytics?.students_for_observation || [];
+    const activeIndicators = analytics?.active_indicators || [];
+    const previewReportStudent = analytics?.preview_report_student || { name: '-', class: '-', stats: { empati: 0, kejujuran: 0, keberanian: 0 }, level: '-' };
 
     return (
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_340px]">
-            <div className="min-w-0 space-y-6">
-                <Section
-                    index="1"
-                    emoji="📋"
-                    title="Antrian Validasi Asesmen Santri"
-                    color="text-emerald-600"
-                    description="Tinjau penalaran moral santri dan berikan validasi ustadz."
-                    actionLabel="Lihat Semua Antrian"
-                    actionHref="/teacher/reviews"
-                >
-                    {recentPendingReviews.length > 0 ? (
+        <div className="space-y-6 text-slate-800">
+            {/* ═══════════════════════════════════════════
+                TOP HEADER BAR
+                ═══════════════════════════════════════════ */}
+            <div className="flex flex-col gap-4 rounded-[28px] bg-white p-5 shadow-[0_2px_16px_rgba(0,0,0,0.04)] lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex items-center gap-4">
+                    <div className="relative h-16 w-16 overflow-hidden rounded-full bg-emerald-100">
+                        <img src="/images/dashboard/ustadz-mascot.png" alt="Ustadz" className="h-full w-full object-cover object-top" />
+                    </div>
+                    <div>
+                        <h1 className="text-xl font-extrabold sm:text-2xl">
+                            Assalamu'alaikum, {roleTitle} {firstName}
+                        </h1>
+                        <p className="text-sm font-medium text-slate-500">
+                            Kelola dan pantau perkembangan karakter santri dengan mudah
+                        </p>
+                    </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 lg:gap-4">
+                    <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2">
+                        <div className="text-xs">
+                            <span className="block text-[10px] text-slate-400">Kelas</span>
+                            <span className="font-bold">Semua Kelas</span>
+                        </div>
+                        <ChevronDown className="size-4 text-slate-400" />
+                    </div>
+                    
+                    <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2">
+                        <Calendar className="size-4 text-slate-400" />
+                        <div className="text-xs">
+                            <span className="block text-[10px] text-slate-400">Hari Ini</span>
+                            <span className="font-bold">{today}</span>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-2 shadow-sm">
+                        <img src="/images/dashboard/ustadz-avatar.png" className="size-8 rounded-full bg-slate-100" alt="Avatar" />
+                        <div className="text-xs">
+                            <span className="block font-bold">{user?.name || 'Ustadz'}</span>
+                            <span className="text-[10px] text-slate-400">Pengelola</span>
+                        </div>
+                        <ChevronDown className="size-4 text-slate-400" />
+                    </div>
+                </div>
+            </div>
+
+            {/* ═══════════════════════════════════════════
+                STATS ROW
+                ═══════════════════════════════════════════ */}
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+                <div className="flex flex-col justify-between rounded-[24px] bg-white p-5 shadow-sm border border-slate-100">
+                    <div className="flex items-start justify-between">
+                        <div>
+                            <p className="text-xs font-bold text-purple-600">Total Santri</p>
+                            <p className="mt-1 text-3xl font-extrabold text-slate-800">{stats.total_students || 0}</p>
+                            <p className="text-[11px] font-medium text-slate-400">Santri Aktif</p>
+                        </div>
+                        <Users className="size-8 text-purple-500 opacity-80" />
+                    </div>
+                </div>
+                
+                <div className="flex flex-col justify-between rounded-[24px] bg-white p-5 shadow-sm border border-slate-100">
+                    <div className="flex items-start justify-between">
+                        <div>
+                            <p className="text-xs font-bold text-emerald-600">Zona Aman</p>
+                            <p className="mt-1 text-3xl font-extrabold text-slate-800">{stats.zona_aman || 0}</p>
+                            <p className="text-[11px] font-medium text-slate-400">{stats.total_students > 0 ? Math.round((stats.zona_aman / stats.total_students) * 100) : 0}%</p>
+                        </div>
+                        <div className="flex size-10 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600">
+                            <CheckCircle2 className="size-6" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex flex-col justify-between rounded-[24px] bg-white p-5 shadow-sm border border-slate-100">
+                    <div className="flex items-start justify-between">
+                        <div>
+                            <p className="text-xs font-bold text-amber-500">Perlu Pendampingan</p>
+                            <p className="mt-1 text-3xl font-extrabold text-slate-800">{stats.zona_kuning || 0}</p>
+                            <p className="text-[11px] font-medium text-slate-400">{stats.total_students > 0 ? Math.round((stats.zona_kuning / stats.total_students) * 100) : 0}%</p>
+                        </div>
+                        <div className="flex size-10 items-center justify-center rounded-2xl bg-amber-100 text-amber-500">
+                            <AlertTriangle className="size-6" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex flex-col justify-between rounded-[24px] bg-white p-5 shadow-sm border border-slate-100">
+                    <div className="flex items-start justify-between">
+                        <div>
+                            <p className="text-xs font-bold text-rose-500">Zona Merah</p>
+                            <p className="mt-1 text-3xl font-extrabold text-slate-800">{stats.zona_merah || 0}</p>
+                            <p className="text-[11px] font-medium text-slate-400">{stats.total_students > 0 ? Math.round((stats.zona_merah / stats.total_students) * 100) : 0}%</p>
+                        </div>
+                        <div className="flex size-10 items-center justify-center rounded-2xl bg-rose-100 text-rose-500">
+                            <AlertOctagon className="size-6" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex flex-col justify-between rounded-[24px] bg-white p-5 shadow-sm border border-slate-100">
+                    <div className="flex items-start justify-between">
+                        <div>
+                            <p className="text-xs font-bold text-blue-500">Rata-rata Poin Kebaikan</p>
+                            <p className="mt-1 text-3xl font-extrabold text-slate-800">{stats.rata_rata_poin || 0}</p>
+                        </div>
+                        <div className="flex size-10 items-center justify-center rounded-2xl bg-blue-500 text-white shadow-sm shadow-blue-200">
+                            <Star className="size-5 fill-current" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* ═══════════════════════════════════════════
+                CHARTS & WARNING ROW
+                ═══════════════════════════════════════════ */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <div className="rounded-[24px] bg-white p-5 shadow-sm border border-slate-100">
+                    <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-sm font-extrabold">Tingkat Penalaran Moral Santri</h3>
+                    </div>
+                    <div className="flex flex-col 2xl:flex-row items-center 2xl:items-start gap-6 mt-4">
+                        <div className="h-40 w-40 relative shrink-0 mx-auto 2xl:mx-0">
+                            <svg viewBox="0 0 36 36" className="w-full h-full drop-shadow-sm -rotate-90">
+                                <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#f1f5f9" strokeWidth="6" />
+                                {praPct > 0 && <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#ef4444" strokeWidth="6" strokeDasharray={praStroke} strokeDashoffset="0" />}
+                                {konvPct > 0 && <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#f59e0b" strokeWidth="6" strokeDasharray={konvStroke} strokeDashoffset={-praPct} />}
+                                {pascaPct > 0 && <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#10b981" strokeWidth="6" strokeDasharray={pascaStroke} strokeDashoffset={-(praPct + konvPct)} />}
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                <span className="text-lg font-extrabold">{totalMoral}</span>
+                                <span className="text-[10px] font-medium text-slate-400">Santri</span>
+                            </div>
+                        </div>
+                        <div className="flex-1 space-y-3">
+                            <div className="flex items-start gap-2">
+                                <div className="mt-1 size-3 rounded-full bg-rose-500 shrink-0"></div>
+                                <div>
+                                    <p className="text-xs font-bold text-slate-700 leading-tight">Pra-Konvensional</p>
+                                    <p className="text-[10px] text-slate-500">{Math.round(praPct)}% ({praKonv} Santri)</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-2">
+                                <div className="mt-1 size-3 rounded-full bg-amber-500 shrink-0"></div>
+                                <div>
+                                    <p className="text-xs font-bold text-slate-700 leading-tight">Konvensional</p>
+                                    <p className="text-[10px] text-slate-500">{Math.round(konvPct)}% ({konv} Santri)</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-2">
+                                <div className="mt-1 size-3 rounded-full bg-emerald-500 shrink-0"></div>
+                                <div>
+                                    <p className="text-xs font-bold text-slate-700 leading-tight">Pasca-Konvensional</p>
+                                    <p className="text-[10px] text-slate-500">{Math.round(pascaPct)}% ({pascaKonv} Santri)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="rounded-[24px] bg-white p-5 shadow-sm border border-slate-100">
+                    <h3 className="text-sm font-extrabold mb-4">Tren Perkembangan Karakter</h3>
+                    <div className="h-40 w-full relative">
+                         <svg viewBox="0 0 100 50" className="w-full h-full overflow-visible">
+                            <line x1="10" y1="5" x2="100" y2="5" stroke="#f1f5f9" strokeWidth="0.5" />
+                            <line x1="10" y1="25" x2="100" y2="25" stroke="#f1f5f9" strokeWidth="0.5" />
+                            <line x1="10" y1="45" x2="100" y2="45" stroke="#f1f5f9" strokeWidth="0.5" />
+                            {scoreTrend.map((trend: any, i: number, arr: any[]) => (
+                                <g key={i}>
+                                    {i < arr.length - 1 && <line x1={15 + i*15} y1={40 - trend.empati/2.5} x2={15 + (i+1)*15} y2={40 - arr[i+1].empati/2.5} stroke="#f43f5e" strokeWidth="1" />}
+                                    <circle cx={15 + i*15} cy={40 - trend.empati/2.5} r="1.5" fill="#f43f5e" />
+                                </g>
+                            ))}
+                         </svg>
+                    </div>
+                </div>
+
+                <div className="rounded-[24px] bg-white p-5 shadow-sm border border-slate-100 flex flex-col">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-extrabold">Peringatan Dini</h3>
+                    </div>
+                    <div className="flex-1 space-y-3 overflow-y-auto">
+                        {earlyWarnings.map((w: any, idx: number) => (
+                            <div key={idx} className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <img src={w.img} alt={w.name} className="size-8 rounded-full bg-slate-100" />
+                                    <div>
+                                        <p className="text-xs font-bold leading-tight">{w.name}</p>
+                                        <p className="text-[10px] text-slate-400">{w.class}</p>
+                                    </div>
+                                </div>
+                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${w.zone === 'merah' ? 'bg-rose-100 text-rose-600' : 'bg-amber-100 text-amber-600'}`}>
+                                    {w.zone === 'merah' ? 'Zona Merah' : 'Zona Kuning'}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* ═══════════════════════════════════════════
+                ACTION ROW
+                ═══════════════════════════════════════════ */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {/* Observasi Harian Input */}
+                <div className="rounded-[24px] bg-white p-5 shadow-sm border border-slate-100 flex flex-col">
+                    <h3 className="text-sm font-extrabold mb-4">Observasi Harian <span className="font-normal text-slate-400">(Input Cepat)</span></h3>
+                    
+                    <div className="flex gap-3 mb-4">
+                        <div className="flex-1">
+                            <label className="text-[10px] font-bold text-slate-500 mb-1 block">Pilih Santri</label>
+                            <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                {studentsForObservation.map((s: any) => (
+                                    <option key={s.id} value={s.id}>{s.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="w-32">
+                            <label className="text-[10px] font-bold text-slate-500 mb-1 block">Tanggal</label>
+                            <div className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2 bg-white">
+                                <span className="text-xs text-slate-600">Hari ini</span>
+                                <Calendar className="size-4 text-slate-400" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto mb-4">
+                        <div className="grid grid-cols-12 gap-2 text-[10px] font-bold text-slate-400 mb-2 px-2 border-b border-slate-100 pb-2">
+                            <div className="col-span-6">Indikator</div>
+                            <div className="col-span-2 text-center">Ya</div>
+                            <div className="col-span-4 text-right">Poin</div>
+                        </div>
+                        
                         <div className="space-y-3">
-                            {recentPendingReviews.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className="flex flex-wrap items-center justify-between gap-4 rounded-[24px] border border-emerald-100 bg-emerald-50/50 p-4 transition-all hover:bg-emerald-50 hover:shadow-sm"
-                                >
-                                    <div className="flex min-w-0 items-center gap-3.5">
-                                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-lg font-bold text-white shadow-sm">
-                                            {item.student_name
-                                                .charAt(0)
-                                                .toUpperCase()}
-                                        </div>
-                                        <div className="min-w-0">
-                                            <div className="flex items-center gap-2">
-                                                <h4 className="truncate font-bold text-slate-800">
-                                                    {item.student_name}
-                                                </h4>
-                                                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
-                                                    {item.group_name}
-                                                </span>
-                                            </div>
-                                            <p className="mt-0.5 truncate text-xs text-slate-500">
-                                                <span className="font-semibold text-slate-600">
-                                                    {item.case_title}
-                                                </span>{' '}
-                                                • {item.package_title}
-                                            </p>
-                                            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-emerald-600">
-                                                <Clock className="size-3" />
-                                                Dikirim {item.submitted_at}
-                                            </p>
+                            {activeIndicators.map((ind: any) => (
+                                <div key={ind.id} className="grid grid-cols-12 gap-2 items-center px-2">
+                                    <div className="col-span-6 text-xs text-slate-600">{ind.name}</div>
+                                    <div className="col-span-2 text-center">
+                                        <div className="inline-flex size-4 items-center justify-center rounded border border-emerald-500 bg-emerald-50 text-emerald-500">
+                                            <CheckSquare className="size-3" />
                                         </div>
                                     </div>
-
-                                    <Link
-                                        href={`/teacher/reviews/${item.id}`}
-                                        className="inline-flex items-center gap-1.5 rounded-2xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.3)] transition-transform hover:scale-105 hover:bg-emerald-700"
-                                    >
-                                        Review Sekarang
-                                        <ChevronRight className="size-4" />
-                                    </Link>
+                                    <div className="col-span-4 text-right text-[10px] font-bold text-emerald-500">+{ind.points}</div>
                                 </div>
                             ))}
                         </div>
-                    ) : (
-                        <div className="flex flex-col items-center justify-center rounded-[24px] border border-dashed border-emerald-200 bg-emerald-50/40 p-8 text-center">
-                            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-2xl">
-                                🎉
+                    </div>
+
+                    <div className="flex items-center justify-between mt-auto border-t border-slate-100 pt-4">
+                        <div className="flex items-center gap-3">
+                            <span className="text-xs font-bold text-slate-800">Total Poin</span>
+                            <span className="text-lg font-extrabold text-emerald-500">+{activeIndicators.length * 10}</span>
+                        </div>
+                        <button className="flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-2.5 text-xs font-bold text-white transition-colors hover:bg-purple-700">
+                            <CheckCircle2 className="size-4" />
+                            Simpan
+                        </button>
+                    </div>
+                </div>
+
+                {/* Laporan Tumbuh Kembang */}
+                <div className="rounded-[24px] bg-white p-5 shadow-sm border border-slate-100 flex flex-col">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-extrabold">Laporan Tumbuh Kembang</h3>
+                        <span className="text-[10px] font-bold text-sky-500 cursor-pointer">Lihat Contoh</span>
+                    </div>
+
+                    <div className="flex gap-4 mb-4">
+                        <div className="flex-1 flex items-center gap-3">
+                            <img src={previewReportStudent.img || "/images/dashboard/student-boy.png"} alt={previewReportStudent.name} className="size-10 rounded-full bg-slate-100" />
+                            <div>
+                                <p className="text-xs font-bold text-slate-800">{previewReportStudent.name}</p>
+                                <p className="text-[10px] text-slate-500 mb-1">{previewReportStudent.class}</p>
+                                <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-600 text-[9px] font-bold cursor-pointer">Lihat Detail Santri &gt;</span>
                             </div>
-                            <h4 className="mt-3 text-base font-extrabold text-slate-800">
-                                Semua Asesmen Divalidasi!
-                            </h4>
-                            <p className="mt-1 max-w-sm text-xs font-medium text-slate-500">
-                                Tidak ada antrian validasi santri saat ini.
-                                Terima kasih atas dedikasi pembinaan Ustadz!
+                        </div>
+                        <div className="w-48">
+                            <label className="text-[10px] font-bold text-slate-500 mb-1 block">Periode</label>
+                            <div className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2 text-[11px]">
+                                <span>Semester Genap</span>
+                                <ChevronDown className="size-4 text-slate-400" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-1 gap-4">
+                        <div className="w-1/3 flex flex-col items-center justify-center bg-slate-50 rounded-2xl p-3 border border-slate-100">
+                            <img src="/images/dashboard/pohon-kebaikan.png" alt="Pohon Kebaikan" className="h-28 object-contain mb-2" />
+                            <p className="text-[10px] font-bold text-slate-800 self-start">Pohon Kebaikan</p>
+                            <p className="text-[10px] font-bold text-emerald-600 self-start mb-2">{previewReportStudent.level}</p>
+                            
+                            <div className="flex justify-between w-full px-1 border-t border-slate-200 pt-2">
+                                <div className="text-center">
+                                    <span className="text-xs">❤️</span>
+                                    <p className="text-[8px] text-slate-400 font-bold">Empati</p>
+                                    <p className="text-xs font-extrabold">{previewReportStudent.stats?.empati || 0}</p>
+                                </div>
+                                <div className="text-center">
+                                    <span className="text-xs">⭐</span>
+                                    <p className="text-[8px] text-slate-400 font-bold">Kejujuran</p>
+                                    <p className="text-xs font-extrabold">{previewReportStudent.stats?.kejujuran || 0}</p>
+                                </div>
+                                <div className="text-center">
+                                    <span className="text-xs">🛡️</span>
+                                    <p className="text-[8px] text-slate-400 font-bold">Berani</p>
+                                    <p className="text-xs font-extrabold">{previewReportStudent.stats?.keberanian || 0}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="w-1/3 text-[10px]">
+                            <p className="font-bold text-slate-800 mb-1">Ringkasan Perkembangan</p>
+                            <p className="text-slate-600 mb-2 leading-relaxed text-justify">
+                                Ananda {previewReportStudent.name.split(' ')[0]} menunjukkan perkembangan karakter yang positif.
+                            </p>
+                            
+                            <p className="font-bold text-sky-600 mb-1 mt-4">Saran untuk Orang Tua</p>
+                            <p className="text-slate-600 leading-relaxed text-justify">
+                                Terus berikan dukungan agar semakin berani dalam melakukan kebaikan.
                             </p>
                         </div>
-                    )}
-                </Section>
 
-                <Section
-                    index="2"
-                    emoji="🚀"
-                    title="Modul & Fitur Utama"
-                    color="text-sky-600"
-                    description="Akses fitur evaluasi, paket tes, dan indikator karakter."
-                >
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        <FeatureCard
-                            emoji="📝"
-                            title="Validasi & Review Santri"
-                            description="Tinjau dan validasi asesmen penalaran moral santri."
-                            actionLabel="Buka Antrian Review"
-                            actionHref="/teacher/reviews"
-                            badgeText={`${stats.pending_reviews} Pending`}
-                            badgeColor="bg-amber-100 text-amber-800"
-                            gradient="from-amber-400 to-orange-400"
-                        />
-
-                        <FeatureCard
-                            emoji="📦"
-                            title="Paket Tes Dilema Moral"
-                            description="Kelola penugasan dan pengelompokan tes moral."
-                            actionLabel="Kelola Paket Tes"
-                            actionHref="/teacher/test-packages"
-                            badgeText={`${stats.active_packages} Aktif`}
-                            badgeColor="bg-teal-100 text-teal-800"
-                            gradient="from-teal-400 to-emerald-500"
-                        />
-
-                        <FeatureCard
-                            emoji="🧭"
-                            title="Kasus Dilema Moral"
-                            description="Kelola bank cerita kasus dan opsi jawaban moral."
-                            actionLabel="Kelola Kasus"
-                            actionHref="/teacher/moral-cases"
-                            gradient="from-sky-400 to-blue-500"
-                        />
-
-                        <FeatureCard
-                            emoji="🌱"
-                            title="Indikator Karakter"
-                            description="Atur indikator dan standar perilaku kebaikan santri."
-                            actionLabel="Kelola Indikator"
-                            actionHref="/teacher/character-indicators"
-                            badgeText={`${stats.total_indicators} Indikator`}
-                            badgeColor="bg-emerald-100 text-emerald-800"
-                            gradient="from-emerald-400 to-green-500"
-                        />
-
-                        <FeatureCard
-                            emoji="⚖️"
-                            title="Konfigurasi Scoring"
-                            description="Atur bobot scoring tes dan observasi harian."
-                            actionLabel="Atur Scoring"
-                            actionHref="/teacher/scoring-configurations"
-                            gradient="from-purple-400 to-indigo-500"
-                        />
-
-                        <FeatureCard
-                            emoji="🌸"
-                            title="Early Warning Pendampingan"
-                            description="Pantau catatan santri yang membutuhkan pendampingan dengan bahasa positif."
-                            actionLabel="Buka Pendampingan"
-                            actionHref="/teacher/warnings"
-                            badgeText={`${stats.open_warnings} Terbuka`}
-                            badgeColor="bg-rose-100 text-rose-800"
-                            gradient="from-rose-400 to-orange-400"
-                        />
-
-                        <FeatureCard
-                            emoji="🎬"
-                            title="Materi Edukasi"
-                            description="Kelola video, komik, audio, gambar, cerita, dan rekomendasi materi santri."
-                            actionLabel="Kelola Materi"
-                            actionHref="/teacher/educational-contents"
-                            gradient="from-sky-400 to-emerald-500"
-                        />
-
-                        <FeatureCard
-                            emoji="🛡️"
-                            title="Simulasi Berani Menolak"
-                            description="Susun skenario dan respons untuk melatih santri berkata tidak dengan sopan."
-                            actionLabel="Kelola Simulasi"
-                            actionHref="/teacher/simulation-scenarios"
-                            badgeText={`${stats.total_simulations} Terbit`}
-                            badgeColor="bg-rose-100 text-rose-800"
-                            gradient="from-rose-400 to-pink-500"
-                        />
+                        <div className="w-1/3 space-y-2">
+                            <p className="text-[10px] font-bold text-slate-800 mb-1">Aksi</p>
+                            <button className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+                                <Download className="size-3 text-purple-600" /> Unduh PDF
+                            </button>
+                            <button className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+                                <Send className="size-3 text-emerald-600" /> Kirim ke Wali
+                            </button>
+                            <button className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+                                <Printer className="size-3 text-blue-600" /> Cetak Laporan
+                            </button>
+                            <button className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+                                <Link2 className="size-3 text-sky-600" /> Bagikan Link
+                            </button>
+                        </div>
                     </div>
-                </Section>
-
-                <AnalyticsSection
-                    analytics={analytics}
-                    filter_options={filter_options}
-                />
+                </div>
             </div>
 
-            <aside className="space-y-6 xl:sticky xl:top-4 xl:self-start">
-                <div className="rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)]">
-                    <div className="flex items-center justify-between">
-                        <h2 className="flex items-center gap-2 text-base font-extrabold text-slate-700">
-                            <ShieldCheck className="size-5 text-emerald-600" />
-                            Progress Validasi
-                        </h2>
-                        <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
-                            {validationPercentage}% Selesai
-                        </span>
+            {/* ═══════════════════════════════════════════
+                BOTTOM ROW
+                ═══════════════════════════════════════════ */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
+                {/* Aktivitas Terbaru */}
+                <div className="rounded-[24px] bg-white p-5 shadow-sm border border-slate-100">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-extrabold">Aktivitas Terbaru</h3>
+                        <span className="text-[10px] font-bold text-sky-500 cursor-pointer">Lihat Semua</span>
                     </div>
-
-                    <div className="mt-4">
-                        <div className="mb-1.5 flex justify-between text-xs font-semibold text-slate-500">
-                            <span>{stats.validated_reviews} divalidasi</span>
-                            <span>{totalReviews} total asesmen</span>
-                        </div>
-                        <div className="h-3.5 w-full overflow-hidden rounded-full bg-slate-100">
-                            <div
-                                className="h-full rounded-full bg-gradient-to-r from-teal-400 via-emerald-500 to-teal-600 transition-all duration-700"
-                                style={{
-                                    width: `${validationPercentage}%`,
-                                }}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="mt-5 grid grid-cols-2 gap-3 border-t border-slate-100 pt-4">
-                        <div className="rounded-2xl bg-emerald-50 p-3 text-center">
-                            <p className="text-xl font-extrabold text-emerald-700">
-                                {stats.validated_reviews}
-                            </p>
-                            <p className="mt-0.5 text-[11px] font-medium text-emerald-600">
-                                Selesai Review
-                            </p>
-                        </div>
-                        <div className="rounded-2xl bg-amber-50 p-3 text-center">
-                            <p className="text-xl font-extrabold text-amber-700">
-                                {stats.pending_reviews}
-                            </p>
-                            <p className="mt-0.5 text-[11px] font-medium text-amber-600">
-                                Menunggu Validasi
-                            </p>
-                        </div>
-                    </div>
+                    <table className="w-full text-left text-[11px]">
+                        <thead>
+                            <tr className="border-b border-slate-100 text-slate-400 font-bold">
+                                <th className="pb-2">Waktu</th>
+                                <th className="pb-2">Aktivitas</th>
+                                <th className="pb-2">Santri</th>
+                                <th className="pb-2">Oleh</th>
+                                <th className="pb-2 text-right">Poin</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-slate-700 font-medium">
+                            {recentActivities.map((act: any, idx: number) => (
+                                <tr key={idx} className="border-b border-slate-50">
+                                    <td className="py-2.5 text-slate-500">
+                                        {act.time}
+                                    </td>
+                                    <td className="py-2.5">{act.activity}</td>
+                                    <td className="py-2.5">{act.student}</td>
+                                    <td className="py-2.5">{act.by}</td>
+                                    <td className="py-2.5 text-right font-extrabold text-emerald-500">{act.points}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
 
-                <div className="rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)]">
-                    <h2 className="mb-4 flex items-center gap-2 text-base font-extrabold text-slate-700">
-                        <Sparkles className="size-5 text-amber-500" />
-                        Catatan Pembinaan
-                    </h2>
-
-                    <div className="space-y-3">
-                        <div className="flex items-start gap-3 rounded-2xl bg-teal-50/70 p-3.5">
-                            <span className="text-xl">🎧</span>
-                            <div className="text-xs">
-                                <p className="font-bold text-slate-800">
-                                    Dengarkan Rekaman Suara
-                                </p>
-                                <p className="mt-0.5 leading-snug text-slate-600">
-                                    Gunakan rekaman audio santri untuk
-                                    mengevaluasi kejujuran dan pemahaman moral
-                                    secara utuh.
-                                </p>
-                            </div>
+                {/* Tips Hari Ini */}
+                <div className="rounded-[24px] bg-gradient-to-r from-purple-50 to-purple-100 p-5 border border-purple-100 flex flex-col justify-center relative min-h-[160px] overflow-hidden">
+                    <div className="pl-36 relative z-10 py-2">
+                        <div className="flex items-center gap-2 mb-2">
+                            <h3 className="text-sm font-extrabold text-purple-900">Tips Hari Ini</h3>
+                            <Sparkles className="size-4 text-amber-500" />
                         </div>
-
-                        <div className="flex items-start gap-3 rounded-2xl bg-sky-50/70 p-3.5">
-                            <span className="text-xl">🌸</span>
-                            <div className="text-xs">
-                                <p className="font-bold text-slate-800">
-                                    Berikan Motivasi Positif
-                                </p>
-                                <p className="mt-0.5 leading-snug text-slate-600">
-                                    Apresiasi setiap penalaran baik yang
-                                    disampaikan santri untuk membakar semangat
-                                    karakter mereka.
-                                </p>
-                            </div>
-                        </div>
+                        <p className="text-xs text-purple-800 font-medium leading-relaxed">
+                            Berikan apresiasi setiap kebaikan kecil santri. Pujian akan menumbuhkan semangat berbuat baik!
+                        </p>
                     </div>
+                    {/* Mascot properly anchored slightly inside for symmetry */}
+                    <img 
+                        src="/images/dashboard/ustadz-mascot.png" 
+                        alt="Ustadz Mascot" 
+                        className="absolute left-3 bottom-0 w-32 h-auto drop-shadow-sm opacity-95 object-contain object-bottom" 
+                    />
+                    {/* Decorative stars */}
+                    <span className="absolute top-4 right-10 text-amber-300 text-xl">✦</span>
+                    <span className="absolute bottom-6 right-4 text-amber-400 text-lg">✦</span>
                 </div>
-
-                <div className="rounded-[28px] bg-gradient-to-br from-slate-800 to-slate-900 p-5 text-white shadow-[0_8px_30px_rgba(15,23,42,0.15)]">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-xl backdrop-blur-sm">
-                            🕌
-                        </div>
-                        <div>
-                            <p className="text-xs font-medium text-slate-400">
-                                Status Peran
-                            </p>
-                            <p className="text-sm font-extrabold text-white">
-                                {roleTitle} TeladanKu
-                            </p>
-                        </div>
-                    </div>
-                    <p className="mt-3 text-xs leading-relaxed text-slate-300">
-                        Anda memiliki akses penuh untuk membimbing santri dan
-                        memvalidasi perkembangan moral mereka.
-                    </p>
-                </div>
-            </aside>
+            </div>
         </div>
     );
 }
@@ -777,6 +914,10 @@ function AnalyticsSection({
         return null;
     }
 
+    const moralDistribution = analytics.moral_distribution || [];
+    const observationSummary = analytics.observation_summary || [];
+    const scoreTrend = analytics.score_trend || [];
+
     const handleFilterChange = (key: string, value: string) => {
         const query = new URLSearchParams(window.location.search);
 
@@ -856,11 +997,11 @@ function AnalyticsSection({
                         Distribusi Level Moral
                     </h3>
                     <div className="h-72 w-full">
-                        {analytics.moral_distribution.length > 0 ? (
+                        {moralDistribution.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                     <Pie
-                                        data={analytics.moral_distribution}
+                                        data={moralDistribution}
                                         cx="50%"
                                         cy="50%"
                                         innerRadius={65}
@@ -868,7 +1009,7 @@ function AnalyticsSection({
                                         paddingAngle={5}
                                         dataKey="value"
                                     >
-                                        {analytics.moral_distribution.map(
+                                        {moralDistribution.map(
                                             (entry, index) => {
                                                 const colors = [
                                                     '#10b981',
@@ -914,10 +1055,10 @@ function AnalyticsSection({
                         Ringkasan Observasi
                     </h3>
                     <div className="h-72 w-full">
-                        {analytics.observation_summary.length > 0 ? (
+                        {observationSummary.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart
-                                    data={analytics.observation_summary}
+                                    data={observationSummary}
                                     margin={{
                                         top: 10,
                                         right: 10,
@@ -966,10 +1107,10 @@ function AnalyticsSection({
                         Tren Skor Rata-rata
                     </h3>
                     <div className="h-72 w-full">
-                        {analytics.score_trend.length > 0 ? (
+                        {scoreTrend.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart
-                                    data={analytics.score_trend}
+                                    data={scoreTrend}
                                     margin={{
                                         top: 10,
                                         right: 10,

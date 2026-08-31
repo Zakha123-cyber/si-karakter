@@ -421,18 +421,21 @@ export default function TeacherMoralCasesIndex({
         <>
             <Head title="Kasus Moral" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-4">
-                {/* Hero Gradient Banner */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 p-6 text-white shadow-xl md:rounded-[28px] md:p-8">
-                    <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                        <div className="max-w-2xl">
-                            <span className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-medium backdrop-blur-md">
-                                Phase 4 — Moral Dilemma Cases
-                            </span>
-                            <h1 className="mt-3 text-2xl font-bold tracking-tight md:text-3xl">
-                                Kasus Dilema Moral
+            <div className="min-h-full space-y-6 pb-8">
+                <section className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-teal-600 via-emerald-600 to-teal-700 p-6 text-white shadow-[0_12px_40px_rgba(13,148,136,0.35)] sm:p-8">
+                    <div className="pointer-events-none absolute -top-8 -right-8 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+                    <div className="relative flex flex-wrap items-center justify-between gap-6">
+                        <div className="max-w-3xl min-w-0">
+                            <div className="mb-2 flex items-center gap-2 text-emerald-100">
+                                <BookOpenCheck className="size-4" />
+                                <span className="text-xs font-bold tracking-wider uppercase">
+                                    Kasus Dilema Moral
+                                </span>
+                            </div>
+                            <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
+                                Kelola Kasus Moral
                             </h1>
-                            <p className="mt-2 text-sm text-emerald-100 md:text-base">
+                            <p className="mt-2 max-w-xl text-sm leading-relaxed text-emerald-50/90">
                                 Kelola cerita dilema moral, pilihan jawaban,
                                 indikator karakter, dan media pendukung untuk
                                 paket tes santri.
@@ -442,16 +445,13 @@ export default function TeacherMoralCasesIndex({
                         <Button
                             type="button"
                             onClick={openCreate}
-                            className="inline-flex shrink-0 items-center gap-2 self-start rounded-xl bg-white px-5 py-3 text-sm font-semibold text-emerald-800 shadow-md transition-all hover:bg-emerald-50 hover:shadow-lg md:self-center"
+                            className="rounded-2xl bg-white text-emerald-700 shadow-lg hover:bg-emerald-50"
                         >
                             <Plus className="size-4" />
                             Tambah Kasus
                         </Button>
                     </div>
-                    {/* Decorative Background Glows */}
-                    <div className="pointer-events-none absolute -top-10 -right-10 size-60 rounded-full bg-white/10 blur-2xl" />
-                    <div className="pointer-events-none absolute right-20 -bottom-10 size-40 rounded-full bg-teal-500/20 blur-xl" />
-                </div>
+                </section>
 
                 <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
                     <SummaryCard
@@ -489,251 +489,235 @@ export default function TeacherMoralCasesIndex({
                     />
                 </div>
 
-                <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <CardHeader className="border-b border-slate-100 px-6 py-5 dark:border-slate-800">
-                        <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400">
-                                    <Search className="size-4" />
-                                </div>
-                                <div>
-                                    <CardTitle className="text-lg font-bold text-slate-800 dark:text-white">
-                                        Daftar Kasus
-                                    </CardTitle>
-                                    <CardDescription className="text-xs text-slate-500">
-                                        Menampilkan {moralCases.from ?? 0}-
-                                        {moralCases.to ?? 0} dari{' '}
-                                        {moralCases.total} kasus moral
-                                    </CardDescription>
-                                </div>
+                <section className="rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)] sm:p-6">
+                    <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-xl">
+                                🧩
+                            </span>
+                            <div>
+                                <h2 className="text-lg font-extrabold text-slate-800">
+                                    Daftar Kasus
+                                </h2>
+                                <p className="text-xs font-medium text-slate-400">
+                                    Menampilkan {moralCases.from ?? 0}-
+                                    {moralCases.to ?? 0} dari {moralCases.total}{' '}
+                                    kasus moral
+                                </p>
                             </div>
                         </div>
-                    </CardHeader>
-                    <CardContent className="grid gap-6 p-6">
-                        <form
-                            onSubmit={submitFilters}
-                            className="grid gap-3 md:grid-cols-[minmax(0,1fr)_200px_auto]"
-                        >
-                            <div className="relative">
-                                <Search className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
-                                <Input
-                                    value={search}
-                                    onChange={(event) =>
-                                        setSearch(event.target.value)
-                                    }
-                                    placeholder="Cari judul atau cerita kasus..."
-                                    className="h-10 rounded-xl border-slate-200 bg-slate-50 pr-4 pl-10 text-sm transition-all focus:border-emerald-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
-                                />
-                            </div>
-                            <select
-                                className="h-10 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-sm text-slate-700 transition-all focus:border-emerald-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
-                                value={active}
+                        <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3.5 py-1.5 text-xs font-bold text-emerald-700">
+                            <Filter className="size-4" />
+                            Filter kasus
+                        </div>
+                    </div>
+
+                    <form
+                        onSubmit={submitFilters}
+                        className="mb-5 grid gap-3 rounded-[24px] border border-slate-100 bg-slate-50/60 p-3 md:grid-cols-[minmax(0,1fr)_220px_auto]"
+                    >
+                        <div className="relative">
+                            <Search className="pointer-events-none absolute top-2.5 left-3 size-4 text-slate-400" />
+                            <Input
+                                value={search}
                                 onChange={(event) =>
-                                    setActive(event.target.value)
+                                    setSearch(event.target.value)
                                 }
-                            >
-                                <option value="">Semua status</option>
-                                <option value="1">Aktif</option>
-                                <option value="0">Nonaktif</option>
-                            </select>
-                            <Button
-                                type="submit"
-                                className="h-10 rounded-xl bg-slate-800 px-5 text-sm font-medium text-white shadow-sm hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600"
-                            >
-                                <Filter className="mr-2 size-4" />
-                                Filter
-                            </Button>
-                        </form>
-
-                        <div className="overflow-x-auto rounded-xl border border-slate-100 dark:border-slate-800">
-                            <table className="w-full min-w-[980px] text-sm">
-                                <thead className="border-b border-slate-100 bg-slate-50/80 text-left text-xs font-semibold tracking-wider text-slate-500 uppercase dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-400">
-                                    <tr>
-                                        <th className="px-6 py-4">Kasus</th>
-                                        <th className="px-6 py-4">Konten</th>
-                                        <th className="px-6 py-4">Media</th>
-                                        <th className="px-6 py-4">Status</th>
-                                        <th className="px-6 py-4 text-right">
-                                            Action
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {moralCases.data.map((moralCase) => (
-                                        <tr
-                                            key={moralCase.id}
-                                            className="border-t border-slate-100 transition-colors hover:bg-emerald-50/30 dark:border-slate-800/60 dark:hover:bg-slate-800/40"
-                                        >
-                                            <td className="px-6 py-4">
-                                                <div className="font-semibold text-slate-800 transition-colors hover:text-emerald-600 dark:text-white">
-                                                    {moralCase.title}
-                                                </div>
-                                                <div className="mt-1 line-clamp-2 max-w-xl text-xs text-slate-500 dark:text-slate-400">
-                                                    {moralCase.story}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex flex-wrap gap-1.5">
-                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700 dark:border-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-300">
-                                                        Urutan{' '}
-                                                        {moralCase.sort_order}
-                                                    </span>
-                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-700 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
-                                                        {
-                                                            moralCase.options_count
-                                                        }{' '}
-                                                        pilihan
-                                                    </span>
-                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700 dark:border-purple-800 dark:bg-purple-950/40 dark:text-purple-300">
-                                                        {
-                                                            moralCase.indicators_count
-                                                        }{' '}
-                                                        indikator
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex flex-wrap gap-1.5">
-                                                    <MediaBadge
-                                                        active={
-                                                            moralCase.image_path !==
-                                                            null
-                                                        }
-                                                        label="Gambar"
-                                                    />
-                                                    <MediaBadge
-                                                        active={
-                                                            moralCase.audio_path !==
-                                                            null
-                                                        }
-                                                        label="Audio"
-                                                    />
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {moralCase.is_active ? (
-                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300">
-                                                        <ToggleLeft className="size-3 text-emerald-600" />
-                                                        Aktif
-                                                    </span>
-                                                ) : (
-                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
-                                                        Nonaktif
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex flex-wrap justify-end gap-1.5">
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            openEdit(moralCase)
-                                                        }
-                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                                                    >
-                                                        <Pencil className="size-3.5" />
-                                                        Edit
-                                                    </Button>
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            openOptions(
-                                                                moralCase,
-                                                            )
-                                                        }
-                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-teal-200 hover:bg-teal-50 hover:text-teal-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                                                    >
-                                                        <ListChecks className="size-3.5" />
-                                                        Pilihan
-                                                    </Button>
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            openIndicators(
-                                                                moralCase,
-                                                            )
-                                                        }
-                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-amber-200 hover:bg-amber-50 hover:text-amber-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                                                    >
-                                                        <SlidersHorizontal className="size-3.5" />
-                                                        Indikator
-                                                    </Button>
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            openMedia(moralCase)
-                                                        }
-                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                                                    >
-                                                        <ImageUp className="size-3.5" />
-                                                        Media
-                                                    </Button>
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            deleteCase(
-                                                                moralCase,
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            moralCase.test_packages_count >
-                                                            0
-                                                        }
-                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-rose-600 shadow-2xs transition-all hover:border-rose-200 hover:bg-rose-50 dark:border-slate-700 dark:bg-slate-800"
-                                                    >
-                                                        <Trash2 className="size-3.5" />
-                                                        Hapus
-                                                    </Button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                placeholder="Cari judul atau cerita kasus..."
+                                className="h-10 rounded-2xl border-slate-100 bg-white pl-9 text-sm shadow-sm focus-visible:ring-emerald-200"
+                            />
                         </div>
+                        <select
+                            className="h-10 rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
+                            value={active}
+                            onChange={(event) => setActive(event.target.value)}
+                        >
+                            <option value="">Semua status</option>
+                            <option value="1">Aktif</option>
+                            <option value="0">Nonaktif</option>
+                        </select>
+                        <Button
+                            type="submit"
+                            className="h-10 rounded-2xl bg-emerald-600 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
+                        >
+                            <Filter className="mr-2 size-4" />
+                            Filter
+                        </Button>
+                    </form>
 
-                        {moralCases.data.length === 0 && (
-                            <div className="rounded-xl border border-dashed border-slate-200 p-12 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
-                                Belum ada kasus moral untuk filter ini.
-                            </div>
-                        )}
-
-                        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-4 dark:border-slate-800">
-                            <div className="text-xs text-slate-500">
-                                Total {moralCases.total} kasus moral
-                            </div>
-                            <div className="flex flex-wrap gap-1.5">
-                                {moralCases.links.map((link) => (
-                                    <Button
-                                        key={`${link.label}-${link.url}`}
-                                        type="button"
-                                        size="sm"
-                                        disabled={!link.url}
-                                        onClick={() => {
-                                            if (link.url) {
-                                                router.visit(link.url, {
-                                                    preserveScroll: true,
-                                                });
-                                            }
-                                        }}
-                                        className={
-                                            link.active
-                                                ? 'h-8 rounded-lg bg-emerald-600 px-3 text-xs font-semibold text-white shadow-xs hover:bg-emerald-700'
-                                                : 'h-8 rounded-lg border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
-                                        }
+                    <div className="overflow-x-auto rounded-[24px] border border-slate-100 bg-white">
+                        <table className="w-full min-w-[980px] text-sm">
+                            <thead className="border-b border-slate-100 bg-slate-50 text-left text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                                <tr>
+                                    <th className="px-6 py-4">Kasus</th>
+                                    <th className="px-6 py-4">Konten</th>
+                                    <th className="px-6 py-4">Media</th>
+                                    <th className="px-6 py-4">Status</th>
+                                    <th className="px-6 py-4 text-right">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {moralCases.data.map((moralCase) => (
+                                    <tr
+                                        key={moralCase.id}
+                                        className="border-t border-slate-100 transition-colors hover:bg-emerald-50/30"
                                     >
-                                        <PaginationLabel label={link.label} />
-                                    </Button>
+                                        <td className="px-6 py-4">
+                                            <div className="font-semibold text-slate-800 transition-colors hover:text-emerald-600">
+                                                {moralCase.title}
+                                            </div>
+                                            <div className="mt-1 line-clamp-2 max-w-xl text-xs text-slate-500">
+                                                {moralCase.story}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-wrap gap-1.5">
+                                                <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700">
+                                                    Urutan{' '}
+                                                    {moralCase.sort_order}
+                                                </span>
+                                                <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-700">
+                                                    {moralCase.options_count}{' '}
+                                                    pilihan
+                                                </span>
+                                                <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700">
+                                                    {moralCase.indicators_count}{' '}
+                                                    indikator
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-wrap gap-1.5">
+                                                <MediaBadge
+                                                    active={
+                                                        moralCase.image_path !==
+                                                        null
+                                                    }
+                                                    label="Gambar"
+                                                />
+                                                <MediaBadge
+                                                    active={
+                                                        moralCase.audio_path !==
+                                                        null
+                                                    }
+                                                    label="Audio"
+                                                />
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {renderStatusBadge(
+                                                moralCase.is_active,
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-wrap justify-end gap-1.5">
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        openEdit(moralCase)
+                                                    }
+                                                    className="h-8 rounded-xl border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 shadow-sm hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
+                                                >
+                                                    <Pencil className="size-3.5" />
+                                                    Edit
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        openOptions(moralCase)
+                                                    }
+                                                    className="h-8 rounded-xl border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 shadow-sm hover:border-teal-200 hover:bg-teal-50 hover:text-teal-600"
+                                                >
+                                                    <ListChecks className="size-3.5" />
+                                                    Pilihan
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        openIndicators(
+                                                            moralCase,
+                                                        )
+                                                    }
+                                                    className="h-8 rounded-xl border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 shadow-sm hover:border-amber-200 hover:bg-amber-50 hover:text-amber-600"
+                                                >
+                                                    <SlidersHorizontal className="size-3.5" />
+                                                    Indikator
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        openMedia(moralCase)
+                                                    }
+                                                    className="h-8 rounded-xl border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 shadow-sm hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
+                                                >
+                                                    <ImageUp className="size-3.5" />
+                                                    Media
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        deleteCase(moralCase)
+                                                    }
+                                                    disabled={
+                                                        moralCase.test_packages_count >
+                                                        0
+                                                    }
+                                                    className="h-8 rounded-xl border border-rose-100 bg-white px-2.5 text-xs font-bold text-rose-600 shadow-sm hover:border-rose-200 hover:bg-rose-50"
+                                                >
+                                                    <Trash2 className="size-3.5" />
+                                                    Hapus
+                                                </Button>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 ))}
-                            </div>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {moralCases.data.length === 0 && (
+                        <div className="mt-5 rounded-[24px] border border-dashed border-slate-200 bg-slate-50/60 p-12 text-center text-sm text-slate-500">
+                            Belum ada kasus moral untuk filter ini.
                         </div>
-                    </CardContent>
-                </Card>
+                    )}
+
+                    <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-4">
+                        <div className="text-xs font-medium text-slate-500">
+                            Total {moralCases.total} kasus moral
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                            {moralCases.links.map((link) => (
+                                <Button
+                                    key={`${link.label}-${link.url}`}
+                                    type="button"
+                                    size="sm"
+                                    disabled={!link.url}
+                                    onClick={() => {
+                                        if (link.url) {
+                                            router.visit(link.url, {
+                                                preserveScroll: true,
+                                            });
+                                        }
+                                    }}
+                                    className={
+                                        link.active
+                                            ? 'h-8 rounded-xl bg-emerald-600 px-3 text-xs font-bold text-white shadow-sm hover:bg-emerald-700'
+                                            : 'h-8 rounded-xl border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 hover:bg-slate-50'
+                                    }
+                                >
+                                    <PaginationLabel label={link.label} />
+                                </Button>
+                            ))}
+                        </div>
+                    </div>
+                </section>
             </div>
 
             <Sheet
@@ -1343,26 +1327,25 @@ function SummaryCard({
     color?: 'emerald' | 'blue' | 'purple' | 'amber';
 }) {
     const colorMap = {
-        emerald:
-            'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900',
-        blue: 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900',
-        purple: 'bg-purple-50 text-purple-600 border-purple-100 dark:bg-purple-950/40 dark:text-purple-400 dark:border-purple-900',
-        amber: 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900',
+        emerald: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+        blue: 'bg-blue-50 text-blue-600 border-blue-100',
+        purple: 'bg-purple-50 text-purple-600 border-purple-100',
+        amber: 'bg-amber-50 text-amber-600 border-amber-100',
     };
 
     return (
-        <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+        <Card className="overflow-hidden rounded-[24px] border border-slate-100 bg-white shadow-[0_8px_30px_rgba(16,58,58,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
             <CardContent className="flex items-center gap-4 p-5">
                 <div
-                    className={`flex size-12 shrink-0 items-center justify-center rounded-xl border ${colorMap[color]}`}
+                    className={`flex size-12 shrink-0 items-center justify-center rounded-2xl border ${colorMap[color]}`}
                 >
                     {icon}
                 </div>
                 <div>
-                    <div className="text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-slate-400">
+                    <div className="text-[11px] font-bold tracking-wider text-slate-400 uppercase">
                         {label}
                     </div>
-                    <div className="mt-1 text-2xl font-bold text-slate-800 dark:text-white">
+                    <div className="mt-1 text-2xl font-extrabold text-slate-800">
                         {value}
                     </div>
                 </div>
@@ -1374,15 +1357,32 @@ function SummaryCard({
 function MediaBadge({ active, label }: { active: boolean; label: string }) {
     if (active) {
         return (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
                 {label}: Ada
             </span>
         );
     }
 
     return (
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-500">
             {label}: Kosong
+        </span>
+    );
+}
+
+function renderStatusBadge(active: boolean) {
+    if (active) {
+        return (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                <ToggleLeft className="size-3 text-emerald-600" />
+                Aktif
+            </span>
+        );
+    }
+
+    return (
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500">
+            Nonaktif
         </span>
     );
 }

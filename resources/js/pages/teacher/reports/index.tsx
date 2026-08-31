@@ -130,7 +130,10 @@ function scoreBadge(value: number | null, suffix: string): string {
 }
 
 function PaginationLabel({ label }: { label: string }) {
-    if (label === '&laquo; Previous' || label.toLowerCase().includes('previous')) {
+    if (
+        label === '&laquo; Previous' ||
+        label.toLowerCase().includes('previous')
+    ) {
         return (
             <>
                 <ChevronLeft className="size-4" />
@@ -213,7 +216,9 @@ export default function TeacherReportsIndex({
         generateForm.post('/teacher/reports/generate', {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success('Draft laporan berhasil dibuat.', { id: toastId });
+                toast.success('Draft laporan berhasil dibuat.', {
+                    id: toastId,
+                });
                 setGenerateOpen(false);
             },
             onError: () => {
@@ -238,7 +243,9 @@ export default function TeacherReportsIndex({
                     });
                 },
                 onError: () => {
-                    toast.error('Draft narasi AI gagal dibuat.', { id: toastId });
+                    toast.error('Draft narasi AI gagal dibuat.', {
+                        id: toastId,
+                    });
                 },
             },
         );
@@ -258,7 +265,9 @@ export default function TeacherReportsIndex({
                     });
                 },
                 onError: () => {
-                    toast.error('Laporan belum bisa diterbitkan.', { id: toastId });
+                    toast.error('Laporan belum bisa diterbitkan.', {
+                        id: toastId,
+                    });
                 },
             },
         );
@@ -394,23 +403,28 @@ export default function TeacherReportsIndex({
                                                     {report.student.name ??
                                                         'Santri'}
                                                 </h3>
-                                                {report.student.student_code && (
+                                                {report.student
+                                                    .student_code && (
                                                     <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">
-                                                        {report.student.student_code}
+                                                        {
+                                                            report.student
+                                                                .student_code
+                                                        }
                                                     </span>
                                                 )}
                                                 {report.student.group_name && (
                                                     <span className="rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-bold text-teal-600">
-                                                        {report.student.group_name}
+                                                        {
+                                                            report.student
+                                                                .group_name
+                                                        }
                                                     </span>
                                                 )}
                                                 <Badge
                                                     variant="outline"
-                                                    className={
-                                                        statusClasses(
-                                                            report.status,
-                                                        )
-                                                    }
+                                                    className={statusClasses(
+                                                        report.status,
+                                                    )}
                                                 >
                                                     {statusLabel(report.status)}
                                                 </Badge>
@@ -480,7 +494,8 @@ export default function TeacherReportsIndex({
                                                 </Button>
                                             )}
                                             {(report.has_pdf ||
-                                                report.status === 'published') && (
+                                                report.status ===
+                                                    'published') && (
                                                 <Button
                                                     type="button"
                                                     variant="outline"
@@ -541,8 +556,8 @@ export default function TeacherReportsIndex({
                             </SheetTitle>
                         </div>
                         <SheetDescription className="text-sm text-slate-500">
-                            Pilih santri dan rentang periode untuk membuat
-                            draft laporan.
+                            Pilih santri dan rentang periode untuk membuat draft
+                            laporan.
                         </SheetDescription>
                     </SheetHeader>
 
@@ -605,9 +620,7 @@ export default function TeacherReportsIndex({
                                     className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm focus-visible:ring-emerald-200"
                                 />
                                 <InputError
-                                    message={
-                                        generateForm.errors.period_start
-                                    }
+                                    message={generateForm.errors.period_start}
                                     className="mt-1"
                                 />
                             </div>

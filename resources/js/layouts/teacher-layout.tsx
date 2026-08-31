@@ -168,7 +168,7 @@ function SidebarContent() {
             </div>
 
             {/* Nav */}
-            <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
+            <nav className="flex flex-1 [scrollbar-color:rgb(148_163_184)_transparent] flex-col gap-1 overflow-y-auto overscroll-y-contain [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent">
                 {navItems.map((item) => {
                     const isActive =
                         url === item.href ||

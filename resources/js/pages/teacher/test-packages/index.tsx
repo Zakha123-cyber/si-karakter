@@ -465,7 +465,7 @@ export default function TeacherTestPackagesIndex({
                         </Button>
                     </form>
 
-                    <div className="overflow-x-auto rounded-[24px] border border-slate-100 bg-white">
+                    <div className="[scrollbar-color:rgb(148_163_184)_transparent] overflow-x-auto overscroll-x-contain rounded-[24px] border border-slate-100 bg-white [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent">
                         <table className="w-full min-w-[920px] text-sm">
                             <thead className="border-b border-slate-100 bg-slate-50 text-left text-[11px] font-bold tracking-wider text-slate-500 uppercase">
                                 <tr>
@@ -684,27 +684,34 @@ export default function TeacherTestPackagesIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-xl">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-xl">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <ClipboardList className="size-5 text-muted-foreground" />
-                            <SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <ClipboardList className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
                                 {editingPackage
                                     ? 'Edit Paket Tes'
                                     : 'Tambah Paket Tes'}
                             </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             Atur judul, periode aktif, dan batas percobaan.
                         </SheetDescription>
                     </SheetHeader>
 
                     <form
                         onSubmit={submitPackage}
-                        className="grid gap-4 px-4 pb-4"
+                        className="grid gap-5 px-4 py-5"
                     >
                         <div className="grid gap-2">
-                            <Label htmlFor="title">Judul</Label>
+                            <Label
+                                htmlFor="title"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                Judul Paket
+                            </Label>
                             <Input
                                 id="title"
                                 value={packageForm.data.title}
@@ -714,15 +721,23 @@ export default function TeacherTestPackagesIndex({
                                         event.target.value,
                                     )
                                 }
+                                placeholder="Contoh: Asesmen Karakter Semester 1"
+                                className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                             />
                             <InputError message={packageForm.errors.title} />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="description">Deskripsi</Label>
+                            <Label
+                                htmlFor="description"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                Deskripsi
+                            </Label>
                             <textarea
                                 id="description"
-                                className="min-h-24 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                placeholder="Tambahkan deskripsi singkat paket tes..."
+                                className="min-h-28 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm outline-none placeholder:text-slate-400 focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={packageForm.data.description}
                                 onChange={(event) =>
                                     packageForm.setData(
@@ -738,7 +753,12 @@ export default function TeacherTestPackagesIndex({
 
                         <div className="grid gap-4 sm:grid-cols-2">
                             <div className="grid gap-2">
-                                <Label htmlFor="start_at">Mulai</Label>
+                                <Label
+                                    htmlFor="start_at"
+                                    className="text-sm font-medium text-slate-700"
+                                >
+                                    Mulai
+                                </Label>
                                 <Input
                                     id="start_at"
                                     type="datetime-local"
@@ -749,13 +769,19 @@ export default function TeacherTestPackagesIndex({
                                             event.target.value,
                                         )
                                     }
+                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={packageForm.errors.start_at}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="end_at">Selesai</Label>
+                                <Label
+                                    htmlFor="end_at"
+                                    className="text-sm font-medium text-slate-700"
+                                >
+                                    Selesai
+                                </Label>
                                 <Input
                                     id="end_at"
                                     type="datetime-local"
@@ -766,6 +792,7 @@ export default function TeacherTestPackagesIndex({
                                             event.target.value,
                                         )
                                     }
+                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={packageForm.errors.end_at}
@@ -774,7 +801,10 @@ export default function TeacherTestPackagesIndex({
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="attempt_limit">
+                            <Label
+                                htmlFor="attempt_limit"
+                                className="text-sm font-medium text-slate-700"
+                            >
                                 Jumlah Percobaan
                             </Label>
                             <Input
@@ -789,16 +819,18 @@ export default function TeacherTestPackagesIndex({
                                         Number(event.target.value),
                                     )
                                 }
+                                className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm focus-visible:ring-emerald-200"
                             />
                             <InputError
                                 message={packageForm.errors.attempt_limit}
                             />
                         </div>
 
-                        <div className="flex gap-2 pt-2">
+                        <div className="flex gap-2 border-t border-slate-100 pt-4">
                             <Button
                                 type="submit"
                                 disabled={packageForm.processing}
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
                             >
                                 {editingPackage
                                     ? 'Simpan Perubahan'
@@ -808,6 +840,7 @@ export default function TeacherTestPackagesIndex({
                                 type="button"
                                 variant="outline"
                                 onClick={closePackageSheet}
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>

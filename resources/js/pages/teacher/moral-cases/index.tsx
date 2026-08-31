@@ -545,7 +545,7 @@ export default function TeacherMoralCasesIndex({
                         </Button>
                     </form>
 
-                    <div className="overflow-x-auto rounded-[24px] border border-slate-100 bg-white">
+                    <div className="[scrollbar-color:rgb(148_163_184)_transparent] overflow-x-auto overscroll-x-contain rounded-[24px] border border-slate-100 bg-white [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent">
                         <table className="w-full min-w-[980px] text-sm">
                             <thead className="border-b border-slate-100 bg-slate-50 text-left text-[11px] font-bold tracking-wider text-slate-500 uppercase">
                                 <tr>
@@ -728,27 +728,34 @@ export default function TeacherMoralCasesIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-xl">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-xl">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <BookOpenCheck className="size-5 text-muted-foreground" />
-                            <SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <BookOpenCheck className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
                                 {editingCase
                                     ? 'Edit Kasus Moral'
                                     : 'Tambah Kasus Moral'}
                             </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             Tulis cerita dilema dan urutan tampil kasus.
                         </SheetDescription>
                     </SheetHeader>
 
                     <form
                         onSubmit={submitCase}
-                        className="grid gap-4 px-4 pb-4"
+                        className="grid gap-5 px-4 py-5"
                     >
                         <div className="grid gap-2">
-                            <Label htmlFor="title">Judul</Label>
+                            <Label
+                                htmlFor="title"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                Judul Kasus
+                            </Label>
                             <Input
                                 id="title"
                                 value={caseForm.data.title}
@@ -758,15 +765,23 @@ export default function TeacherMoralCasesIndex({
                                         event.target.value,
                                     )
                                 }
+                                placeholder="Contoh: Kejujuran dalam Persahabatan"
+                                className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                             />
                             <InputError message={caseForm.errors.title} />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="story">Cerita</Label>
+                            <Label
+                                htmlFor="story"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                Cerita Dilema
+                            </Label>
                             <textarea
                                 id="story"
-                                className="min-h-48 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                placeholder="Tuliskan cerita atau situasi dilema moral..."
+                                className="min-h-48 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm outline-none placeholder:text-slate-400 focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={caseForm.data.story}
                                 onChange={(event) =>
                                     caseForm.setData(
@@ -780,7 +795,12 @@ export default function TeacherMoralCasesIndex({
 
                         <div className="grid gap-4 sm:grid-cols-2">
                             <div className="grid gap-2">
-                                <Label htmlFor="sort_order">Urutan</Label>
+                                <Label
+                                    htmlFor="sort_order"
+                                    className="text-sm font-medium text-slate-700"
+                                >
+                                    Urutan Tampil
+                                </Label>
                                 <Input
                                     id="sort_order"
                                     type="number"
@@ -796,12 +816,13 @@ export default function TeacherMoralCasesIndex({
                                             Number(event.target.value),
                                         )
                                     }
+                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={caseForm.errors.sort_order}
                                 />
                             </div>
-                            <div className="flex items-center gap-3 pt-7">
+                            <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 sm:mt-6">
                                 <Checkbox
                                     id="is_active"
                                     checked={caseForm.data.is_active}
@@ -812,14 +833,20 @@ export default function TeacherMoralCasesIndex({
                                         )
                                     }
                                 />
-                                <Label htmlFor="is_active">Kasus aktif</Label>
+                                <Label
+                                    htmlFor="is_active"
+                                    className="text-sm font-medium text-slate-700"
+                                >
+                                    Kasus aktif
+                                </Label>
                             </div>
                         </div>
 
-                        <div className="flex gap-2 pt-2">
+                        <div className="flex gap-2 border-t border-slate-100 pt-4">
                             <Button
                                 type="submit"
                                 disabled={caseForm.processing}
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
                             >
                                 {editingCase
                                     ? 'Simpan Perubahan'
@@ -829,6 +856,7 @@ export default function TeacherMoralCasesIndex({
                                 type="button"
                                 variant="outline"
                                 onClick={closeCaseSheet}
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>

@@ -326,17 +326,17 @@ export default function AdminEducationalContentsIndex({
         <>
             <Head title="Materi Edukasi" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-4">
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-sky-600 to-emerald-600 p-6 text-white shadow-xl md:rounded-[28px] md:p-8">
+            <div className="min-h-full space-y-6 pb-8">
+                <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-teal-600 via-emerald-600 to-teal-700 p-6 text-white shadow-[0_12px_40px_rgba(13,148,136,0.35)] sm:p-8">
                     <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                         <div className="max-w-2xl">
-                            <span className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-medium backdrop-blur-md">
-                                Phase 13 — Educational Content
+                            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1 text-xs font-bold tracking-wider uppercase backdrop-blur-md">
+                                Materi Edukasi
                             </span>
-                            <h1 className="mt-3 text-2xl font-bold tracking-tight md:text-3xl">
+                            <h1 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
                                 Materi Edukasi Teladan
                             </h1>
-                            <p className="mt-2 text-sm text-sky-100 md:text-base">
+                            <p className="mt-2 max-w-xl text-sm leading-relaxed text-emerald-50/90">
                                 Kelola video, komik, gambar, audio, cerita,
                                 mapping indikator karakter, dan media yang akan
                                 dilihat santri.
@@ -346,7 +346,7 @@ export default function AdminEducationalContentsIndex({
                         <Button
                             type="button"
                             onClick={openCreate}
-                            className="inline-flex shrink-0 items-center gap-2 self-start rounded-xl bg-white px-5 py-3 text-sm font-semibold text-emerald-800 shadow-md transition-all hover:bg-emerald-50 hover:shadow-lg md:self-center"
+                            className="rounded-2xl bg-white text-emerald-700 shadow-lg hover:bg-emerald-50"
                         >
                             <Plus className="size-4" />
                             Tambah Materi
@@ -356,15 +356,15 @@ export default function AdminEducationalContentsIndex({
                     <div className="pointer-events-none absolute right-20 -bottom-10 size-40 rounded-full bg-emerald-500/20 blur-xl" />
                 </div>
 
-                <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <CardHeader className="border-b border-slate-100 px-6 py-5 dark:border-slate-800">
+                <Card className="overflow-hidden rounded-[28px] border border-slate-100 bg-white shadow-[0_8px_30px_rgba(16,58,58,0.08)]">
+                    <CardHeader className="border-b border-slate-100 px-5 py-4 sm:px-6">
                         <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="flex size-9 items-center justify-center rounded-xl bg-sky-50 text-sky-600 dark:bg-sky-950/50 dark:text-sky-400">
                                     <BookOpen className="size-4" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-lg font-bold text-slate-800 dark:text-white">
+                                    <CardTitle className="text-lg font-extrabold text-slate-800">
                                         Daftar Materi
                                     </CardTitle>
                                     <CardDescription className="text-xs text-slate-500">
@@ -379,7 +379,7 @@ export default function AdminEducationalContentsIndex({
                     <CardContent className="grid gap-6 p-6">
                         <form
                             onSubmit={submitFilters}
-                            className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_160px_160px_220px_auto]"
+                            className="grid gap-3 rounded-[24px] border border-slate-100 bg-slate-50/60 p-3 xl:grid-cols-[minmax(0,1fr)_160px_160px_220px_auto]"
                         >
                             <div className="relative">
                                 <Search className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
@@ -389,11 +389,11 @@ export default function AdminEducationalContentsIndex({
                                         setSearch(event.target.value)
                                     }
                                     placeholder="Cari judul, deskripsi, atau isi materi..."
-                                    className="h-10 rounded-xl border-slate-200 bg-slate-50 pr-4 pl-10 text-sm"
+                                    className="h-10 rounded-2xl border-slate-100 bg-white pr-4 pl-10 text-sm shadow-sm focus-visible:ring-emerald-200"
                                 />
                             </div>
                             <select
-                                className="h-10 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-sm text-slate-700"
+                                className="h-10 rounded-2xl border border-slate-100 bg-white px-3.5 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={status}
                                 onChange={(event) =>
                                     setStatus(event.target.value)
@@ -407,7 +407,7 @@ export default function AdminEducationalContentsIndex({
                                 ))}
                             </select>
                             <select
-                                className="h-10 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-sm text-slate-700"
+                                className="h-10 rounded-2xl border border-slate-100 bg-white px-3.5 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={contentType}
                                 onChange={(event) =>
                                     setContentType(event.target.value)
@@ -421,7 +421,7 @@ export default function AdminEducationalContentsIndex({
                                 ))}
                             </select>
                             <select
-                                className="h-10 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-sm text-slate-700"
+                                className="h-10 rounded-2xl border border-slate-100 bg-white px-3.5 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={indicatorId}
                                 onChange={(event) =>
                                     setIndicatorId(event.target.value)
@@ -439,14 +439,14 @@ export default function AdminEducationalContentsIndex({
                             </select>
                             <Button
                                 type="submit"
-                                className="h-10 rounded-xl bg-slate-800 px-5 text-sm font-medium text-white shadow-sm hover:bg-slate-700"
+                                className="h-10 rounded-2xl bg-emerald-600 px-5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
                             >
                                 <Filter className="mr-2 size-4" />
                                 Filter
                             </Button>
                         </form>
 
-                        <div className="overflow-x-auto rounded-xl border border-slate-100 dark:border-slate-800">
+                        <div className="[scrollbar-color:rgb(148_163_184)_transparent] overflow-x-auto overscroll-x-contain rounded-[24px] border border-slate-100 bg-white [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent">
                             <table className="w-full min-w-[1100px] text-sm">
                                 <thead className="border-b border-slate-100 bg-slate-50/80 text-left text-xs font-semibold tracking-wider text-slate-500 uppercase">
                                     <tr>
@@ -501,7 +501,10 @@ export default function AdminEducationalContentsIndex({
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <Badge variant="outline">
+                                                <Badge
+                                                    variant="outline"
+                                                    className="border-sky-200 bg-sky-50 text-sky-700"
+                                                >
                                                     {contentTypeLabel(
                                                         content.content_type,
                                                     )}
@@ -564,7 +567,7 @@ export default function AdminEducationalContentsIndex({
                                                         onClick={() =>
                                                             openEdit(content)
                                                         }
-                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs hover:bg-blue-50 hover:text-blue-600"
+                                                        className="h-8 rounded-xl border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 shadow-sm hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
                                                     >
                                                         <Pencil className="size-3.5" />
                                                         Edit
@@ -577,7 +580,7 @@ export default function AdminEducationalContentsIndex({
                                                                 content,
                                                             )
                                                         }
-                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs hover:bg-amber-50 hover:text-amber-600"
+                                                        className="h-8 rounded-xl border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 shadow-sm hover:border-amber-200 hover:bg-amber-50 hover:text-amber-600"
                                                     >
                                                         <SlidersHorizontal className="size-3.5" />
                                                         Indikator
@@ -588,7 +591,7 @@ export default function AdminEducationalContentsIndex({
                                                         onClick={() =>
                                                             openMedia(content)
                                                         }
-                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs hover:bg-indigo-50 hover:text-indigo-600"
+                                                        className="h-8 rounded-xl border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 shadow-sm hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
                                                     >
                                                         <ImageUp className="size-3.5" />
                                                         Media
@@ -605,7 +608,7 @@ export default function AdminEducationalContentsIndex({
                                                                 content,
                                                             )
                                                         }
-                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-rose-600 shadow-2xs hover:bg-rose-50"
+                                                        className="h-8 rounded-xl border border-rose-100 bg-white px-2.5 text-xs font-bold text-rose-600 shadow-sm hover:border-rose-200 hover:bg-rose-50"
                                                     >
                                                         <Trash2 className="size-3.5" />
                                                         Hapus
@@ -619,13 +622,13 @@ export default function AdminEducationalContentsIndex({
                         </div>
 
                         {contents.data.length === 0 && (
-                            <div className="rounded-xl border border-dashed border-slate-200 p-12 text-center text-sm text-slate-500">
+                            <div className="rounded-[24px] border border-dashed border-slate-200 bg-slate-50/60 p-12 text-center text-sm text-slate-500">
                                 Belum ada materi edukasi untuk filter ini.
                             </div>
                         )}
 
                         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-4">
-                            <div className="text-xs text-slate-500">
+                            <div className="text-xs font-medium text-slate-500">
                                 Total {contents.total} materi edukasi
                             </div>
                             <div className="flex flex-wrap gap-1.5">
@@ -645,7 +648,7 @@ export default function AdminEducationalContentsIndex({
                                         className={
                                             link.active
                                                 ? 'h-8 rounded-lg bg-emerald-600 px-3 text-xs font-semibold text-white shadow-xs hover:bg-emerald-700'
-                                                : 'h-8 rounded-lg border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 hover:bg-slate-50'
+                                                : 'h-8 rounded-xl border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 hover:bg-slate-50'
                                         }
                                     >
                                         <PaginationLabel label={link.label} />
@@ -665,27 +668,34 @@ export default function AdminEducationalContentsIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-2xl">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-2xl">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <BookOpen className="size-5 text-muted-foreground" />
-                            <SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <BookOpen className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
                                 {editingContent
                                     ? 'Edit Materi'
                                     : 'Tambah Materi'}
                             </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             Tulis materi edukasi dan status tampil untuk santri.
                         </SheetDescription>
                     </SheetHeader>
 
                     <form
                         onSubmit={submitContent}
-                        className="grid gap-4 px-4 pb-4"
+                        className="grid gap-5 px-4 py-5"
                     >
                         <div className="grid gap-2">
-                            <Label htmlFor="title">Judul</Label>
+                            <Label
+                                htmlFor="title"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                Judul Materi
+                            </Label>
                             <Input
                                 id="title"
                                 value={contentForm.data.title}
@@ -695,16 +705,23 @@ export default function AdminEducationalContentsIndex({
                                         event.target.value,
                                     )
                                 }
+                                placeholder="Contoh: Belajar dari Keteladanan Nabi"
+                                className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                             />
                             <InputError message={contentForm.errors.title} />
                         </div>
 
                         <div className="grid gap-4 sm:grid-cols-3">
                             <div className="grid gap-2">
-                                <Label htmlFor="content_type">Tipe</Label>
+                                <Label
+                                    htmlFor="content_type"
+                                    className="text-sm font-medium text-slate-700"
+                                >
+                                    Tipe
+                                </Label>
                                 <select
                                     id="content_type"
-                                    className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm"
+                                    className="h-10 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                     value={contentForm.data.content_type}
                                     onChange={(event) =>
                                         contentForm.setData(
@@ -724,10 +741,15 @@ export default function AdminEducationalContentsIndex({
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="status">Status</Label>
+                                <Label
+                                    htmlFor="status"
+                                    className="text-sm font-medium text-slate-700"
+                                >
+                                    Status
+                                </Label>
                                 <select
                                     id="status"
-                                    className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm"
+                                    className="h-10 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                     value={contentForm.data.status}
                                     onChange={(event) =>
                                         contentForm.setData(
@@ -747,7 +769,10 @@ export default function AdminEducationalContentsIndex({
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="duration_seconds">
+                                <Label
+                                    htmlFor="duration_seconds"
+                                    className="text-sm font-medium text-slate-700"
+                                >
                                     Durasi (detik)
                                 </Label>
                                 <Input
@@ -763,6 +788,7 @@ export default function AdminEducationalContentsIndex({
                                         )
                                     }
                                     placeholder="Opsional"
+                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={
@@ -773,10 +799,16 @@ export default function AdminEducationalContentsIndex({
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="description">Deskripsi</Label>
+                            <Label
+                                htmlFor="description"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                Deskripsi
+                            </Label>
                             <textarea
                                 id="description"
-                                className="min-h-24 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                placeholder="Tambahkan deskripsi singkat materi..."
+                                className="min-h-28 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm outline-none placeholder:text-slate-400 focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={contentForm.data.description}
                                 onChange={(event) =>
                                     contentForm.setData(
@@ -791,12 +823,16 @@ export default function AdminEducationalContentsIndex({
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="content_body">
+                            <Label
+                                htmlFor="content_body"
+                                className="text-sm font-medium text-slate-700"
+                            >
                                 Isi Cerita / Caption
                             </Label>
                             <textarea
                                 id="content_body"
-                                className="min-h-48 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                placeholder="Tuliskan isi cerita atau caption materi..."
+                                className="min-h-48 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm outline-none placeholder:text-slate-400 focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={contentForm.data.content_body}
                                 onChange={(event) =>
                                     contentForm.setData(
@@ -810,10 +846,11 @@ export default function AdminEducationalContentsIndex({
                             />
                         </div>
 
-                        <div className="flex gap-2 pt-2">
+                        <div className="flex gap-2 border-t border-slate-100 pt-4">
                             <Button
                                 type="submit"
                                 disabled={contentForm.processing}
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
                             >
                                 {editingContent
                                     ? 'Simpan Perubahan'
@@ -823,6 +860,7 @@ export default function AdminEducationalContentsIndex({
                                 type="button"
                                 variant="outline"
                                 onClick={closeContentSheet}
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>
@@ -840,13 +878,17 @@ export default function AdminEducationalContentsIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-xl">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-xl">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <Link2 className="size-5 text-muted-foreground" />
-                            <SheetTitle>Mapping Indikator</SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <Link2 className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
+                                Mapping Indikator
+                            </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             {indicatorContent
                                 ? indicatorContent.title
                                 : 'Pilih indikator karakter yang terkait materi.'}
@@ -855,13 +897,13 @@ export default function AdminEducationalContentsIndex({
 
                     <form
                         onSubmit={submitIndicators}
-                        className="grid gap-4 px-4 pb-4"
+                        className="grid gap-5 px-4 py-5"
                     >
                         <div className="grid gap-2">
                             {characterIndicators.map((indicator) => (
                                 <label
                                     key={indicator.id}
-                                    className="flex items-start gap-3 rounded-2xl border p-3 text-sm hover:bg-slate-50"
+                                    className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-3 text-sm shadow-sm transition-colors hover:border-emerald-200 hover:bg-emerald-50/40"
                                 >
                                     <Checkbox
                                         checked={selectedIndicators.has(
@@ -883,12 +925,18 @@ export default function AdminEducationalContentsIndex({
                                 </label>
                             ))}
                         </div>
-                        <div className="flex gap-2">
-                            <Button type="submit">Simpan Mapping</Button>
+                        <div className="flex gap-2 border-t border-slate-100 pt-4">
+                            <Button
+                                type="submit"
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
+                            >
+                                Simpan Mapping
+                            </Button>
                             <Button
                                 type="button"
                                 variant="outline"
                                 onClick={() => setIndicatorContent(null)}
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>
@@ -906,13 +954,17 @@ export default function AdminEducationalContentsIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-lg">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <FileUp className="size-5 text-muted-foreground" />
-                            <SheetTitle>Upload Media Materi</SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <FileUp className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
+                                Upload Media Materi
+                            </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             {mediaContent
                                 ? mediaContent.title
                                 : 'Upload media utama atau thumbnail.'}
@@ -921,13 +973,18 @@ export default function AdminEducationalContentsIndex({
 
                     <form
                         onSubmit={submitMedia}
-                        className="grid gap-4 px-4 pb-4"
+                        className="grid gap-5 px-4 py-5"
                     >
                         <div className="grid gap-2">
-                            <Label htmlFor="media_type">Jenis File</Label>
+                            <Label
+                                htmlFor="media_type"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                Jenis File
+                            </Label>
                             <select
                                 id="media_type"
-                                className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm"
+                                className="h-10 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={mediaForm.data.type}
                                 onChange={(event) =>
                                     mediaForm.setData(
@@ -944,10 +1001,16 @@ export default function AdminEducationalContentsIndex({
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="media">File</Label>
+                            <Label
+                                htmlFor="media"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                File
+                            </Label>
                             <Input
                                 id="media"
                                 type="file"
+                                className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-600 shadow-sm file:mr-3 file:h-8 file:rounded-xl file:border-0 file:bg-emerald-50 file:px-3 file:text-xs file:font-bold file:text-emerald-700 hover:file:bg-emerald-100 focus-visible:ring-emerald-200"
                                 onChange={(event) =>
                                     mediaForm.setData(
                                         'media',
@@ -955,7 +1018,7 @@ export default function AdminEducationalContentsIndex({
                                     )
                                 }
                             />
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs leading-relaxed text-slate-500">
                                 Video maks 50MB, audio maks 20MB, gambar/komik
                                 maks 10MB, thumbnail maks 5MB.
                             </p>
@@ -972,10 +1035,11 @@ export default function AdminEducationalContentsIndex({
                             </progress>
                         )}
 
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 border-t border-slate-100 pt-4">
                             <Button
                                 type="submit"
                                 disabled={mediaForm.processing}
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
                             >
                                 Upload
                             </Button>
@@ -983,6 +1047,7 @@ export default function AdminEducationalContentsIndex({
                                 type="button"
                                 variant="outline"
                                 onClick={() => setMediaContent(null)}
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>

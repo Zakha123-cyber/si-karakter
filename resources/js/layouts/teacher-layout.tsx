@@ -128,7 +128,7 @@ export default function TeacherLayout({ children }: TeacherLayoutProps) {
                         <div className="mb-4 flex justify-end">
                             <button
                                 onClick={() => setDrawerOpen(false)}
-                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-slate-500"
+                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200"
                                 aria-label="Tutup menu"
                             >
                                 <X className="size-5" />
@@ -168,7 +168,7 @@ function SidebarContent() {
             </div>
 
             {/* Nav */}
-            <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
+            <nav className="flex flex-1 [scrollbar-color:rgb(148_163_184)_transparent] flex-col gap-1 overflow-y-auto overscroll-y-contain [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent">
                 {navItems.map((item) => {
                     const isActive =
                         url === item.href ||

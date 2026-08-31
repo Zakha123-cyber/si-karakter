@@ -1,5 +1,17 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { Pencil, Plus, Scale, Trash2 } from 'lucide-react';
+import {
+    CalendarClock,
+    ChevronLeft,
+    ChevronRight,
+    Filter,
+    Pencil,
+    Percent,
+    Plus,
+    Scale,
+    Search,
+    ShieldCheck,
+    Trash2,
+} from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import type { FormEvent } from 'react';
@@ -195,46 +207,95 @@ export default function TeacherScoringConfigurationsIndex({
         <>
             <Head title="Konfigurasi Bobot Penilaian" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-4">
-                <div className="flex flex-col gap-2">
-                    <div className="flex flex-wrap items-center gap-3">
-                        <h1 className="text-2xl font-semibold tracking-normal">
-                            Konfigurasi Bobot
-                        </h1>
-                        <Badge variant="secondary">Ustadz</Badge>
+            <div className="min-h-full space-y-6 pb-8">
+                <section className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-teal-600 via-emerald-600 to-teal-700 p-6 text-white shadow-[0_12px_40px_rgba(13,148,136,0.35)] sm:p-8">
+                    <div className="pointer-events-none absolute -top-8 -right-8 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+                    <div className="relative flex flex-wrap items-center justify-between gap-6">
+                        <div className="max-w-3xl min-w-0">
+                            <div className="mb-2 flex items-center gap-2 text-emerald-100">
+                                <Scale className="size-4" />
+                                <span className="text-xs font-bold tracking-wider uppercase">
+                                    Konfigurasi Bobot
+                                </span>
+                            </div>
+                            <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
+                                Penilaian Karakter
+                            </h1>
+                            <p className="mt-2 max-w-xl text-sm leading-relaxed text-emerald-50/90">
+                                Atur bobot penilaian antara tes moral dan
+                                observasi harian untuk perhitungan skor karakter
+                                santri.
+                            </p>
+                        </div>
+
+                        <div className="inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1.5 text-xs font-bold tracking-wide text-white backdrop-blur-sm">
+                            <ShieldCheck className="size-4" />
+                            Role Ustadz
+                        </div>
                     </div>
-                    <p className="max-w-3xl text-sm text-muted-foreground">
-                        Atur bobot penilaian antara tes moral dan observasi
-                        harian untuk perhitungan skor karakter santri.
-                    </p>
+                </section>
+
+                <div className="grid gap-4 sm:grid-cols-3">
+                    <SummaryCard
+                        icon={<Percent className="size-5" />}
+                        label="Total Bobot"
+                        value={configurations.total}
+                        color="emerald"
+                    />
+                    <SummaryCard
+                        icon={<ShieldCheck className="size-5" />}
+                        label="Aktif"
+                        value={
+                            configurations.data.filter((item) => item.is_active)
+                                .length
+                        }
+                        color="blue"
+                    />
+                    <SummaryCard
+                        icon={<CalendarClock className="size-5" />}
+                        label="Periode"
+                        value={
+                            configurations.data.filter(
+                                (item) => item.effective_until,
+                            ).length
+                        }
+                        color="amber"
+                    />
                 </div>
 
                 {props.flash?.status && (
-                    <div className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                    <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 shadow-sm">
                         {props.flash.status}
                     </div>
                 )}
 
                 <div className="grid gap-4 xl:grid-cols-[360px_minmax(0,1fr)]">
-                    <Card className="h-fit rounded-lg">
-                        <CardHeader>
-                            <div className="flex items-center gap-2">
-                                <Plus className="size-5 text-muted-foreground" />
-                                <CardTitle className="text-base">
-                                    Tambah Konfigurasi
-                                </CardTitle>
+                    <Card className="h-fit overflow-hidden rounded-[28px] border border-slate-100 bg-white shadow-[0_8px_30px_rgba(16,58,58,0.08)]">
+                        <CardHeader className="border-b border-slate-100 px-5 py-4">
+                            <div className="flex items-center gap-3">
+                                <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                    <Plus className="size-4" />
+                                </div>
+                                <div className="space-y-0.5">
+                                    <CardTitle className="text-base font-extrabold text-slate-800">
+                                        Tambah Konfigurasi
+                                    </CardTitle>
+                                    <CardDescription className="text-xs text-slate-500">
+                                        Buat konfigurasi bobot penilaian baru.
+                                    </CardDescription>
+                                </div>
                             </div>
-                            <CardDescription>
-                                Buat konfigurasi bobot penilaian baru.
-                            </CardDescription>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="p-5">
                             <form
                                 onSubmit={submitCreate}
                                 className="grid gap-4"
                             >
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">
+                                    <Label
+                                        htmlFor="name"
+                                        className="text-sm font-medium text-slate-700"
+                                    >
                                         Nama Konfigurasi
                                     </Label>
                                     <Input
@@ -247,6 +308,7 @@ export default function TeacherScoringConfigurationsIndex({
                                             )
                                         }
                                         placeholder="Contoh: Bobot Default 2026"
+                                        className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                     />
                                     <InputError
                                         message={createForm.errors.name}
@@ -255,7 +317,10 @@ export default function TeacherScoringConfigurationsIndex({
 
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="grid gap-2">
-                                        <Label htmlFor="test_weight">
+                                        <Label
+                                            htmlFor="test_weight"
+                                            className="text-sm font-medium text-slate-700"
+                                        >
                                             Bobot Tes (%)
                                         </Label>
                                         <Input
@@ -270,6 +335,7 @@ export default function TeacherScoringConfigurationsIndex({
                                                     event.target.value,
                                                 )
                                             }
+                                            className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                         />
                                         <InputError
                                             message={
@@ -278,7 +344,10 @@ export default function TeacherScoringConfigurationsIndex({
                                         />
                                     </div>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="observation_weight">
+                                        <Label
+                                            htmlFor="observation_weight"
+                                            className="text-sm font-medium text-slate-700"
+                                        >
                                             Bobot Observasi (%)
                                         </Label>
                                         <Input
@@ -296,6 +365,7 @@ export default function TeacherScoringConfigurationsIndex({
                                                     event.target.value,
                                                 )
                                             }
+                                            className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                         />
                                         <InputError
                                             message={
@@ -308,7 +378,10 @@ export default function TeacherScoringConfigurationsIndex({
 
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="grid gap-2">
-                                        <Label htmlFor="effective_from">
+                                        <Label
+                                            htmlFor="effective_from"
+                                            className="text-sm font-medium text-slate-700"
+                                        >
                                             Tanggal Mulai
                                         </Label>
                                         <Input
@@ -323,6 +396,7 @@ export default function TeacherScoringConfigurationsIndex({
                                                     event.target.value,
                                                 )
                                             }
+                                            className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                         />
                                         <InputError
                                             message={
@@ -331,7 +405,10 @@ export default function TeacherScoringConfigurationsIndex({
                                         />
                                     </div>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="effective_until">
+                                        <Label
+                                            htmlFor="effective_until"
+                                            className="text-sm font-medium text-slate-700"
+                                        >
                                             Tanggal Akhir
                                         </Label>
                                         <Input
@@ -346,6 +423,7 @@ export default function TeacherScoringConfigurationsIndex({
                                                     event.target.value,
                                                 )
                                             }
+                                            className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                         />
                                         <InputError
                                             message={
@@ -359,6 +437,7 @@ export default function TeacherScoringConfigurationsIndex({
                                 <Button
                                     type="submit"
                                     disabled={createForm.processing}
+                                    className="h-10 rounded-2xl bg-emerald-600 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
                                 >
                                     Simpan Konfigurasi
                                 </Button>
@@ -367,194 +446,202 @@ export default function TeacherScoringConfigurationsIndex({
                     </Card>
 
                     <div className="flex min-w-0 flex-col gap-4">
-                        <Card className="rounded-lg">
-                            <CardHeader>
-                                <div className="flex items-center gap-2">
-                                    <Scale className="size-5 text-muted-foreground" />
-                                    <CardTitle className="text-base">
-                                        Daftar Konfigurasi Bobot
-                                    </CardTitle>
+                        <section className="rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)] sm:p-6">
+                            <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+                                <div className="flex items-center gap-3">
+                                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-xl">
+                                        ⚖️
+                                    </span>
+                                    <div>
+                                        <h2 className="text-lg font-extrabold text-slate-800">
+                                            Daftar Konfigurasi Bobot
+                                        </h2>
+                                        <p className="text-xs font-medium text-slate-400">
+                                            {configurations.from ?? 0}-
+                                            {configurations.to ?? 0} dari{' '}
+                                            {configurations.total} konfigurasi
+                                        </p>
+                                    </div>
                                 </div>
-                                <CardDescription>
-                                    {configurations.from ?? 0}-
-                                    {configurations.to ?? 0} dari{' '}
-                                    {configurations.total} konfigurasi
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="grid gap-4">
-                                <form
-                                    onSubmit={submitFilters}
-                                    className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]"
-                                >
+                                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3.5 py-1.5 text-xs font-bold text-emerald-700">
+                                    <Filter className="size-4" />
+                                    Filter bobot
+                                </div>
+                            </div>
+
+                            <form
+                                onSubmit={submitFilters}
+                                className="mb-5 grid gap-3 rounded-[24px] border border-slate-100 bg-slate-50/60 p-3 md:grid-cols-[minmax(0,1fr)_auto]"
+                            >
+                                <div className="relative">
+                                    <Search className="pointer-events-none absolute top-2.5 left-3 size-4 text-slate-400" />
                                     <Input
                                         value={search}
                                         onChange={(event) =>
                                             setSearch(event.target.value)
                                         }
                                         placeholder="Cari nama konfigurasi"
+                                        className="h-10 rounded-2xl border-slate-100 bg-white pl-9 text-sm shadow-sm focus-visible:ring-emerald-200"
                                     />
-                                    <Button type="submit" variant="outline">
-                                        Filter
-                                    </Button>
-                                </form>
+                                </div>
+                                <Button
+                                    type="submit"
+                                    className="h-10 rounded-2xl bg-emerald-600 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
+                                >
+                                    <Filter className="mr-2 size-4" />
+                                    Filter
+                                </Button>
+                            </form>
 
-                                <div className="overflow-x-auto rounded-md border">
-                                    <table className="w-full min-w-[760px] text-sm">
-                                        <thead className="bg-muted/50 text-left">
+                            <div className="[scrollbar-color:rgb(148_163_184)_transparent] overflow-x-auto rounded-[24px] border border-slate-100 bg-white [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent">
+                                <table className="w-full min-w-[760px] text-sm">
+                                    <thead className="border-b border-slate-100 bg-slate-50 text-left text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                                        <tr>
+                                            <th className="px-4 py-4">Nama</th>
+                                            <th className="px-4 py-4">
+                                                Bobot Tes
+                                            </th>
+                                            <th className="px-4 py-4">
+                                                Bobot Observasi
+                                            </th>
+                                            <th className="px-4 py-4">
+                                                Status
+                                            </th>
+                                            <th className="px-4 py-4">
+                                                Periode
+                                            </th>
+                                            <th className="px-4 py-4 text-right">
+                                                Aksi
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {configurations.data.length === 0 ? (
                                             <tr>
-                                                <th className="px-4 py-3 font-medium">
-                                                    Nama
-                                                </th>
-                                                <th className="px-4 py-3 font-medium">
-                                                    Bobot Tes
-                                                </th>
-                                                <th className="px-4 py-3 font-medium">
-                                                    Bobot Observasi
-                                                </th>
-                                                <th className="px-4 py-3 font-medium">
-                                                    Status
-                                                </th>
-                                                <th className="px-4 py-3 font-medium">
-                                                    Periode
-                                                </th>
-                                                <th className="px-4 py-3 text-right font-medium">
-                                                    Aksi
-                                                </th>
+                                                <td
+                                                    colSpan={6}
+                                                    className="px-4 py-8 text-center text-sm text-slate-500"
+                                                >
+                                                    Belum ada konfigurasi bobot.
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            {configurations.data.length ===
-                                            0 ? (
-                                                <tr>
-                                                    <td
-                                                        colSpan={6}
-                                                        className="px-4 py-8 text-center text-muted-foreground"
+                                        ) : (
+                                            configurations.data.map(
+                                                (config) => (
+                                                    <tr
+                                                        key={config.id}
+                                                        className="border-t border-slate-100 transition-colors hover:bg-emerald-50/30"
                                                     >
-                                                        Belum ada konfigurasi
-                                                        bobot.
-                                                    </td>
-                                                </tr>
-                                            ) : (
-                                                configurations.data.map(
-                                                    (config) => (
-                                                        <tr
-                                                            key={config.id}
-                                                            className="border-t"
-                                                        >
-                                                            <td className="px-4 py-3">
-                                                                <div className="font-medium">
+                                                        <td className="px-4 py-3">
+                                                            <div className="font-semibold text-slate-800">
+                                                                {config.name}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-4 py-3 font-medium text-slate-600">
+                                                            {config.test_weight}
+                                                            %
+                                                        </td>
+                                                        <td className="px-4 py-3 font-medium text-slate-600">
+                                                            {
+                                                                config.observation_weight
+                                                            }
+                                                            %
+                                                        </td>
+                                                        <td className="px-4 py-3">
+                                                            <Badge
+                                                                variant={
+                                                                    config.is_active
+                                                                        ? 'secondary'
+                                                                        : 'outline'
+                                                                }
+                                                                className={
+                                                                    config.is_active
+                                                                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                                                                        : 'border-slate-200 bg-slate-100 text-slate-600'
+                                                                }
+                                                            >
+                                                                {config.is_active
+                                                                    ? 'Aktif'
+                                                                    : 'Tidak Aktif'}
+                                                            </Badge>
+                                                        </td>
+                                                        <td className="px-4 py-3 text-xs text-slate-500">
+                                                            <div>
+                                                                {
+                                                                    config.effective_from
+                                                                }
+                                                            </div>
+                                                            {config.effective_until && (
+                                                                <div className="mt-0.5">
+                                                                    s.d.{' '}
                                                                     {
-                                                                        config.name
+                                                                        config.effective_until
                                                                     }
                                                                 </div>
-                                                            </td>
-                                                            <td className="px-4 py-3">
-                                                                {
-                                                                    config.test_weight
-                                                                }
-                                                                %
-                                                            </td>
-                                                            <td className="px-4 py-3">
-                                                                {
-                                                                    config.observation_weight
-                                                                }
-                                                                %
-                                                            </td>
-                                                            <td className="px-4 py-3">
-                                                                <Badge
-                                                                    variant={
-                                                                        config.is_active
-                                                                            ? 'secondary'
-                                                                            : 'outline'
+                                                            )}
+                                                        </td>
+                                                        <td className="px-4 py-3">
+                                                            <div className="flex justify-end gap-2">
+                                                                <Button
+                                                                    type="button"
+                                                                    size="sm"
+                                                                    onClick={() =>
+                                                                        startEdit(
+                                                                            config,
+                                                                        )
                                                                     }
+                                                                    className="h-8 rounded-xl border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 shadow-sm hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
                                                                 >
-                                                                    {config.is_active
-                                                                        ? 'Aktif'
-                                                                        : 'Tidak Aktif'}
-                                                                </Badge>
-                                                            </td>
-                                                            <td className="px-4 py-3 text-xs text-muted-foreground">
-                                                                <div>
-                                                                    {
-                                                                        config.effective_from
+                                                                    <Pencil className="size-3.5" />
+                                                                    Edit
+                                                                </Button>
+                                                                <Button
+                                                                    type="button"
+                                                                    size="sm"
+                                                                    onClick={() =>
+                                                                        deleteConfiguration(
+                                                                            config,
+                                                                        )
                                                                     }
-                                                                </div>
-                                                                {config.effective_until && (
-                                                                    <div>
-                                                                        s.d.{' '}
-                                                                        {
-                                                                            config.effective_until
-                                                                        }
-                                                                    </div>
-                                                                )}
-                                                            </td>
-                                                            <td className="px-4 py-3">
-                                                                <div className="flex justify-end gap-2">
-                                                                    <Button
-                                                                        type="button"
-                                                                        size="sm"
-                                                                        variant="outline"
-                                                                        onClick={() =>
-                                                                            startEdit(
-                                                                                config,
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        <Pencil className="size-4" />
-                                                                        Edit
-                                                                    </Button>
-                                                                    <Button
-                                                                        type="button"
-                                                                        size="sm"
-                                                                        variant="destructive"
-                                                                        onClick={() =>
-                                                                            deleteConfiguration(
-                                                                                config,
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        <Trash2 className="size-4" />
-                                                                    </Button>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ),
-                                                )
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                                    className="h-8 rounded-xl border border-rose-100 bg-white px-2.5 text-xs font-bold text-rose-600 shadow-sm hover:border-rose-200 hover:bg-rose-50"
+                                                                >
+                                                                    <Trash2 className="size-3.5" />
+                                                                </Button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ),
+                                            )
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
 
-                                <div className="flex flex-wrap gap-2">
-                                    {configurations.links.map((link, idx) => (
-                                        <Button
-                                            key={`${idx}-${link.label}`}
-                                            type="button"
-                                            size="sm"
-                                            variant={
-                                                link.active
-                                                    ? 'default'
-                                                    : 'outline'
+                            <div className="mt-6 flex flex-wrap gap-1.5">
+                                {configurations.links.map((link, idx) => (
+                                    <Button
+                                        key={`${idx}-${link.label}`}
+                                        type="button"
+                                        size="sm"
+                                        disabled={!link.url}
+                                        onClick={() => {
+                                            if (link.url) {
+                                                router.visit(link.url, {
+                                                    preserveScroll: true,
+                                                });
                                             }
-                                            disabled={!link.url}
-                                            onClick={() => {
-                                                if (link.url) {
-                                                    router.visit(link.url, {
-                                                        preserveScroll: true,
-                                                    });
-                                                }
-                                            }}
-                                        >
-                                            <span
-                                                dangerouslySetInnerHTML={{
-                                                    __html: link.label,
-                                                }}
-                                            />
-                                        </Button>
-                                    ))}
-                                </div>
-                            </CardContent>
-                        </Card>
+                                        }}
+                                        className={
+                                            link.active
+                                                ? 'h-8 rounded-xl bg-emerald-600 px-3 text-xs font-bold text-white shadow-sm hover:bg-emerald-700'
+                                                : 'h-8 rounded-xl border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 hover:bg-slate-50'
+                                        }
+                                    >
+                                        <PaginationLabel label={link.label} />
+                                    </Button>
+                                ))}
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>
@@ -592,6 +679,7 @@ export default function TeacherScoringConfigurationsIndex({
                                 onChange={(event) =>
                                     editForm.setData('name', event.target.value)
                                 }
+                                className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                             />
                             <InputError message={editForm.errors.name} />
                         </div>
@@ -613,6 +701,7 @@ export default function TeacherScoringConfigurationsIndex({
                                             event.target.value,
                                         )
                                     }
+                                    className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={editForm.errors.test_weight}
@@ -634,6 +723,7 @@ export default function TeacherScoringConfigurationsIndex({
                                             event.target.value,
                                         )
                                     }
+                                    className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={editForm.errors.observation_weight}
@@ -656,6 +746,7 @@ export default function TeacherScoringConfigurationsIndex({
                                             event.target.value,
                                         )
                                     }
+                                    className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={editForm.errors.effective_from}
@@ -675,6 +766,7 @@ export default function TeacherScoringConfigurationsIndex({
                                             event.target.value,
                                         )
                                     }
+                                    className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={editForm.errors.effective_until}
@@ -702,4 +794,73 @@ export default function TeacherScoringConfigurationsIndex({
             </Sheet>
         </>
     );
+}
+
+function SummaryCard({
+    icon,
+    label,
+    value,
+    color = 'emerald',
+}: {
+    icon: React.ReactNode;
+    label: string;
+    value: number;
+    color?: 'emerald' | 'blue' | 'purple' | 'amber';
+}) {
+    const colorMap = {
+        emerald: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+        blue: 'bg-blue-50 text-blue-600 border-blue-100',
+        purple: 'bg-purple-50 text-purple-600 border-purple-100',
+        amber: 'bg-amber-50 text-amber-600 border-amber-100',
+    };
+
+    return (
+        <div className="overflow-hidden rounded-[24px] border border-slate-100 bg-white shadow-[0_8px_30px_rgba(16,58,58,0.06)]">
+            <div className="flex items-center gap-4 p-5">
+                <div
+                    className={`flex size-12 shrink-0 items-center justify-center rounded-2xl border ${colorMap[color]}`}
+                >
+                    {icon}
+                </div>
+                <div>
+                    <div className="text-[11px] font-bold tracking-wider text-slate-400 uppercase">
+                        {label}
+                    </div>
+                    <div className="mt-1 text-2xl font-extrabold text-slate-800">
+                        {value}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function PaginationLabel({ label }: { label: string }) {
+    if (
+        label === '&laquo; Previous' ||
+        label === 'pagination.previous' ||
+        label.toLowerCase().includes('previous')
+    ) {
+        return (
+            <>
+                <ChevronLeft className="size-4" />
+                <span className="sr-only">Sebelumnya</span>
+            </>
+        );
+    }
+
+    if (
+        label === 'Next &raquo;' ||
+        label === 'pagination.next' ||
+        label.toLowerCase().includes('next')
+    ) {
+        return (
+            <>
+                <ChevronRight className="size-4" />
+                <span className="sr-only">Berikutnya</span>
+            </>
+        );
+    }
+
+    return <span>{label}</span>;
 }

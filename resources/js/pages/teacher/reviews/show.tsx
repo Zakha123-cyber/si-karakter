@@ -243,11 +243,16 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
         <>
             <Head title={`Detail Review - ${review.student.name}`} />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-4">
+            <div className="min-h-full space-y-6 pb-8">
                 {/* Header & Back Button */}
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div className="flex items-center gap-3">
-                        <Button asChild variant="outline" size="icon">
+                        <Button
+                            asChild
+                            variant="outline"
+                            size="icon"
+                            className="rounded-2xl border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-emerald-50 hover:text-emerald-700"
+                        >
                             <Link href="/teacher/reviews">
                                 <ArrowLeft className="size-4" />
                                 <span className="sr-only">Kembali</span>
@@ -255,12 +260,14 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                         </Button>
                         <div>
                             <div className="flex flex-wrap items-center gap-2">
-                                <h1 className="text-2xl font-semibold tracking-normal">
+                                <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">
                                     Detail Review Jawaban Santri
                                 </h1>
-                                <Badge variant="secondary">#{review.id}</Badge>
+                                <Badge className="border-emerald-100 bg-emerald-50 text-emerald-700">
+                                    #{review.id}
+                                </Badge>
                             </div>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-sm font-medium text-slate-500">
                                 {review.test_package.title} — dikirim{' '}
                                 {formatDateTime(review.submitted_at)}
                             </p>
@@ -300,22 +307,22 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
 
                 {/* Overview Cards */}
                 <div className="grid gap-4 md:grid-cols-4">
-                    <Card className="rounded-lg md:col-span-2">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base">
-                                <User className="size-5 text-muted-foreground" />
+                    <Card className="rounded-[28px] border border-slate-100 bg-white shadow-[0_8px_30px_rgba(16,58,58,0.08)] md:col-span-2">
+                        <CardHeader className="border-b border-slate-100 px-5 py-4">
+                            <CardTitle className="flex items-center gap-2 text-base font-extrabold text-slate-800">
+                                <User className="size-5 text-emerald-600" />
                                 Data Santri
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-2 text-sm">
-                            <div className="font-semibold">
+                        <CardContent className="space-y-2 px-5 py-4 text-sm">
+                            <div className="font-semibold text-slate-800">
                                 {review.student.name}
                             </div>
-                            <div className="text-muted-foreground">
+                            <div className="text-slate-500">
                                 NIS: {review.student.student_code} • Kelompok:{' '}
                                 {review.group.name}
                             </div>
-                            <div className="text-muted-foreground">
+                            <div className="text-slate-500">
                                 Username: @
                                 {review.student.username ??
                                     review.student.student_code?.toLowerCase()}
@@ -323,32 +330,32 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                         </CardContent>
                     </Card>
 
-                    <Card className="rounded-lg">
-                        <CardHeader>
-                            <CardTitle className="text-base">
+                    <Card className="rounded-[28px] border border-slate-100 bg-white shadow-[0_8px_30px_rgba(16,58,58,0.08)]">
+                        <CardHeader className="border-b border-slate-100 px-5 py-4">
+                            <CardTitle className="text-base font-extrabold text-slate-800">
                                 Jawaban & Pilihan
                             </CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-semibold">
+                        <CardContent className="px-5 py-4">
+                            <div className="text-2xl font-extrabold text-slate-800">
                                 {review.selected_option
                                     ? `Pilihan ${review.selected_option.label}`
                                     : 'Belum memilih'}
                             </div>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs font-medium text-slate-500">
                                 Status: {review.answer_status}
                             </p>
                         </CardContent>
                     </Card>
 
-                    <Card className="rounded-lg">
-                        <CardHeader>
-                            <CardTitle className="text-base">
+                    <Card className="rounded-[28px] border border-slate-100 bg-white shadow-[0_8px_30px_rgba(16,58,58,0.08)]">
+                        <CardHeader className="border-b border-slate-100 px-5 py-4">
+                            <CardTitle className="text-base font-extrabold text-slate-800">
                                 STT & AI
                             </CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-semibold">
+                        <CardContent className="px-5 py-4">
+                            <div className="text-2xl font-extrabold text-slate-800">
                                 {review.transcription
                                     ? review.transcription.confidence
                                         ? formatPercent(
@@ -357,7 +364,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                         : '100%'
                                     : '0%'}
                             </div>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs font-medium text-slate-500">
                                 Keyakinan transkripsi / AI
                             </p>
                         </CardContent>
@@ -366,15 +373,15 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
 
                 {/* Main Case & Review Card */}
                 <div className="grid gap-4">
-                    <Card className="rounded-lg">
-                        <CardHeader>
+                    <Card className="rounded-[28px] border border-slate-100 bg-white shadow-[0_8px_30px_rgba(16,58,58,0.08)]">
+                        <CardHeader className="border-b border-slate-100 px-5 py-4">
                             <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                                 <div>
-                                    <CardTitle className="flex items-center gap-2 text-base">
-                                        <HelpCircle className="size-5 text-muted-foreground" />
+                                    <CardTitle className="flex items-center gap-2 text-base font-extrabold text-slate-800">
+                                        <HelpCircle className="size-5 text-emerald-600" />
                                         Kasus Moral: {review.moral_case.title}
                                     </CardTitle>
-                                    <CardDescription>
+                                    <CardDescription className="text-xs font-medium text-slate-500">
                                         Status jawaban: {review.answer_status}
                                     </CardDescription>
                                 </div>
@@ -390,12 +397,12 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                         <CardContent className="grid gap-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
                             {/* Left Column (1.4fr) */}
                             <div className="space-y-5">
-                                <div className="rounded-md bg-muted/40 p-4 text-sm leading-6 text-muted-foreground">
+                                <div className="rounded-[24px] border border-slate-100 bg-slate-50 p-4 text-sm leading-6 text-slate-600">
                                     {review.moral_case.story}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <div className="text-sm font-medium">
+                                    <div className="text-sm font-bold text-slate-700">
                                         Pilihan Santri
                                     </div>
                                     {review.moral_case.options.map((opt) => {
@@ -406,10 +413,10 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                         return (
                                             <div
                                                 key={opt.id}
-                                                className={`rounded-md border p-3 text-sm ${
+                                                className={`rounded-2xl border p-3 text-sm ${
                                                     isSelected
-                                                        ? 'border-primary bg-primary/10 text-primary'
-                                                        : 'bg-background text-muted-foreground'
+                                                        ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                                                        : 'border-slate-200 bg-white text-slate-600'
                                                 }`}
                                             >
                                                 <div className="flex gap-2">
@@ -428,12 +435,12 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                     })}
                                 </div>
 
-                                <div className="rounded-md border p-4">
-                                    <div className="flex items-center gap-2 text-sm font-medium">
-                                        <MessageSquareText className="size-4 text-muted-foreground" />
+                                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                                    <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
+                                        <MessageSquareText className="size-4 text-emerald-600" />
                                         Alasan Teks Santri
                                     </div>
-                                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                                    <p className="mt-2 text-sm leading-6 text-slate-600">
                                         {review.typed_reason || (
                                             <span className="italic">
                                                 Tidak ada alasan teks.
@@ -446,9 +453,9 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                             {/* Right Column (1fr) */}
                             <div className="space-y-5">
                                 {/* Audio Jawaban */}
-                                <div className="rounded-md border p-4">
-                                    <div className="flex items-center gap-2 text-sm font-medium">
-                                        <AudioLines className="size-4 text-muted-foreground" />
+                                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                                    <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
+                                        <AudioLines className="size-4 text-emerald-600" />
                                         Audio Jawaban
                                     </div>
                                     <div className="mt-3">
@@ -464,7 +471,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                 }
                                             />
                                         ) : (
-                                            <p className="rounded-md bg-muted/40 p-3 text-sm text-muted-foreground">
+                                            <p className="rounded-2xl bg-slate-50 p-3 text-sm text-slate-500">
                                                 Tidak ada rekaman audio file
                                                 untuk jawaban ini.
                                             </p>
@@ -473,14 +480,17 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                 </div>
 
                                 {/* Hasil Transkripsi STT */}
-                                <div className="rounded-md border p-4">
+                                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                                     <div className="flex flex-wrap items-center justify-between gap-2">
-                                        <div className="flex items-center gap-2 text-sm font-medium">
-                                            <FileText className="size-4 text-muted-foreground" />
+                                        <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
+                                            <FileText className="size-4 text-emerald-600" />
                                             Hasil Transkripsi STT
                                         </div>
                                         {review.transcription ? (
-                                            <Badge variant="outline">
+                                            <Badge
+                                                variant="outline"
+                                                className="border-teal-200 bg-teal-50 text-teal-700"
+                                            >
                                                 {review.transcription.provider}{' '}
                                                 • {review.transcription.model}
                                             </Badge>
@@ -489,10 +499,10 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
 
                                     {review.transcription ? (
                                         <div className="mt-3 space-y-3">
-                                            <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2">
+                                            <div className="grid gap-2 text-xs text-slate-500 sm:grid-cols-2">
                                                 <div>
                                                     Status:{' '}
-                                                    <span className="font-semibold text-foreground">
+                                                    <span className="font-semibold text-slate-700">
                                                         {
                                                             review.transcription
                                                                 .status
@@ -501,7 +511,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                 </div>
                                                 <div>
                                                     Confidence:{' '}
-                                                    <span className="font-semibold text-foreground">
+                                                    <span className="font-semibold text-slate-700">
                                                         {formatPercent(
                                                             review.transcription
                                                                 .confidence,
@@ -510,7 +520,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                 </div>
                                                 <div className="sm:col-span-2">
                                                     Diproses:{' '}
-                                                    <span className="font-semibold text-foreground">
+                                                    <span className="font-semibold text-slate-700">
                                                         {formatDateTime(
                                                             review.transcription
                                                                 .processed_at,
@@ -519,9 +529,9 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                 </div>
                                             </div>
 
-                                            <div className="rounded-md bg-muted/40 p-3">
+                                            <div className="rounded-2xl bg-slate-50 p-3">
                                                 <div className="flex items-center justify-between">
-                                                    <div className="text-xs font-semibold text-muted-foreground">
+                                                    <div className="text-xs font-semibold text-slate-500">
                                                         Transkrip asli
                                                     </div>
                                                     <div className="flex items-center gap-2">
@@ -546,7 +556,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                                         );
                                                                     }
                                                                 }}
-                                                                className="inline-flex items-center gap-1 rounded border bg-background px-2 py-0.5 text-[10px] font-medium text-muted-foreground hover:bg-muted"
+                                                                className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-medium text-slate-600 hover:bg-slate-100"
                                                             >
                                                                 Salin
                                                             </button>
@@ -558,7 +568,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                                     !isEditingTranscript,
                                                                 )
                                                             }
-                                                            className="inline-flex items-center gap-1 rounded bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground hover:bg-primary/90"
+                                                            className="inline-flex items-center gap-1 rounded-xl bg-emerald-600 px-2 py-0.5 text-[10px] font-semibold text-white hover:bg-emerald-700"
                                                         >
                                                             <Edit3 className="size-3" />
                                                             {isEditingTranscript
@@ -567,11 +577,11 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <p className="mt-1 text-sm leading-6">
+                                                <p className="mt-1 text-sm leading-6 text-slate-700">
                                                     {review.transcription
                                                         .original_text ||
                                                         review.final_transcript || (
-                                                            <span className="text-muted-foreground italic">
+                                                            <span className="text-slate-400 italic">
                                                                 Belum ada teks
                                                                 transkrip asli.
                                                             </span>
@@ -584,10 +594,10 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                     onSubmit={
                                                         handleSaveTranscript
                                                     }
-                                                    className="mt-3 space-y-2 rounded-md border border-primary/40 bg-primary/5 p-3"
+                                                    className="mt-3 space-y-2 rounded-2xl border border-emerald-200 bg-emerald-50/60 p-3"
                                                 >
                                                     <div className="flex items-center justify-between">
-                                                        <span className="text-xs font-bold text-primary">
+                                                        <span className="text-xs font-bold text-emerald-700">
                                                             Edit / Perbaiki Teks
                                                             Transkripsi
                                                         </span>
@@ -598,7 +608,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                                     false,
                                                                 )
                                                             }
-                                                            className="text-muted-foreground hover:text-foreground"
+                                                            className="text-slate-400 hover:text-slate-700"
                                                         >
                                                             <X className="size-4" />
                                                         </button>
@@ -615,7 +625,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                             )
                                                         }
                                                         placeholder="Tuliskan teks transkripsi perbaikan di sini..."
-                                                        className="w-full rounded-md border bg-background p-2.5 text-xs text-foreground outline-none focus:ring-1 focus:ring-primary"
+                                                        className="w-full rounded-2xl border border-slate-200 bg-white p-2.5 text-xs text-slate-700 outline-none focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200"
                                                     />
                                                     {transcriptErrors.edited_text && (
                                                         <p className="text-[11px] text-destructive">
@@ -671,7 +681,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                 )}
                                         </div>
                                     ) : (
-                                        <p className="mt-3 rounded-md bg-muted/40 p-3 text-sm text-muted-foreground">
+                                        <p className="mt-3 rounded-2xl bg-slate-50 p-3 text-sm text-slate-500">
                                             Belum ada record transkripsi untuk
                                             audio ini.
                                         </p>
@@ -679,9 +689,9 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                 </div>
 
                                 {/* Rekomendasi AI Assessment */}
-                                <div className="rounded-md border p-4">
-                                    <div className="flex items-center justify-between gap-2 border-b pb-3">
-                                        <div className="flex items-center gap-2 text-sm font-medium">
+                                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                                    <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                                        <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
                                             <Bot className="size-4 text-teal-600 dark:text-teal-400" />
                                             Rekomendasi AI Assessment
                                         </div>
@@ -698,7 +708,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                     {review.ai_assessment ? (
                                         <div className="mt-3 space-y-3 text-sm">
                                             <div>
-                                                <span className="text-xs font-medium text-muted-foreground">
+                                                <span className="text-xs font-medium text-slate-500">
                                                     Rekomendasi Tingkat Moral
                                                     (Kohlberg):
                                                 </span>
@@ -715,9 +725,9 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                 </div>
                                             </div>
 
-                                            <div className="space-y-1.5 rounded-md border bg-muted/20 p-3">
+                                            <div className="space-y-1.5 rounded-2xl border border-slate-200 bg-slate-50 p-3">
                                                 <div className="flex justify-between text-xs font-semibold">
-                                                    <span>
+                                                    <span className="text-slate-700">
                                                         Tingkat Keyakinan
                                                         (Confidence)
                                                     </span>
@@ -728,7 +738,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                         )}
                                                     </span>
                                                 </div>
-                                                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                                                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
                                                     <div
                                                         className="h-full rounded-full bg-teal-500 transition-all duration-500"
                                                         style={{
@@ -739,10 +749,10 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                             </div>
 
                                             <div>
-                                                <span className="text-xs font-medium text-muted-foreground">
+                                                <span className="text-xs font-medium text-slate-500">
                                                     Ringkasan Penalaran AI:
                                                 </span>
-                                                <p className="mt-1 rounded-md bg-muted/40 p-3 text-xs leading-relaxed text-foreground">
+                                                <p className="mt-1 rounded-2xl bg-slate-50 p-3 text-xs leading-relaxed text-slate-700">
                                                     {
                                                         review.ai_assessment
                                                             .reasoning_summary
@@ -878,8 +888,8 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                 </div>
 
                                 {/* Validasi & Keputusan Ustadz */}
-                                <div className="space-y-3 rounded-md border p-4">
-                                    <div className="text-sm font-medium">
+                                <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                                    <div className="text-sm font-bold text-slate-700">
                                         Validasi & Keputusan Ustadz
                                     </div>
 
@@ -936,7 +946,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                     )}
 
                                     {/* Tabs */}
-                                    <div className="flex rounded-md border bg-muted/40 p-1">
+                                    <div className="flex rounded-2xl border border-slate-200 bg-slate-50 p-1">
                                         <button
                                             type="button"
                                             onClick={() =>
@@ -944,8 +954,8 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                             }
                                             className={`flex-1 rounded-sm py-1.5 text-xs font-semibold transition ${
                                                 actionTab === 'approve'
-                                                    ? 'bg-background text-foreground shadow-sm'
-                                                    : 'text-muted-foreground hover:text-foreground'
+                                                    ? 'bg-white text-slate-700 shadow-sm'
+                                                    : 'text-slate-500 hover:text-slate-700'
                                             }`}
                                         >
                                             Setujui Hasil AI
@@ -957,8 +967,8 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                             }
                                             className={`flex-1 rounded-sm py-1.5 text-xs font-semibold transition ${
                                                 actionTab === 'override'
-                                                    ? 'bg-background text-foreground shadow-sm'
-                                                    : 'text-muted-foreground hover:text-foreground'
+                                                    ? 'bg-white text-slate-700 shadow-sm'
+                                                    : 'text-slate-500 hover:text-slate-700'
                                             }`}
                                         >
                                             Override Penilaian
@@ -971,7 +981,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                             onSubmit={handleApproveSubmit}
                                             className="space-y-3 pt-1"
                                         >
-                                            <p className="text-xs text-muted-foreground">
+                                            <p className="text-xs text-slate-500">
                                                 Menyetujui rekomendasi AI level{' '}
                                                 <span className="font-bold text-emerald-600">
                                                     {review.ai_assessment
@@ -1000,7 +1010,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                         )
                                                     }
                                                     placeholder="Tambahkan catatan hasil pengamatan..."
-                                                    className="mt-1 w-full rounded-md border bg-background p-2 text-xs outline-none focus:ring-1 focus:ring-primary"
+                                                    className="mt-1 w-full rounded-2xl border border-slate-200 bg-white p-2 text-xs text-slate-700 outline-none focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200"
                                                 />
                                             </div>
 
@@ -1041,7 +1051,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                             e.target.value,
                                                         )
                                                     }
-                                                    className="mt-1 w-full rounded-md border bg-background p-2 text-xs font-medium outline-none focus:ring-1 focus:ring-amber-500"
+                                                    className="mt-1 w-full rounded-2xl border border-slate-200 bg-white p-2 text-xs font-medium text-slate-700 outline-none focus:border-amber-300 focus:ring-1 focus:ring-amber-200"
                                                 >
                                                     <option value="Tahap 1: Kepatuhan dan Hukuman">
                                                         Tahap 1: Kepatuhan dan
@@ -1130,7 +1140,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                         )
                                                     }
                                                     placeholder="Tambahkan catatan pendampingan..."
-                                                    className="mt-1 w-full rounded-md border bg-background p-2 text-xs outline-none focus:ring-1 focus:ring-amber-500"
+                                                    className="mt-1 w-full rounded-2xl border border-slate-200 bg-white p-2 text-xs text-slate-700 outline-none focus:border-amber-300 focus:ring-1 focus:ring-amber-200"
                                                 />
                                             </div>
 
@@ -1153,43 +1163,43 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                 {/* Audit Perubahan */}
                                 {review.audit_trail &&
                                     review.audit_trail.length > 0 && (
-                                        <div className="space-y-3 rounded-md border p-4">
-                                            <div className="flex items-center gap-2 text-sm font-medium">
-                                                <Clock className="size-4 text-muted-foreground" />
+                                        <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                                            <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
+                                                <Clock className="size-4 text-emerald-600" />
                                                 Audit Perubahan & Riwayat
                                                 Pemrosesan
                                             </div>
 
-                                            <div className="relative mt-2 space-y-3 before:absolute before:inset-0 before:left-2 before:w-0.5 before:bg-border">
+                                            <div className="relative mt-2 space-y-3 before:absolute before:inset-0 before:left-2 before:w-0.5 before:bg-slate-200">
                                                 {review.audit_trail.map(
                                                     (item, idx) => (
                                                         <div
                                                             key={idx}
                                                             className="relative flex gap-3 pl-6"
                                                         >
-                                                            <div className="absolute top-1 left-0.5 h-3.5 w-3.5 rounded-full border-2 border-background bg-primary" />
+                                                            <div className="absolute top-1 left-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500" />
                                                             <div className="flex flex-col text-xs">
                                                                 <div className="flex flex-wrap items-center gap-1.5">
-                                                                    <span className="font-bold text-foreground">
+                                                                    <span className="font-bold text-slate-700">
                                                                         {
                                                                             item.event
                                                                         }
                                                                     </span>
                                                                     <Badge
                                                                         variant="outline"
-                                                                        className="px-1 py-0 text-[10px]"
+                                                                        className="border-slate-200 bg-slate-50 px-1 py-0 text-[10px] text-slate-600"
                                                                     >
                                                                         {
                                                                             item.actor
                                                                         }
                                                                     </Badge>
-                                                                    <span className="text-[10px] text-muted-foreground">
+                                                                    <span className="text-[10px] text-slate-400">
                                                                         {
                                                                             item.timestamp
                                                                         }
                                                                     </span>
                                                                 </div>
-                                                                <p className="mt-0.5 text-muted-foreground">
+                                                                <p className="mt-0.5 text-slate-500">
                                                                     {
                                                                         item.description
                                                                     }

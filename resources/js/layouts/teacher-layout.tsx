@@ -128,7 +128,7 @@ export default function TeacherLayout({ children }: TeacherLayoutProps) {
                         <div className="mb-4 flex justify-end">
                             <button
                                 onClick={() => setDrawerOpen(false)}
-                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-slate-500"
+                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200"
                                 aria-label="Tutup menu"
                             >
                                 <X className="size-5" />

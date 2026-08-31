@@ -875,20 +875,24 @@ export default function TeacherMoralCasesIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-2xl">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-2xl">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <ListChecks className="size-5 text-muted-foreground" />
-                            <SheetTitle>Pilihan Dinamis</SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <ListChecks className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
+                                Pilihan Dinamis
+                            </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             {optionCase
                                 ? optionCase.title
                                 : 'Kelola pilihan jawaban kasus.'}
                         </SheetDescription>
                     </SheetHeader>
 
-                    <div className="grid gap-5 px-4 pb-4">
+                    <div className="grid gap-5 px-4 py-5">
                         <div className="flex justify-end">
                             <Button
                                 type="button"
@@ -904,12 +908,15 @@ export default function TeacherMoralCasesIndex({
                             {optionCase?.options.map((option) => (
                                 <div
                                     key={option.id}
-                                    className="rounded-md border p-3"
+                                    className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm"
                                 >
                                     <div className="flex flex-wrap items-start justify-between gap-3">
                                         <div>
                                             <div className="flex items-center gap-2">
-                                                <Badge variant="outline">
+                                                <Badge
+                                                    variant="outline"
+                                                    className="border-sky-200 bg-sky-50 text-sky-700"
+                                                >
                                                     {option.label}
                                                 </Badge>
                                                 <Badge
@@ -924,11 +931,11 @@ export default function TeacherMoralCasesIndex({
                                                         : 'Nonaktif'}
                                                 </Badge>
                                             </div>
-                                            <p className="mt-2 text-sm">
+                                            <p className="mt-2 text-sm text-slate-700">
                                                 {option.text}
                                             </p>
                                             {option.internal_value && (
-                                                <p className="mt-1 text-xs text-muted-foreground">
+                                                <p className="mt-1 text-xs text-slate-500">
                                                     Internal:{' '}
                                                     {option.internal_value}
                                                 </p>
@@ -964,23 +971,28 @@ export default function TeacherMoralCasesIndex({
                         </div>
 
                         {optionCase?.options.length === 0 && (
-                            <div className="rounded-md border border-dashed p-5 text-sm text-muted-foreground">
+                            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 p-5 text-sm text-slate-500">
                                 Belum ada pilihan untuk kasus ini.
                             </div>
                         )}
 
                         <form
                             onSubmit={submitOption}
-                            className="grid gap-4 rounded-md border p-4"
+                            className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
                         >
-                            <div className="font-medium">
+                            <div className="font-bold text-slate-700">
                                 {editingOption
                                     ? 'Edit Pilihan'
                                     : 'Form Pilihan'}
                             </div>
                             <div className="grid gap-4 sm:grid-cols-[120px_minmax(0,1fr)]">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="option_label">Label</Label>
+                                    <Label
+                                        htmlFor="option_label"
+                                        className="text-sm font-medium text-slate-700"
+                                    >
+                                        Label
+                                    </Label>
                                     <Input
                                         id="option_label"
                                         value={optionForm.data.label}
@@ -991,13 +1003,17 @@ export default function TeacherMoralCasesIndex({
                                             )
                                         }
                                         placeholder="A, B, Sikap 1"
+                                        className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                     />
                                     <InputError
                                         message={optionForm.errors.label}
                                     />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="internal_value">
+                                    <Label
+                                        htmlFor="internal_value"
+                                        className="text-sm font-medium text-slate-700"
+                                    >
                                         Label Internal
                                     </Label>
                                     <Input
@@ -1010,6 +1026,7 @@ export default function TeacherMoralCasesIndex({
                                             )
                                         }
                                         placeholder="Opsional"
+                                        className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                     />
                                     <InputError
                                         message={
@@ -1019,12 +1036,15 @@ export default function TeacherMoralCasesIndex({
                                 </div>
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="option_text">
+                                <Label
+                                    htmlFor="option_text"
+                                    className="text-sm font-medium text-slate-700"
+                                >
                                     Teks Pilihan
                                 </Label>
                                 <textarea
                                     id="option_text"
-                                    className="min-h-28 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                    className="min-h-28 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm outline-none placeholder:text-slate-400 focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                     value={optionForm.data.text}
                                     onChange={(event) =>
                                         optionForm.setData(
@@ -1037,7 +1057,10 @@ export default function TeacherMoralCasesIndex({
                             </div>
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="option_sort_order">
+                                    <Label
+                                        htmlFor="option_sort_order"
+                                        className="text-sm font-medium text-slate-700"
+                                    >
                                         Urutan
                                     </Label>
                                     <Input
@@ -1055,12 +1078,13 @@ export default function TeacherMoralCasesIndex({
                                                 Number(event.target.value),
                                             )
                                         }
+                                        className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm focus-visible:ring-emerald-200"
                                     />
                                     <InputError
                                         message={optionForm.errors.sort_order}
                                     />
                                 </div>
-                                <div className="flex items-center gap-3 pt-7">
+                                <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 sm:mt-6">
                                     <Checkbox
                                         id="option_is_active"
                                         checked={optionForm.data.is_active}
@@ -1071,15 +1095,19 @@ export default function TeacherMoralCasesIndex({
                                             )
                                         }
                                     />
-                                    <Label htmlFor="option_is_active">
+                                    <Label
+                                        htmlFor="option_is_active"
+                                        className="text-sm font-medium text-slate-700"
+                                    >
                                         Pilihan aktif
                                     </Label>
                                 </div>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 border-t border-slate-100 pt-4">
                                 <Button
                                     type="submit"
                                     disabled={optionForm.processing}
+                                    className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
                                 >
                                     {editingOption
                                         ? 'Simpan Pilihan'
@@ -1090,6 +1118,7 @@ export default function TeacherMoralCasesIndex({
                                         type="button"
                                         variant="outline"
                                         onClick={startCreateOption}
+                                        className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                                     >
                                         Batal Edit
                                     </Button>
@@ -1109,13 +1138,17 @@ export default function TeacherMoralCasesIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-xl">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-xl">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <SlidersHorizontal className="size-5 text-muted-foreground" />
-                            <SheetTitle>Indikator Kasus</SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <SlidersHorizontal className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
+                                Indikator Kasus
+                            </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             {indicatorCase
                                 ? indicatorCase.title
                                 : 'Pilih indikator karakter dan bobotnya.'}
@@ -1124,10 +1157,10 @@ export default function TeacherMoralCasesIndex({
 
                     <form
                         onSubmit={submitIndicators}
-                        className="grid gap-4 px-4 pb-4"
+                        className="grid gap-5 px-4 py-5"
                     >
                         {characterIndicators.length === 0 ? (
-                            <div className="rounded-md border border-dashed p-5 text-sm text-muted-foreground">
+                            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 p-5 text-sm text-slate-500">
                                 Belum ada indikator aktif.
                             </div>
                         ) : (
@@ -1140,7 +1173,7 @@ export default function TeacherMoralCasesIndex({
                                     return (
                                         <div
                                             key={indicator.id}
-                                            className="grid gap-3 rounded-md border p-3 sm:grid-cols-[minmax(0,1fr)_110px]"
+                                            className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:grid-cols-[minmax(0,1fr)_110px]"
                                         >
                                             <label className="flex items-start gap-3 text-sm">
                                                 <Checkbox
@@ -1160,10 +1193,10 @@ export default function TeacherMoralCasesIndex({
                                                     }
                                                 />
                                                 <span>
-                                                    <span className="block font-medium">
+                                                    <span className="block font-medium text-slate-700">
                                                         {indicator.name}
                                                     </span>
-                                                    <span className="text-xs text-muted-foreground">
+                                                    <span className="text-xs text-slate-500">
                                                         {indicator.category} -{' '}
                                                         {indicator.code}
                                                     </span>
@@ -1190,6 +1223,7 @@ export default function TeacherMoralCasesIndex({
                                                         }),
                                                     )
                                                 }
+                                                className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm focus-visible:ring-emerald-200"
                                             />
                                         </div>
                                     );
@@ -1197,8 +1231,13 @@ export default function TeacherMoralCasesIndex({
                             </div>
                         )}
 
-                        <div className="flex gap-2 pt-2">
-                            <Button type="submit">Simpan Indikator</Button>
+                        <div className="flex gap-2 border-t border-slate-100 pt-4">
+                            <Button
+                                type="submit"
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
+                            >
+                                Simpan Indikator
+                            </Button>
                             <Button
                                 type="button"
                                 variant="outline"
@@ -1206,6 +1245,7 @@ export default function TeacherMoralCasesIndex({
                                     setIndicatorCase(null);
                                     setIndicatorWeights({});
                                 }}
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>
@@ -1223,13 +1263,17 @@ export default function TeacherMoralCasesIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-lg">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <ImageUp className="size-5 text-muted-foreground" />
-                            <SheetTitle>Upload Media</SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <ImageUp className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
+                                Upload Media
+                            </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             {mediaCase
                                 ? mediaCase.title
                                 : 'Upload gambar atau audio kasus.'}
@@ -1238,13 +1282,18 @@ export default function TeacherMoralCasesIndex({
 
                     <form
                         onSubmit={submitMedia}
-                        className="grid gap-4 px-4 pb-4"
+                        className="grid gap-5 px-4 py-5"
                     >
                         <div className="grid gap-2">
-                            <Label htmlFor="media_type">Jenis Media</Label>
+                            <Label
+                                htmlFor="media_type"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                Jenis Media
+                            </Label>
                             <select
                                 id="media_type"
-                                className="h-9 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                className="h-10 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={mediaForm.data.type}
                                 onChange={(event) =>
                                     mediaForm.setData(
@@ -1260,10 +1309,16 @@ export default function TeacherMoralCasesIndex({
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="media">File</Label>
+                            <Label
+                                htmlFor="media"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                File
+                            </Label>
                             <Input
                                 id="media"
                                 type="file"
+                                className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-600 shadow-sm file:mr-3 file:h-8 file:rounded-xl file:border-0 file:bg-emerald-50 file:px-3 file:text-xs file:font-bold file:text-emerald-700 hover:file:bg-emerald-100 focus-visible:ring-emerald-200"
                                 accept={
                                     mediaForm.data.type === 'audio'
                                         ? 'audio/*'
@@ -1277,14 +1332,14 @@ export default function TeacherMoralCasesIndex({
                                 }
                             />
                             <InputError message={mediaForm.errors.media} />
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs leading-relaxed text-slate-500">
                                 Gambar maksimal 5 MB. Audio maksimal 10 MB. File
                                 disimpan di storage private.
                             </p>
                         </div>
 
                         {mediaCase && (
-                            <div className="grid gap-2 rounded-md bg-muted/50 p-3 text-xs text-muted-foreground">
+                            <div className="grid gap-2 rounded-2xl border border-slate-100 bg-slate-50 p-3 text-xs text-slate-500">
                                 <div>
                                     Gambar:{' '}
                                     {mediaCase.image_path
@@ -1300,10 +1355,11 @@ export default function TeacherMoralCasesIndex({
                             </div>
                         )}
 
-                        <div className="flex gap-2 pt-2">
+                        <div className="flex gap-2 border-t border-slate-100 pt-4">
                             <Button
                                 type="submit"
                                 disabled={mediaForm.processing}
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
                             >
                                 {mediaForm.data.type === 'audio' ? (
                                     <FileAudio className="size-4" />
@@ -1319,6 +1375,7 @@ export default function TeacherMoralCasesIndex({
                                     setMediaCase(null);
                                     mediaForm.reset();
                                 }}
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>

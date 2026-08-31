@@ -858,13 +858,17 @@ export default function TeacherTestPackagesIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-lg">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <Users className="size-5 text-muted-foreground" />
-                            <SheetTitle>Target Kelompok</SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <Users className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
+                                Target Kelompok
+                            </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             {groupPackage
                                 ? groupPackage.title
                                 : 'Pilih kelompok target paket.'}
@@ -873,10 +877,10 @@ export default function TeacherTestPackagesIndex({
 
                     <form
                         onSubmit={submitGroups}
-                        className="grid gap-4 px-4 pb-4"
+                        className="grid gap-5 px-4 py-5"
                     >
                         {groups.length === 0 ? (
-                            <div className="rounded-md border border-dashed p-5 text-sm text-muted-foreground">
+                            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 p-5 text-sm text-slate-500">
                                 Belum ada kelompok aktif.
                             </div>
                         ) : (
@@ -884,7 +888,7 @@ export default function TeacherTestPackagesIndex({
                                 {groups.map((group) => (
                                     <label
                                         key={group.id}
-                                        className="flex items-center gap-3 rounded-md border px-3 py-2 text-sm"
+                                        className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm transition-colors hover:border-emerald-200 hover:bg-emerald-50/40"
                                     >
                                         <Checkbox
                                             checked={groupIds.includes(
@@ -906,8 +910,13 @@ export default function TeacherTestPackagesIndex({
                             </div>
                         )}
 
-                        <div className="flex gap-2 pt-2">
-                            <Button type="submit">Simpan Target</Button>
+                        <div className="flex gap-2 border-t border-slate-100 pt-4">
+                            <Button
+                                type="submit"
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
+                            >
+                                Simpan Target
+                            </Button>
                             <Button
                                 type="button"
                                 variant="outline"
@@ -915,6 +924,7 @@ export default function TeacherTestPackagesIndex({
                                     setGroupPackage(null);
                                     setGroupIds([]);
                                 }}
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>
@@ -932,13 +942,17 @@ export default function TeacherTestPackagesIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-lg">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <Boxes className="size-5 text-muted-foreground" />
-                            <SheetTitle>Kasus Dalam Paket</SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <Boxes className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
+                                Kasus Dalam Paket
+                            </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             {casePackage
                                 ? casePackage.title
                                 : 'Pilih kasus moral untuk paket ini.'}
@@ -947,10 +961,10 @@ export default function TeacherTestPackagesIndex({
 
                     <form
                         onSubmit={submitCases}
-                        className="grid gap-4 px-4 pb-4"
+                        className="grid gap-5 px-4 py-5"
                     >
                         {moralCases.length === 0 ? (
-                            <div className="rounded-md border border-dashed p-5 text-sm text-muted-foreground">
+                            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 p-5 text-sm text-slate-500">
                                 Belum ada kasus aktif.
                             </div>
                         ) : (
@@ -958,7 +972,7 @@ export default function TeacherTestPackagesIndex({
                                 {moralCases.map((moralCase) => (
                                     <label
                                         key={moralCase.id}
-                                        className="flex items-center gap-3 rounded-md border px-3 py-2 text-sm"
+                                        className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm transition-colors hover:border-emerald-200 hover:bg-emerald-50/40"
                                     >
                                         <Checkbox
                                             checked={caseIds.includes(
@@ -981,13 +995,18 @@ export default function TeacherTestPackagesIndex({
                         )}
 
                         {caseIds.length > 0 && (
-                            <div className="rounded-md bg-muted/50 p-3 text-xs text-muted-foreground">
+                            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3 text-xs text-slate-500">
                                 Urutan kasus mengikuti urutan saat dipilih.
                             </div>
                         )}
 
-                        <div className="flex gap-2 pt-2">
-                            <Button type="submit">Simpan Kasus</Button>
+                        <div className="flex gap-2 border-t border-slate-100 pt-4">
+                            <Button
+                                type="submit"
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
+                            >
+                                Simpan Kasus
+                            </Button>
                             <Button
                                 type="button"
                                 variant="outline"
@@ -995,6 +1014,7 @@ export default function TeacherTestPackagesIndex({
                                     setCasePackage(null);
                                     setCaseIds([]);
                                 }}
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>

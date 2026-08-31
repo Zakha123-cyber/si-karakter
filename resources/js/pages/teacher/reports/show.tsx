@@ -133,7 +133,9 @@ export default function TeacherReportShow({ report, summary }: Props) {
                     });
                 },
                 onError: () => {
-                    toast.error('Draft narasi AI gagal dibuat.', { id: toastId });
+                    toast.error('Draft narasi AI gagal dibuat.', {
+                        id: toastId,
+                    });
                 },
             },
         );
@@ -180,7 +182,9 @@ export default function TeacherReportShow({ report, summary }: Props) {
                     });
                 },
                 onError: () => {
-                    toast.error('Laporan belum bisa diterbitkan.', { id: toastId });
+                    toast.error('Laporan belum bisa diterbitkan.', {
+                        id: toastId,
+                    });
                 },
             },
         );
@@ -195,27 +199,27 @@ export default function TeacherReportShow({ report, summary }: Props) {
                     type="button"
                     variant="ghost"
                     onClick={() => router.get('/teacher/reports')}
-                    className="rounded-2xl text-xs font-bold text-slate-500"
+                    className="rounded-2xl text-xs font-bold text-slate-500 hover:bg-emerald-50 hover:text-emerald-700"
                 >
                     <ArrowLeft className="size-4" />
                     Kembali ke Daftar Laporan
                 </Button>
 
-                <section className="rounded-[32px] bg-white p-6 shadow-[0_8px_30px_rgba(16,58,58,0.08)] sm:p-8">
+                <section className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-teal-600 via-emerald-600 to-teal-700 p-6 text-white shadow-[0_12px_40px_rgba(13,148,136,0.35)] sm:p-8">
                     <div className="flex flex-wrap items-start justify-between gap-4">
                         <div>
                             <div className="flex flex-wrap items-center gap-2">
-                                <h1 className="text-2xl font-extrabold text-slate-800">
+                                <h1 className="text-2xl font-extrabold text-white">
                                     {report.student.name ?? 'Santri'}
                                 </h1>
                                 <Badge
                                     variant="outline"
-                                    className={statusClasses(report.status)}
+                                    className={`border-white/30 bg-white/15 text-white ${statusClasses(report.status)}`}
                                 >
                                     {statusLabel(report.status)}
                                 </Badge>
                             </div>
-                            <p className="mt-1 text-sm font-medium text-slate-400">
+                            <p className="mt-1 text-sm font-medium text-emerald-50/90">
                                 {report.period_start} s.d. {report.period_end}
                                 {' · '}
                                 {report.student.group_name ?? 'Tanpa kelompok'}
@@ -231,7 +235,7 @@ export default function TeacherReportShow({ report, summary }: Props) {
                                         `/teacher/reports/${report.id}/pdf`,
                                     )
                                 }
-                                className="rounded-2xl border-slate-100 text-xs font-bold text-slate-600"
+                                className="rounded-2xl border-white/30 bg-white text-xs font-bold text-emerald-700 hover:bg-emerald-50"
                             >
                                 <Download className="size-4" />
                                 Unduh PDF
@@ -256,17 +260,17 @@ export default function TeacherReportShow({ report, summary }: Props) {
                                     : 'Belum ada jawaban tervalidasi'}
                             </p>
                         </div>
-                        <div className="rounded-[24px] bg-violet-50 p-4">
-                            <p className="text-[11px] font-bold tracking-wide text-violet-600 uppercase">
+                        <div className="rounded-[24px] bg-white/15 p-4 ring-1 ring-white/20">
+                            <p className="text-[11px] font-bold tracking-wide text-emerald-50 uppercase">
                                 Rekap Observasi
                             </p>
-                            <p className="mt-1 text-2xl font-extrabold text-violet-700">
+                            <p className="mt-1 text-2xl font-extrabold text-white">
                                 {report.observation_summary?.score !== null &&
                                 report.observation_summary?.score !== undefined
                                     ? `${report.observation_summary.score}%`
                                     : '—'}
                             </p>
-                            <p className="mt-1 text-[11px] font-medium text-violet-600/80">
+                            <p className="mt-1 text-[11px] font-medium text-emerald-50/80">
                                 {summary.observation_complete
                                     ? `${report.observation_summary?.counted_items ?? 0} catatan terhitung`
                                     : 'Belum ada catatan observasi'}
@@ -362,7 +366,7 @@ export default function TeacherReportShow({ report, summary }: Props) {
                                             event.target.value,
                                         )
                                     }
-                                    className="rounded-2xl border border-input bg-background p-3 text-sm leading-relaxed shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                    className="w-full rounded-2xl border border-slate-200 bg-white p-3 text-sm leading-relaxed text-slate-700 shadow-sm outline-none placeholder:text-slate-400 focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100 disabled:bg-slate-50 disabled:text-slate-500"
                                 />
                                 <InputError
                                     message={form.errors.final_narrative}
@@ -385,7 +389,7 @@ export default function TeacherReportShow({ report, summary }: Props) {
                                             event.target.value,
                                         )
                                     }
-                                    className="rounded-2xl border border-input bg-background p-3 text-sm leading-relaxed shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                    className="w-full rounded-2xl border border-slate-200 bg-white p-3 text-sm leading-relaxed text-slate-700 shadow-sm outline-none placeholder:text-slate-400 focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100 disabled:bg-slate-50 disabled:text-slate-500"
                                 />
                                 <InputError
                                     message={form.errors.recommendation}
@@ -400,7 +404,7 @@ export default function TeacherReportShow({ report, summary }: Props) {
                                     <Button
                                         type="submit"
                                         disabled={form.processing}
-                                        className="rounded-2xl bg-slate-700 text-xs font-bold text-white hover:bg-slate-800"
+                                        className="rounded-2xl bg-slate-700 text-xs font-bold text-white shadow-sm hover:bg-slate-800"
                                     >
                                         <FileText className="size-3.5" />
                                         Simpan Narasi

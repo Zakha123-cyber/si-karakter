@@ -343,18 +343,21 @@ export default function TeacherTestPackagesIndex({
         <>
             <Head title="Paket Tes" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-4">
-                {/* Hero Gradient Banner */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 p-6 text-white shadow-xl md:rounded-[28px] md:p-8">
-                    <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                        <div className="max-w-2xl">
-                            <span className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3.5 py-1 text-xs font-medium backdrop-blur-md">
-                                Phase 4 — Teacher Test Packages
-                            </span>
-                            <h1 className="mt-3 text-2xl font-bold tracking-tight md:text-3xl">
-                                Paket Tes
+            <div className="min-h-full space-y-6 pb-8">
+                <section className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-teal-600 via-emerald-600 to-teal-700 p-6 text-white shadow-[0_12px_40px_rgba(13,148,136,0.35)] sm:p-8">
+                    <div className="pointer-events-none absolute -top-8 -right-8 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+                    <div className="relative flex flex-wrap items-center justify-between gap-6">
+                        <div className="max-w-3xl min-w-0">
+                            <div className="mb-2 flex items-center gap-2 text-emerald-100">
+                                <FileStack className="size-4" />
+                                <span className="text-xs font-bold tracking-wider uppercase">
+                                    Paket Tes Moral
+                                </span>
+                            </div>
+                            <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
+                                Kelola Paket Tes
                             </h1>
-                            <p className="mt-2 text-sm text-emerald-100 md:text-base">
+                            <p className="mt-2 max-w-xl text-sm leading-relaxed text-emerald-50/90">
                                 Kelola paket dilema moral, periode aktif, target
                                 kelompok, dan daftar kasus yang akan dikerjakan
                                 santri.
@@ -364,16 +367,13 @@ export default function TeacherTestPackagesIndex({
                         <Button
                             type="button"
                             onClick={openCreate}
-                            className="inline-flex shrink-0 items-center gap-2 self-start rounded-xl bg-white px-5 py-3 text-sm font-semibold text-emerald-800 shadow-md transition-all hover:bg-emerald-50 hover:shadow-lg md:self-center"
+                            className="rounded-2xl bg-white text-emerald-700 shadow-lg hover:bg-emerald-50"
                         >
                             <Plus className="size-4" />
                             Tambah Paket
                         </Button>
                     </div>
-                    {/* Decorative Background Glows */}
-                    <div className="pointer-events-none absolute -top-10 -right-10 size-60 rounded-full bg-white/10 blur-2xl" />
-                    <div className="pointer-events-none absolute right-20 -bottom-10 size-40 rounded-full bg-teal-500/20 blur-xl" />
-                </div>
+                </section>
 
                 <div className="grid gap-4 sm:grid-cols-3">
                     <SummaryCard
@@ -406,287 +406,274 @@ export default function TeacherTestPackagesIndex({
                     />
                 </div>
 
-                <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <CardHeader className="border-b border-slate-100 px-6 py-5 dark:border-slate-800">
-                        <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400">
-                                    <Search className="size-4" />
-                                </div>
-                                <div>
-                                    <CardTitle className="text-lg font-bold text-slate-800 dark:text-white">
-                                        Daftar Paket
-                                    </CardTitle>
-                                    <CardDescription className="text-xs text-slate-500">
-                                        Menampilkan {packages.from ?? 0}-
-                                        {packages.to ?? 0} dari {packages.total}{' '}
-                                        paket tes
-                                    </CardDescription>
-                                </div>
+                <section className="rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)] sm:p-6">
+                    <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-xl">
+                                📦
+                            </span>
+                            <div>
+                                <h2 className="text-lg font-extrabold text-slate-800">
+                                    Daftar Paket
+                                </h2>
+                                <p className="text-xs font-medium text-slate-400">
+                                    Menampilkan {packages.from ?? 0}-
+                                    {packages.to ?? 0} dari {packages.total}{' '}
+                                    paket tes
+                                </p>
                             </div>
                         </div>
-                    </CardHeader>
-                    <CardContent className="grid gap-6 p-6">
-                        <form
-                            onSubmit={submitFilters}
-                            className="grid gap-3 md:grid-cols-[minmax(0,1fr)_200px_auto]"
-                        >
-                            <div className="relative">
-                                <Search className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
-                                <Input
-                                    value={search}
-                                    onChange={(event) =>
-                                        setSearch(event.target.value)
-                                    }
-                                    placeholder="Cari judul atau deskripsi paket..."
-                                    className="h-10 rounded-xl border-slate-200 bg-slate-50 pr-4 pl-10 text-sm transition-all focus:border-emerald-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
-                                />
-                            </div>
-                            <select
-                                className="h-10 rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-sm text-slate-700 transition-all focus:border-emerald-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
-                                value={status}
+                        <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3.5 py-1.5 text-xs font-bold text-emerald-700">
+                            <Filter className="size-4" />
+                            Filter paket
+                        </div>
+                    </div>
+
+                    <form
+                        onSubmit={submitFilters}
+                        className="mb-5 grid gap-3 rounded-[24px] border border-slate-100 bg-slate-50/60 p-3 md:grid-cols-[minmax(0,1fr)_220px_auto]"
+                    >
+                        <div className="relative">
+                            <Search className="pointer-events-none absolute top-2.5 left-3 size-4 text-slate-400" />
+                            <Input
+                                value={search}
                                 onChange={(event) =>
-                                    setStatus(event.target.value)
+                                    setSearch(event.target.value)
                                 }
-                            >
-                                <option value="">Semua status</option>
-                                {statuses.map((status) => (
-                                    <option key={status} value={status}>
-                                        {statusLabel(status)}
-                                    </option>
-                                ))}
-                            </select>
-                            <Button
-                                type="submit"
-                                className="h-10 rounded-xl bg-slate-800 px-5 text-sm font-medium text-white shadow-sm hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600"
-                            >
-                                <Filter className="mr-2 size-4" />
-                                Filter
-                            </Button>
-                        </form>
-
-                        <div className="overflow-x-auto rounded-xl border border-slate-100 dark:border-slate-800">
-                            <table className="w-full min-w-[920px] text-sm">
-                                <thead className="border-b border-slate-100 bg-slate-50/80 text-left text-xs font-semibold tracking-wider text-slate-500 uppercase dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-400">
-                                    <tr>
-                                        <th className="px-6 py-4">Paket</th>
-                                        <th className="px-6 py-4">Periode</th>
-                                        <th className="px-6 py-4">Isi</th>
-                                        <th className="px-6 py-4">Status</th>
-                                        <th className="px-6 py-4 text-right">
-                                            Action
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {packages.data.map((testPackage) => (
-                                        <tr
-                                            key={testPackage.id}
-                                            className="border-t border-slate-100 transition-colors hover:bg-emerald-50/30 dark:border-slate-800/60 dark:hover:bg-slate-800/40"
-                                        >
-                                            <td className="px-6 py-4">
-                                                <div className="font-semibold text-slate-800 transition-colors hover:text-emerald-600 dark:text-white">
-                                                    {testPackage.title}
-                                                </div>
-                                                <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                                                    {testPackage.description ||
-                                                        testPackage.slug}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 text-xs text-slate-600 dark:text-slate-300">
-                                                <div>
-                                                    <span className="font-medium text-slate-400">
-                                                        Mulai:
-                                                    </span>{' '}
-                                                    {formatDateTime(
-                                                        testPackage.start_at,
-                                                    )}
-                                                </div>
-                                                <div className="mt-0.5">
-                                                    <span className="font-medium text-slate-400">
-                                                        Selesai:
-                                                    </span>{' '}
-                                                    {formatDateTime(
-                                                        testPackage.end_at,
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex flex-wrap gap-1.5">
-                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700 dark:border-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-300">
-                                                        {
-                                                            testPackage.groups_count
-                                                        }{' '}
-                                                        kelompok
-                                                    </span>
-                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-700 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300">
-                                                        {
-                                                            testPackage.cases_count
-                                                        }{' '}
-                                                        kasus
-                                                    </span>
-                                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700 dark:border-purple-800 dark:bg-purple-950/40 dark:text-purple-300">
-                                                        {
-                                                            testPackage.attempt_limit
-                                                        }{' '}
-                                                        percobaan
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {renderStatusBadge(
-                                                    testPackage.status,
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex flex-wrap justify-end gap-1.5">
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            openEdit(
-                                                                testPackage,
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            testPackage.status ===
-                                                            'closed'
-                                                        }
-                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                                                    >
-                                                        <Pencil className="size-3.5" />
-                                                        Edit
-                                                    </Button>
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            openGroups(
-                                                                testPackage,
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            testPackage.status ===
-                                                            'closed'
-                                                        }
-                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                                                    >
-                                                        <Users className="size-3.5" />
-                                                        Kelompok
-                                                    </Button>
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            openCases(
-                                                                testPackage,
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            testPackage.status ===
-                                                            'closed'
-                                                        }
-                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-teal-200 hover:bg-teal-50 hover:text-teal-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                                                    >
-                                                        <Boxes className="size-3.5" />
-                                                        Kasus
-                                                    </Button>
-                                                    {testPackage.status ===
-                                                    'published' ? (
-                                                        <Button
-                                                            type="button"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                closePackage(
-                                                                    testPackage,
-                                                                )
-                                                            }
-                                                            className="h-8 rounded-lg bg-amber-600 px-2.5 text-xs font-medium text-white shadow-2xs transition-all hover:bg-amber-700"
-                                                        >
-                                                            <Archive className="size-3.5" />
-                                                            Close
-                                                        </Button>
-                                                    ) : (
-                                                        <Button
-                                                            type="button"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                publishPackage(
-                                                                    testPackage,
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                testPackage.status ===
-                                                                'closed'
-                                                            }
-                                                            className="h-8 rounded-lg bg-emerald-600 px-2.5 text-xs font-medium text-white shadow-2xs transition-all hover:bg-emerald-700"
-                                                        >
-                                                            <Send className="size-3.5" />
-                                                            Publish
-                                                        </Button>
-                                                    )}
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            deletePackage(
-                                                                testPackage,
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            testPackage.status !==
-                                                            'draft'
-                                                        }
-                                                        className="h-8 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-rose-600 shadow-2xs transition-all hover:border-rose-200 hover:bg-rose-50 dark:border-slate-700 dark:bg-slate-800"
-                                                    >
-                                                        <Trash2 className="size-3.5" />
-                                                        Hapus
-                                                    </Button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                placeholder="Cari judul atau deskripsi paket..."
+                                className="h-10 rounded-2xl border-slate-100 bg-white pl-9 text-sm shadow-sm focus-visible:ring-emerald-200"
+                            />
                         </div>
+                        <select
+                            className="h-10 rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
+                            value={status}
+                            onChange={(event) => setStatus(event.target.value)}
+                        >
+                            <option value="">Semua status</option>
+                            {statuses.map((status) => (
+                                <option key={status} value={status}>
+                                    {statusLabel(status)}
+                                </option>
+                            ))}
+                        </select>
+                        <Button
+                            type="submit"
+                            className="h-10 rounded-2xl bg-emerald-600 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
+                        >
+                            <Filter className="mr-2 size-4" />
+                            Filter
+                        </Button>
+                    </form>
 
-                        {packages.data.length === 0 && (
-                            <div className="rounded-xl border border-dashed border-slate-200 p-12 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
-                                Belum ada paket tes untuk filter ini.
-                            </div>
-                        )}
-
-                        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-4 dark:border-slate-800">
-                            <div className="text-xs text-slate-500">
-                                Total {packages.total} paket tes
-                            </div>
-                            <div className="flex flex-wrap gap-1.5">
-                                {packages.links.map((link) => (
-                                    <Button
-                                        key={`${link.label}-${link.url}`}
-                                        type="button"
-                                        size="sm"
-                                        disabled={!link.url}
-                                        onClick={() => {
-                                            if (link.url) {
-                                                router.visit(link.url, {
-                                                    preserveScroll: true,
-                                                });
-                                            }
-                                        }}
-                                        className={
-                                            link.active
-                                                ? 'h-8 rounded-lg bg-emerald-600 px-3 text-xs font-semibold text-white shadow-xs hover:bg-emerald-700'
-                                                : 'h-8 rounded-lg border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
-                                        }
+                    <div className="[scrollbar-color:rgb(148_163_184)_transparent] overflow-x-auto overscroll-x-contain rounded-[24px] border border-slate-100 bg-white [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent">
+                        <table className="w-full min-w-[920px] text-sm">
+                            <thead className="border-b border-slate-100 bg-slate-50 text-left text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                                <tr>
+                                    <th className="px-6 py-4">Paket</th>
+                                    <th className="px-6 py-4">Periode</th>
+                                    <th className="px-6 py-4">Isi</th>
+                                    <th className="px-6 py-4">Status</th>
+                                    <th className="px-6 py-4 text-right">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {packages.data.map((testPackage) => (
+                                    <tr
+                                        key={testPackage.id}
+                                        className="border-t border-slate-100 transition-colors hover:bg-emerald-50/30"
                                     >
-                                        <PaginationLabel label={link.label} />
-                                    </Button>
+                                        <td className="px-6 py-4">
+                                            <div className="font-semibold text-slate-800 transition-colors hover:text-emerald-600">
+                                                {testPackage.title}
+                                            </div>
+                                            <div className="mt-1 text-xs text-slate-500">
+                                                {testPackage.description ||
+                                                    testPackage.slug}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-xs text-slate-600">
+                                            <div>
+                                                <span className="font-medium text-slate-400">
+                                                    Mulai:
+                                                </span>{' '}
+                                                {formatDateTime(
+                                                    testPackage.start_at,
+                                                )}
+                                            </div>
+                                            <div className="mt-0.5">
+                                                <span className="font-medium text-slate-400">
+                                                    Selesai:
+                                                </span>{' '}
+                                                {formatDateTime(
+                                                    testPackage.end_at,
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-wrap gap-1.5">
+                                                <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700">
+                                                    {testPackage.groups_count}{' '}
+                                                    kelompok
+                                                </span>
+                                                <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-700">
+                                                    {testPackage.cases_count}{' '}
+                                                    kasus
+                                                </span>
+                                                <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-700">
+                                                    {testPackage.attempt_limit}{' '}
+                                                    percobaan
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {renderStatusBadge(
+                                                testPackage.status,
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-wrap justify-end gap-1.5">
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        openEdit(testPackage)
+                                                    }
+                                                    disabled={
+                                                        testPackage.status ===
+                                                        'closed'
+                                                    }
+                                                    className="h-8 rounded-xl border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 shadow-sm hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
+                                                >
+                                                    <Pencil className="size-3.5" />
+                                                    Edit
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        openGroups(testPackage)
+                                                    }
+                                                    disabled={
+                                                        testPackage.status ===
+                                                        'closed'
+                                                    }
+                                                    className="h-8 rounded-xl border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 shadow-sm hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
+                                                >
+                                                    <Users className="size-3.5" />
+                                                    Kelompok
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        openCases(testPackage)
+                                                    }
+                                                    disabled={
+                                                        testPackage.status ===
+                                                        'closed'
+                                                    }
+                                                    className="h-8 rounded-xl border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 shadow-sm hover:border-teal-200 hover:bg-teal-50 hover:text-teal-600"
+                                                >
+                                                    <Boxes className="size-3.5" />
+                                                    Kasus
+                                                </Button>
+                                                {testPackage.status ===
+                                                'published' ? (
+                                                    <Button
+                                                        type="button"
+                                                        size="sm"
+                                                        onClick={() =>
+                                                            closePackage(
+                                                                testPackage,
+                                                            )
+                                                        }
+                                                        className="h-8 rounded-xl bg-amber-600 px-2.5 text-xs font-bold text-white shadow-sm hover:bg-amber-700"
+                                                    >
+                                                        <Archive className="size-3.5" />
+                                                        Close
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        type="button"
+                                                        size="sm"
+                                                        onClick={() =>
+                                                            publishPackage(
+                                                                testPackage,
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            testPackage.status ===
+                                                            'closed'
+                                                        }
+                                                        className="h-8 rounded-xl bg-emerald-600 px-2.5 text-xs font-bold text-white shadow-sm hover:bg-emerald-700"
+                                                    >
+                                                        <Send className="size-3.5" />
+                                                        Publish
+                                                    </Button>
+                                                )}
+                                                <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        deletePackage(
+                                                            testPackage,
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        testPackage.status !==
+                                                        'draft'
+                                                    }
+                                                    className="h-8 rounded-xl border border-rose-100 bg-white px-2.5 text-xs font-bold text-rose-600 shadow-sm hover:border-rose-200 hover:bg-rose-50"
+                                                >
+                                                    <Trash2 className="size-3.5" />
+                                                    Hapus
+                                                </Button>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 ))}
-                            </div>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {packages.data.length === 0 && (
+                        <div className="mt-5 rounded-[24px] border border-dashed border-slate-200 bg-slate-50/60 p-12 text-center text-sm text-slate-500">
+                            Belum ada paket tes untuk filter ini.
                         </div>
-                    </CardContent>
-                </Card>
+                    )}
+
+                    <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-4">
+                        <div className="text-xs font-medium text-slate-500">
+                            Total {packages.total} paket tes
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                            {packages.links.map((link) => (
+                                <Button
+                                    key={`${link.label}-${link.url}`}
+                                    type="button"
+                                    size="sm"
+                                    disabled={!link.url}
+                                    onClick={() => {
+                                        if (link.url) {
+                                            router.visit(link.url, {
+                                                preserveScroll: true,
+                                            });
+                                        }
+                                    }}
+                                    className={
+                                        link.active
+                                            ? 'h-8 rounded-xl bg-emerald-600 px-3 text-xs font-bold text-white shadow-sm hover:bg-emerald-700'
+                                            : 'h-8 rounded-xl border border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 hover:bg-slate-50'
+                                    }
+                                >
+                                    <PaginationLabel label={link.label} />
+                                </Button>
+                            ))}
+                        </div>
+                    </div>
+                </section>
             </div>
 
             <Sheet
@@ -697,27 +684,34 @@ export default function TeacherTestPackagesIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-xl">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-xl">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <ClipboardList className="size-5 text-muted-foreground" />
-                            <SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <ClipboardList className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
                                 {editingPackage
                                     ? 'Edit Paket Tes'
                                     : 'Tambah Paket Tes'}
                             </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             Atur judul, periode aktif, dan batas percobaan.
                         </SheetDescription>
                     </SheetHeader>
 
                     <form
                         onSubmit={submitPackage}
-                        className="grid gap-4 px-4 pb-4"
+                        className="grid gap-5 px-4 py-5"
                     >
                         <div className="grid gap-2">
-                            <Label htmlFor="title">Judul</Label>
+                            <Label
+                                htmlFor="title"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                Judul Paket
+                            </Label>
                             <Input
                                 id="title"
                                 value={packageForm.data.title}
@@ -727,15 +721,23 @@ export default function TeacherTestPackagesIndex({
                                         event.target.value,
                                     )
                                 }
+                                placeholder="Contoh: Asesmen Karakter Semester 1"
+                                className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                             />
                             <InputError message={packageForm.errors.title} />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="description">Deskripsi</Label>
+                            <Label
+                                htmlFor="description"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                Deskripsi
+                            </Label>
                             <textarea
                                 id="description"
-                                className="min-h-24 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                placeholder="Tambahkan deskripsi singkat paket tes..."
+                                className="min-h-28 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm outline-none placeholder:text-slate-400 focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={packageForm.data.description}
                                 onChange={(event) =>
                                     packageForm.setData(
@@ -751,7 +753,12 @@ export default function TeacherTestPackagesIndex({
 
                         <div className="grid gap-4 sm:grid-cols-2">
                             <div className="grid gap-2">
-                                <Label htmlFor="start_at">Mulai</Label>
+                                <Label
+                                    htmlFor="start_at"
+                                    className="text-sm font-medium text-slate-700"
+                                >
+                                    Mulai
+                                </Label>
                                 <Input
                                     id="start_at"
                                     type="datetime-local"
@@ -762,13 +769,19 @@ export default function TeacherTestPackagesIndex({
                                             event.target.value,
                                         )
                                     }
+                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={packageForm.errors.start_at}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="end_at">Selesai</Label>
+                                <Label
+                                    htmlFor="end_at"
+                                    className="text-sm font-medium text-slate-700"
+                                >
+                                    Selesai
+                                </Label>
                                 <Input
                                     id="end_at"
                                     type="datetime-local"
@@ -779,6 +792,7 @@ export default function TeacherTestPackagesIndex({
                                             event.target.value,
                                         )
                                     }
+                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={packageForm.errors.end_at}
@@ -787,7 +801,10 @@ export default function TeacherTestPackagesIndex({
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="attempt_limit">
+                            <Label
+                                htmlFor="attempt_limit"
+                                className="text-sm font-medium text-slate-700"
+                            >
                                 Jumlah Percobaan
                             </Label>
                             <Input
@@ -802,16 +819,18 @@ export default function TeacherTestPackagesIndex({
                                         Number(event.target.value),
                                     )
                                 }
+                                className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm focus-visible:ring-emerald-200"
                             />
                             <InputError
                                 message={packageForm.errors.attempt_limit}
                             />
                         </div>
 
-                        <div className="flex gap-2 pt-2">
+                        <div className="flex gap-2 border-t border-slate-100 pt-4">
                             <Button
                                 type="submit"
                                 disabled={packageForm.processing}
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
                             >
                                 {editingPackage
                                     ? 'Simpan Perubahan'
@@ -821,6 +840,7 @@ export default function TeacherTestPackagesIndex({
                                 type="button"
                                 variant="outline"
                                 onClick={closePackageSheet}
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>
@@ -838,13 +858,17 @@ export default function TeacherTestPackagesIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-lg">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <Users className="size-5 text-muted-foreground" />
-                            <SheetTitle>Target Kelompok</SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <Users className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
+                                Target Kelompok
+                            </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             {groupPackage
                                 ? groupPackage.title
                                 : 'Pilih kelompok target paket.'}
@@ -853,10 +877,10 @@ export default function TeacherTestPackagesIndex({
 
                     <form
                         onSubmit={submitGroups}
-                        className="grid gap-4 px-4 pb-4"
+                        className="grid gap-5 px-4 py-5"
                     >
                         {groups.length === 0 ? (
-                            <div className="rounded-md border border-dashed p-5 text-sm text-muted-foreground">
+                            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 p-5 text-sm text-slate-500">
                                 Belum ada kelompok aktif.
                             </div>
                         ) : (
@@ -864,7 +888,7 @@ export default function TeacherTestPackagesIndex({
                                 {groups.map((group) => (
                                     <label
                                         key={group.id}
-                                        className="flex items-center gap-3 rounded-md border px-3 py-2 text-sm"
+                                        className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm transition-colors hover:border-emerald-200 hover:bg-emerald-50/40"
                                     >
                                         <Checkbox
                                             checked={groupIds.includes(
@@ -886,8 +910,13 @@ export default function TeacherTestPackagesIndex({
                             </div>
                         )}
 
-                        <div className="flex gap-2 pt-2">
-                            <Button type="submit">Simpan Target</Button>
+                        <div className="flex gap-2 border-t border-slate-100 pt-4">
+                            <Button
+                                type="submit"
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
+                            >
+                                Simpan Target
+                            </Button>
                             <Button
                                 type="button"
                                 variant="outline"
@@ -895,6 +924,7 @@ export default function TeacherTestPackagesIndex({
                                     setGroupPackage(null);
                                     setGroupIds([]);
                                 }}
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>
@@ -912,13 +942,17 @@ export default function TeacherTestPackagesIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-lg">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <Boxes className="size-5 text-muted-foreground" />
-                            <SheetTitle>Kasus Dalam Paket</SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <Boxes className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
+                                Kasus Dalam Paket
+                            </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             {casePackage
                                 ? casePackage.title
                                 : 'Pilih kasus moral untuk paket ini.'}
@@ -927,10 +961,10 @@ export default function TeacherTestPackagesIndex({
 
                     <form
                         onSubmit={submitCases}
-                        className="grid gap-4 px-4 pb-4"
+                        className="grid gap-5 px-4 py-5"
                     >
                         {moralCases.length === 0 ? (
-                            <div className="rounded-md border border-dashed p-5 text-sm text-muted-foreground">
+                            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 p-5 text-sm text-slate-500">
                                 Belum ada kasus aktif.
                             </div>
                         ) : (
@@ -938,7 +972,7 @@ export default function TeacherTestPackagesIndex({
                                 {moralCases.map((moralCase) => (
                                     <label
                                         key={moralCase.id}
-                                        className="flex items-center gap-3 rounded-md border px-3 py-2 text-sm"
+                                        className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm transition-colors hover:border-emerald-200 hover:bg-emerald-50/40"
                                     >
                                         <Checkbox
                                             checked={caseIds.includes(
@@ -961,13 +995,18 @@ export default function TeacherTestPackagesIndex({
                         )}
 
                         {caseIds.length > 0 && (
-                            <div className="rounded-md bg-muted/50 p-3 text-xs text-muted-foreground">
+                            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3 text-xs text-slate-500">
                                 Urutan kasus mengikuti urutan saat dipilih.
                             </div>
                         )}
 
-                        <div className="flex gap-2 pt-2">
-                            <Button type="submit">Simpan Kasus</Button>
+                        <div className="flex gap-2 border-t border-slate-100 pt-4">
+                            <Button
+                                type="submit"
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
+                            >
+                                Simpan Kasus
+                            </Button>
                             <Button
                                 type="button"
                                 variant="outline"
@@ -975,6 +1014,7 @@ export default function TeacherTestPackagesIndex({
                                     setCasePackage(null);
                                     setCaseIds([]);
                                 }}
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>
@@ -1011,25 +1051,24 @@ function SummaryCard({
     color?: 'emerald' | 'blue' | 'amber';
 }) {
     const colorMap = {
-        emerald:
-            'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900',
-        blue: 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900',
-        amber: 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900',
+        emerald: 'border-emerald-100 bg-emerald-50 text-emerald-700',
+        blue: 'border-blue-100 bg-blue-50 text-blue-700',
+        amber: 'border-amber-100 bg-amber-50 text-amber-700',
     };
 
     return (
-        <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
-            <CardContent className="flex items-center gap-4 p-5">
+        <Card className="overflow-hidden rounded-[24px] border border-slate-100 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
+            <CardContent className="flex items-center gap-4 p-4 sm:p-5">
                 <div
-                    className={`flex size-12 shrink-0 items-center justify-center rounded-xl border ${colorMap[color]}`}
+                    className={`flex size-12 shrink-0 items-center justify-center rounded-2xl border ${colorMap[color]}`}
                 >
                     {icon}
                 </div>
-                <div>
-                    <div className="text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-slate-400">
+                <div className="min-w-0">
+                    <div className="text-[10px] font-bold tracking-[0.18em] text-slate-400 uppercase">
                         {label}
                     </div>
-                    <div className="mt-1 text-2xl font-bold text-slate-800 dark:text-white">
+                    <div className="mt-1 text-2xl font-extrabold text-slate-800">
                         {value}
                     </div>
                 </div>
@@ -1049,8 +1088,7 @@ function statusLabel(status: TestPackageStatus) {
 function renderStatusBadge(status: TestPackageStatus) {
     if (status === 'published') {
         return (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300">
-                <Send className="size-3 text-emerald-600" />
+            <span className="inline-flex items-center rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
                 Published
             </span>
         );
@@ -1058,16 +1096,14 @@ function renderStatusBadge(status: TestPackageStatus) {
 
     if (status === 'draft') {
         return (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-300">
-                <Pencil className="size-3 text-amber-600" />
+            <span className="inline-flex items-center rounded-full border border-amber-100 bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-700">
                 Draft
             </span>
         );
     }
 
     return (
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
-            <Archive className="size-3 text-slate-500" />
+        <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">
             Closed
         </span>
     );

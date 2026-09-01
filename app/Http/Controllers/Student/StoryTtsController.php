@@ -34,6 +34,10 @@ class StoryTtsController extends Controller
             abort(403);
         }
 
+        if (! config('tts.enabled', true)) {
+            abort(404);
+        }
+
         $disk = Storage::disk((string) config('tts.cache_disk', 'local'));
         $hash = sha1($moralCase->story);
         $path = (string) config('tts.cache_path', 'tts/stories')."/{$hash}.wav";

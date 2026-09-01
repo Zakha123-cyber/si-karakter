@@ -87,6 +87,7 @@ jobs:
           git fetch origin "$BRANCH"
           git reset --hard "origin/$BRANCH"
           /opt/cpanel/ea-php83/root/usr/bin/php "$HOME/bin/composer" install --no-dev --optimize-autoloader --no-scripts
+          rm -f bootstrap/cache/*.php
           /opt/cpanel/ea-php83/root/usr/bin/php artisan migrate --force
           /opt/cpanel/ea-php83/root/usr/bin/php artisan optimize:clear
           REMOTE
@@ -141,6 +142,7 @@ jobs:
           git fetch origin "$BRANCH"
           git reset --hard "origin/$BRANCH"
           /opt/cpanel/ea-php83/root/usr/bin/php "$HOME/bin/composer" install --no-dev --optimize-autoloader --no-scripts
+          rm -f bootstrap/cache/*.php
           /opt/cpanel/ea-php83/root/usr/bin/php artisan migrate --force
           /opt/cpanel/ea-php83/root/usr/bin/php artisan optimize:clear
           REMOTE

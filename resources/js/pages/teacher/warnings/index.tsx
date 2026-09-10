@@ -462,7 +462,7 @@ export default function TeacherWarningsIndex({
                                 onSubmit={submitFilters}
                                 className="mb-5 grid gap-3 rounded-[24px] border border-slate-100 bg-slate-50/60 p-3 lg:grid-cols-6"
                             >
-                                <div className="relative lg:col-span-2">
+                                <div className="relative lg:col-span-6">
                                     <Search className="pointer-events-none absolute top-2.5 left-3 size-4 text-slate-400" />
                                     <Input
                                         className="h-10 rounded-2xl border-slate-100 bg-white pl-9 text-sm shadow-sm focus-visible:ring-emerald-200"
@@ -474,7 +474,7 @@ export default function TeacherWarningsIndex({
                                     />
                                 </div>
                                 <select
-                                    className="h-10 rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
+                                    className="h-10 rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100 lg:col-span-2"
                                     value={statusFilter}
                                     onChange={(event) =>
                                         setStatusFilter(event.target.value)
@@ -491,7 +491,7 @@ export default function TeacherWarningsIndex({
                                     ))}
                                 </select>
                                 <select
-                                    className="h-10 rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
+                                    className="h-10 rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100 lg:col-span-2"
                                     value={severityFilter}
                                     onChange={(event) =>
                                         setSeverityFilter(event.target.value)
@@ -508,7 +508,7 @@ export default function TeacherWarningsIndex({
                                     ))}
                                 </select>
                                 <select
-                                    className="h-10 rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
+                                    className="h-10 rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100 lg:col-span-2"
                                     value={studentFilter}
                                     onChange={(event) =>
                                         updateStudentFilter(event.target.value)
@@ -524,7 +524,7 @@ export default function TeacherWarningsIndex({
                                         </option>
                                     ))}
                                 </select>
-                                <div className="flex gap-2">
+                                <div className="flex gap-2 lg:col-span-6">
                                     <Button
                                         type="submit"
                                         className="flex-1 rounded-2xl bg-emerald-600 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"

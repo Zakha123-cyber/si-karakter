@@ -136,14 +136,14 @@ export function AudioPlayer({
     };
 
     return (
-        <div className="rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50/70 to-slate-50 p-4 shadow-sm dark:border-indigo-900/40 dark:from-indigo-950/20 dark:to-slate-900">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
             <audio ref={audioRef} src={src} preload="metadata" />
 
             {/* Header info */}
-            <div className="flex items-center justify-between border-b border-indigo-100/60 pb-3 dark:border-indigo-900/30">
-                <div className="flex items-center gap-2 text-xs font-semibold text-indigo-900 dark:text-indigo-200">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+                <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
                     <AudioLines
-                        className={`h-4 w-4 ${isPlaying ? 'animate-pulse text-indigo-600' : 'text-slate-400'}`}
+                        className={`h-4 w-4 ${isPlaying ? 'animate-pulse text-emerald-600' : 'text-slate-400'}`}
                     />
                     <span>{originalName || 'Rekaman Suara Santri'}</span>
                 </div>
@@ -152,7 +152,7 @@ export function AudioPlayer({
                     download={originalName || 'audio_santri.mp3'}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1 rounded bg-indigo-100 px-2 py-1 text-[11px] font-medium text-indigo-700 transition hover:bg-indigo-200 dark:bg-indigo-900/50 dark:text-indigo-300"
+                    className="inline-flex items-center gap-1 rounded-xl bg-emerald-50 px-2 py-1 text-[11px] font-bold text-emerald-700 transition hover:bg-emerald-100"
                 >
                     <Download className="h-3 w-3" />
                     Unduh Audio
@@ -169,10 +169,10 @@ export function AudioPlayer({
                         key={i}
                         className={`w-1 rounded-full transition-all duration-300 ${
                             isPlaying
-                                ? 'animate-pulse bg-indigo-500'
+                                ? 'animate-pulse bg-emerald-500'
                                 : (currentTime / (duration || 1)) * 19 >= i
-                                  ? 'bg-indigo-400'
-                                  : 'bg-slate-200 dark:bg-slate-700'
+                                  ? 'bg-emerald-400'
+                                  : 'bg-slate-200'
                         }`}
                         style={{
                             height: `${isPlaying ? Math.max(12, height * (i % 2 === 0 ? 0.9 : 0.6)) : 16}px`,
@@ -183,7 +183,7 @@ export function AudioPlayer({
 
             {/* Seek Bar */}
             <div className="flex items-center gap-3">
-                <span className="font-mono text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                <span className="font-mono text-[11px] font-medium text-slate-500">
                     {formatTime(currentTime)}
                 </span>
                 <input
@@ -193,20 +193,20 @@ export function AudioPlayer({
                     step={0.1}
                     value={currentTime}
                     onChange={handleSeek}
-                    className="h-1.5 flex-1 cursor-pointer appearance-none rounded-lg bg-slate-200 accent-indigo-600 dark:bg-slate-700"
+                    className="h-1.5 flex-1 cursor-pointer appearance-none rounded-lg bg-slate-200 accent-emerald-600"
                 />
-                <span className="font-mono text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                <span className="font-mono text-[11px] font-medium text-slate-500">
                     {formatTime(duration)}
                 </span>
             </div>
 
             {/* Controls Row */}
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-indigo-100/60 pt-3 dark:border-indigo-900/30">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3">
                 {/* Play / Pause button */}
                 <div className="flex items-center gap-2">
                     <button
                         onClick={togglePlay}
-                        className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-white shadow-md shadow-indigo-600/30 transition hover:bg-indigo-700 active:scale-95"
+                        className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-white shadow-md shadow-emerald-600/30 transition hover:bg-emerald-700 active:scale-95"
                     >
                         {isPlaying ? (
                             <Pause className="h-5 w-5" />
@@ -222,7 +222,7 @@ export function AudioPlayer({
                                 setCurrentTime(0);
                             }
                         }}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                        className="flex h-8 w-8 items-center justify-center rounded-xl text-slate-500 hover:bg-white hover:text-slate-800"
                         title="Putar Ulang Dari Awal"
                     >
                         <RotateCcw className="h-4 w-4" />
@@ -230,7 +230,7 @@ export function AudioPlayer({
                 </div>
 
                 {/* Speed Controls */}
-                <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-800">
+                <div className="flex items-center gap-1 rounded-xl bg-white p-1 shadow-sm">
                     <FastForward className="ml-1 h-3.5 w-3.5 text-slate-400" />
                     {[0.75, 1.0, 1.25, 1.5, 2.0].map((rate) => (
                         <button
@@ -238,8 +238,8 @@ export function AudioPlayer({
                             onClick={() => handleSpeedChange(rate)}
                             className={`rounded px-2 py-0.5 text-[10px] font-bold transition ${
                                 playbackRate === rate
-                                    ? 'bg-indigo-600 text-white shadow-sm'
-                                    : 'text-slate-600 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-700'
+                                    ? 'bg-emerald-600 text-white shadow-sm'
+                                    : 'text-slate-600 hover:bg-emerald-50'
                             }`}
                         >
                             {rate}x
@@ -251,7 +251,7 @@ export function AudioPlayer({
                 <div className="flex items-center gap-2">
                     <button
                         onClick={toggleMute}
-                        className="text-slate-500 hover:text-indigo-600"
+                        className="text-slate-500 hover:text-emerald-600"
                     >
                         {isMuted || volume === 0 ? (
                             <VolumeX className="h-4 w-4" />
@@ -266,7 +266,7 @@ export function AudioPlayer({
                         step={0.05}
                         value={isMuted ? 0 : volume}
                         onChange={handleVolumeChange}
-                        className="h-1.5 w-16 cursor-pointer appearance-none rounded-lg bg-slate-200 accent-indigo-600 dark:bg-slate-700"
+                        className="h-1.5 w-16 cursor-pointer appearance-none rounded-lg bg-slate-200 accent-emerald-600"
                     />
                 </div>
             </div>

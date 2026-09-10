@@ -335,7 +335,7 @@ export default function TeacherScoringConfigurationsIndex({
                                                     event.target.value,
                                                 )
                                             }
-                                            className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
+                                            className="number-input-styled h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                         />
                                         <InputError
                                             message={
@@ -365,7 +365,7 @@ export default function TeacherScoringConfigurationsIndex({
                                                     event.target.value,
                                                 )
                                             }
-                                            className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
+                                            className="number-input-styled h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                         />
                                         <InputError
                                             message={
@@ -396,7 +396,7 @@ export default function TeacherScoringConfigurationsIndex({
                                                     event.target.value,
                                                 )
                                             }
-                                            className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
+                                            className="date-picker-visible h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                         />
                                         <InputError
                                             message={
@@ -423,7 +423,7 @@ export default function TeacherScoringConfigurationsIndex({
                                                     event.target.value,
                                                 )
                                             }
-                                            className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
+                                            className="date-picker-visible h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                         />
                                         <InputError
                                             message={
@@ -713,7 +713,7 @@ export default function TeacherScoringConfigurationsIndex({
                                             event.target.value,
                                         )
                                     }
-                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
+                                    className="number-input-styled h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={editForm.errors.test_weight}
@@ -738,7 +738,7 @@ export default function TeacherScoringConfigurationsIndex({
                                             event.target.value,
                                         )
                                     }
-                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
+                                    className="number-input-styled h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={editForm.errors.observation_weight}
@@ -764,7 +764,7 @@ export default function TeacherScoringConfigurationsIndex({
                                             event.target.value,
                                         )
                                     }
-                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
+                                    className="date-picker-visible h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={editForm.errors.effective_from}
@@ -787,7 +787,7 @@ export default function TeacherScoringConfigurationsIndex({
                                             event.target.value,
                                         )
                                     }
-                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
+                                    className="date-picker-visible h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={editForm.errors.effective_until}

@@ -1,6 +1,7 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import {
     CalendarDays,
+    CalendarRange,
     CheckCircle2,
     ChevronLeft,
     ChevronRight,
@@ -834,23 +835,13 @@ export default function TeacherObservationsIndex({
                                         placeholder="Cari santri, pengamat, catatan"
                                     />
                                 </div>
-                                <Input
-                                    type="date"
-                                    className="h-10 rounded-2xl border-slate-100 bg-white text-sm shadow-sm focus-visible:ring-emerald-200"
-                                    value={dateFrom}
-                                    onChange={(event) =>
-                                        setDateFrom(event.target.value)
-                                    }
-                                    title="Dari tanggal"
-                                />
-                                <Input
-                                    type="date"
-                                    className="h-10 rounded-2xl border-slate-100 bg-white text-sm shadow-sm focus-visible:ring-emerald-200"
-                                    value={dateTo}
-                                    onChange={(event) =>
-                                        setDateTo(event.target.value)
-                                    }
-                                    title="Sampai tanggal"
+                                <DateRangePicker
+                                    dateFrom={dateFrom}
+                                    dateTo={dateTo}
+                                    onChange={(from, to) => {
+                                        setDateFrom(from);
+                                        setDateTo(to);
+                                    }}
                                 />
                                 <select
                                     className="h-10 rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
@@ -1551,6 +1542,186 @@ export default function TeacherObservationsIndex({
             </Sheet>
         </>
     );
+}
+
+function DateRangePicker({
+    dateFrom,
+    dateTo,
+    onChange,
+}: {
+    dateFrom: string;
+    dateTo: string;
+    onChange: (from: string, to: string) => void;
+}) {
+    const initialDate = dateFrom ? parseDate(dateFrom) : new Date();
+    const [month, setMonth] = useState(
+        new Date(initialDate.getFullYear(), initialDate.getMonth(), 1),
+    );
+    const [dragStart, setDragStart] = useState<string | null>(null);
+    const [open, setOpen] = useState(false);
+    const year = month.getFullYear();
+    const monthIndex = month.getMonth();
+    const firstDay = new Date(year, monthIndex, 1).getDay();
+    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+    const cells = Array.from({ length: firstDay + daysInMonth }, (_, index) =>
+        index < firstDay ? null : index - firstDay + 1,
+    );
+
+    const selectDate = (date: string) => {
+        if (!dateFrom || dateTo) {
+            onChange(date, '');
+            setDragStart(date);
+        } else if (date < dateFrom) {
+            onChange(date, dateFrom);
+            setDragStart(null);
+            setOpen(false);
+        } else {
+            onChange(dateFrom, date);
+            setDragStart(null);
+            setOpen(false);
+        }
+    };
+
+    const handleDayEnter = (date: string) => {
+        if (!dragStart) return;
+        onChange(
+            date < dragStart ? date : dragStart,
+            date < dragStart ? dragStart : date,
+        );
+    };
+
+    return (
+        <div className="relative lg:col-span-2">
+            <button
+                type="button"
+                onClick={() => setOpen((current) => !current)}
+                className="flex h-10 w-full items-center justify-between gap-2 rounded-2xl border border-slate-100 bg-white px-3 text-left shadow-sm transition-colors hover:border-emerald-200 hover:bg-emerald-50/40"
+                aria-expanded={open}
+                aria-haspopup="dialog"
+            >
+                <span className="flex min-w-0 items-center gap-1.5 text-xs font-bold text-slate-600">
+                    <CalendarRange className="size-4 text-emerald-600" />
+                    <span className="truncate">Rentang Tanggal</span>
+                </span>
+                <span className="truncate text-[10px] font-medium text-slate-400">
+                    {dateFrom && dateTo
+                        ? `${formatRangeDate(dateFrom)} - ${formatRangeDate(dateTo)}`
+                        : 'Pilih awal dan akhir'}
+                </span>
+            </button>
+
+            {open && (
+                <div
+                    className="absolute top-full left-0 z-30 mt-2 w-full min-w-[300px] rounded-2xl border border-slate-100 bg-white p-3 shadow-[0_12px_30px_rgba(16,58,58,0.15)]"
+                    onMouseUp={() => setDragStart(null)}
+                    role="dialog"
+                    aria-label="Pilih rentang tanggal"
+                >
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold text-slate-600">
+                            Pilih rentang tanggal
+                        </span>
+                        <button
+                            type="button"
+                            className="text-[10px] font-bold text-slate-400 hover:text-rose-600"
+                            onClick={() => {
+                                onChange('', '');
+                                setDragStart(null);
+                            }}
+                        >
+                            Reset
+                        </button>
+                    </div>
+                    <div className="mb-2 flex items-center justify-between">
+                        <button
+                            type="button"
+                            className="flex size-7 items-center justify-center rounded-lg text-slate-500 hover:bg-emerald-50 hover:text-emerald-700"
+                            onClick={() =>
+                                setMonth(new Date(year, monthIndex - 1, 1))
+                            }
+                            aria-label="Bulan sebelumnya"
+                        >
+                            <ChevronLeft className="size-4" />
+                        </button>
+                        <span className="text-xs font-extrabold text-slate-700 capitalize">
+                            {month.toLocaleDateString('id-ID', {
+                                month: 'long',
+                                year: 'numeric',
+                            })}
+                        </span>
+                        <button
+                            type="button"
+                            className="flex size-7 items-center justify-center rounded-lg text-slate-500 hover:bg-emerald-50 hover:text-emerald-700"
+                            onClick={() =>
+                                setMonth(new Date(year, monthIndex + 1, 1))
+                            }
+                            aria-label="Bulan berikutnya"
+                        >
+                            <ChevronRight className="size-4" />
+                        </button>
+                    </div>
+                    <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400">
+                        {['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'].map(
+                            (day) => (
+                                <span key={day} className="py-1">
+                                    {day}
+                                </span>
+                            ),
+                        )}
+                        {cells.map((day, index) => {
+                            if (!day) return <span key={`empty-${index}`} />;
+                            const date = formatDateKey(year, monthIndex, day);
+                            const selected =
+                                date === dateFrom || date === dateTo;
+                            const inRange =
+                                dateFrom &&
+                                dateTo &&
+                                date > dateFrom &&
+                                date < dateTo;
+
+                            return (
+                                <button
+                                    key={date}
+                                    type="button"
+                                    onMouseDown={(event) => {
+                                        event.preventDefault();
+                                        selectDate(date);
+                                    }}
+                                    onMouseEnter={() => handleDayEnter(date)}
+                                    className={`h-7 rounded-lg text-[11px] font-semibold transition-colors ${
+                                        selected
+                                            ? 'bg-emerald-600 text-white shadow-sm'
+                                            : inRange
+                                              ? 'bg-emerald-50 text-emerald-700'
+                                              : 'text-slate-600 hover:bg-slate-100'
+                                    }`}
+                                >
+                                    {day}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function parseDate(value: string) {
+    const [year, month, day] = value.split('-').map(Number);
+    return new Date(year, month - 1, day);
+}
+
+function formatDateKey(year: number, month: number, day: number) {
+    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
+function formatRangeDate(value: string) {
+    return parseDate(value).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+    });
 }
 
 function HeroPill({

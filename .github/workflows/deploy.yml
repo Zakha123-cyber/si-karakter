@@ -43,7 +43,7 @@ jobs:
         run: npm run build
 
       - name: Package frontend build
-        run: tar -czf frontend-build.tar.gz -C public build
+        run: tar -czf frontend-build.tar.gz -C public build favicon.png apple-touch-icon.png images/logo-teladanku.png
 
       - name: Upload frontend build
         uses: actions/upload-artifact@v4

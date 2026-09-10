@@ -8,7 +8,6 @@ import {
     Pencil,
     Plus,
     Search,
-    Sparkles,
     Trash2,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -157,7 +156,11 @@ export default function AdminAcademicYearsIndex({
 
     const submitEdit = (event: FormEvent) => {
         event.preventDefault();
-        if (!editingYear) return;
+
+        if (!editingYear) {
+            return;
+        }
+
         const toastId = toast.loading('Menyimpan perubahan...');
         editForm.put(`/admin/academic-years/${editingYear.id}`, {
             preserveScroll: true,
@@ -172,7 +175,10 @@ export default function AdminAcademicYearsIndex({
     };
 
     const activateYear = (year: AcademicYear) => {
-        if (year.is_active) return;
+        if (year.is_active) {
+            return;
+        }
+
         const toastId = toast.loading('Mengaktifkan tahun ajaran...');
         router.patch(
             `/admin/academic-years/${year.id}/activate`,
@@ -284,17 +290,17 @@ export default function AdminAcademicYearsIndex({
                                 <div className="relative flex-1">
                                     <Search className="pointer-events-none absolute top-2.5 left-3 size-4 text-slate-400" />
                                     <Input
-                                        className="h-10 rounded-2xl border-slate-100 bg-white pl-9 text-sm shadow-sm focus-visible:ring-emerald-200"
+                                        className="h-10 rounded-2xl border-slate-100 bg-white pl-9 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                         value={search}
                                         onChange={(e) => setSearch(e.target.value)}
                                         placeholder="Cari tahun ajaran..."
                                     />
                                 </div>
-                                <Button type="submit" className="rounded-2xl bg-emerald-600 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700">
+                                <Button type="submit" className="h-10 rounded-2xl bg-emerald-600 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700">
                                     <Search className="mr-1.5 size-3.5" />
                                     Filter
                                 </Button>
-                                <Button type="button" variant="ghost" onClick={resetFilters} className="rounded-2xl text-xs font-bold text-slate-500 hover:bg-white">
+                                <Button type="button" variant="outline" onClick={resetFilters} className="h-10 rounded-2xl border-slate-200 bg-white text-xs font-bold text-slate-600 shadow-sm hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700">
                                     Reset
                                 </Button>
                             </form>
@@ -326,15 +332,15 @@ export default function AdminAcademicYearsIndex({
                                                 <td className="px-4 py-3 font-bold text-slate-700">{year.groups_count}</td>
                                                 <td className="px-4 py-3">
                                                     <div className="flex justify-end gap-2">
-                                                        <Button type="button" size="sm" variant="outline" onClick={() => startEdit(year)} className="rounded-2xl border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700">
+                                                        <Button type="button" size="sm" variant="outline" onClick={() => startEdit(year)} className="bg-white rounded-2xl border-slate-200 text-slate-600 shadow-sm hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800">
                                                             <Pencil className="size-4" /> Edit
                                                         </Button>
                                                         {!year.is_active && (
-                                                            <Button type="button" size="sm" variant="outline" onClick={() => activateYear(year)} className="rounded-2xl border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700">
+                                                            <Button type="button" size="sm" variant="outline" onClick={() => activateYear(year)} className="bg-white rounded-2xl border-slate-200 text-slate-600 shadow-sm hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800">
                                                                 Aktifkan
                                                             </Button>
                                                         )}
-                                                        <Button type="button" size="sm" variant="outline" onClick={() => deleteYear(year)} className="rounded-2xl border-slate-200 text-slate-600 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700">
+                                                        <Button type="button" size="sm" variant="outline" onClick={() => deleteYear(year)} className="bg-white rounded-2xl border-slate-200 text-slate-600 shadow-sm hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700">
                                                             <Trash2 className="size-4" />
                                                         </Button>
                                                     </div>
@@ -355,8 +361,12 @@ export default function AdminAcademicYearsIndex({
                                             size="sm"
                                             variant={link.active ? 'default' : 'outline'}
                                             disabled={!link.url}
-                                            className={link.active ? 'rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700' : 'rounded-2xl border-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'}
-                                            onClick={() => { if (link.url) router.get(link.url, {}, { preserveState: true }); }}
+                                            className={link.active ? 'rounded-2xl bg-emerald-600 text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700' : 'rounded-2xl border-slate-200 bg-white text-slate-600 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700'}
+                                            onClick={() => {
+                                                if (link.url) {
+                                                    router.get(link.url, {}, { preserveState: true });
+                                                }
+                                            }}
                                         >
                                             <PaginationLabel label={link.label} />
                                         </Button>
@@ -382,20 +392,20 @@ export default function AdminAcademicYearsIndex({
                             <form onSubmit={submitCreate} className="mt-5 grid gap-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="name" className="text-xs font-extrabold text-slate-600">Nama Tahun Ajaran</Label>
-                                    <Input id="name" className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm shadow-sm focus-visible:ring-emerald-200" value={createForm.data.name} onChange={(e) => createForm.setData('name', e.target.value)} placeholder="Misal: 2026/2027" />
+                                    <Input id="name" className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200" value={createForm.data.name} onChange={(e) => createForm.setData('name', e.target.value)} placeholder="Misal: 2026/2027" />
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="start_date" className="text-xs font-extrabold text-slate-600">Tanggal Mulai</Label>
-                                    <Input id="start_date" type="date" className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm shadow-sm focus-visible:ring-emerald-200" value={createForm.data.start_date} onChange={(e) => createForm.setData('start_date', e.target.value)} />
+                                    <Input id="start_date" type="date" className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200" value={createForm.data.start_date} onChange={(e) => createForm.setData('start_date', e.target.value)} />
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="end_date" className="text-xs font-extrabold text-slate-600">Tanggal Selesai</Label>
-                                    <Input id="end_date" type="date" className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm shadow-sm focus-visible:ring-emerald-200" value={createForm.data.end_date} onChange={(e) => createForm.setData('end_date', e.target.value)} />
+                                    <Input id="end_date" type="date" className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200" value={createForm.data.end_date} onChange={(e) => createForm.setData('end_date', e.target.value)} />
                                     <InputError message={createForm.errors.end_date} />
                                 </div>
                                 <div className="grid gap-2 rounded-2xl border border-slate-100 bg-slate-50 p-3">
                                     <label className="flex cursor-pointer items-center gap-3">
-                                        <Checkbox checked={createForm.data.is_active} onCheckedChange={(c) => createForm.setData('is_active', c === true)} />
+                                        <Checkbox checked={createForm.data.is_active} onCheckedChange={(c) => createForm.setData('is_active', c === true)} className="border-slate-300 bg-white data-[state=checked]:border-emerald-600 data-[state=checked]:bg-emerald-600 data-[state=checked]:text-white" />
                                         <span className="text-xs font-bold text-slate-700">Aktifkan sekarang</span>
                                     </label>
                                 </div>
@@ -422,37 +432,44 @@ export default function AdminAcademicYearsIndex({
             </div>
 
             {/* Edit Sheet */}
-            <Sheet open={editingYear !== null} onOpenChange={(o) => { if (!o) cancelEdit(); }}>
-                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-xl">
-                    <SheetHeader>
-                        <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-md">
+            <Sheet
+                open={editingYear !== null}
+                onOpenChange={(o) => {
+                    if (!o) {
+                        cancelEdit();
+                    }
+                }}
+            >
+                <SheetContent className="flex w-full flex-col gap-0 overflow-y-auto border-l-slate-200 bg-[#f8fafc] p-0 sm:max-w-lg [&>button]:text-slate-500 [&>button:hover]:text-slate-800">
+                    <SheetHeader className="border-b border-slate-100 bg-white px-6 pt-6 pb-5">
+                        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-md">
                             <Pencil className="size-6" />
                         </div>
                         <SheetTitle className="text-xl font-extrabold text-slate-800">Edit Tahun Ajaran</SheetTitle>
-                        <SheetDescription className="text-slate-500">{editingYear?.name}</SheetDescription>
+                        <SheetDescription className="text-sm font-medium text-slate-500">{editingYear?.name}</SheetDescription>
                     </SheetHeader>
-                    <form onSubmit={submitEdit} className="mt-6 grid gap-5">
+                    <form onSubmit={submitEdit} className="flex flex-1 flex-col gap-5 px-6 py-6">
                         <div className="grid gap-2">
                             <Label htmlFor="edit_name" className="text-xs font-extrabold text-slate-600">Nama Tahun Ajaran</Label>
-                            <Input id="edit_name" className="h-11 rounded-2xl border-slate-100 bg-white text-sm shadow-sm focus-visible:ring-emerald-200" value={editForm.data.name} onChange={(e) => editForm.setData('name', e.target.value)} placeholder="Misal: 2026/2027" />
+                            <Input id="edit_name" className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200" value={editForm.data.name} onChange={(e) => editForm.setData('name', e.target.value)} placeholder="Misal: 2026/2027" />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="edit_start_date" className="text-xs font-extrabold text-slate-600">Tanggal Mulai</Label>
-                            <Input id="edit_start_date" type="date" className="h-11 rounded-2xl border-slate-100 bg-white text-sm shadow-sm focus-visible:ring-emerald-200" value={editForm.data.start_date} onChange={(e) => editForm.setData('start_date', e.target.value)} />
+                            <Input id="edit_start_date" type="date" className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200" value={editForm.data.start_date} onChange={(e) => editForm.setData('start_date', e.target.value)} />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="edit_end_date" className="text-xs font-extrabold text-slate-600">Tanggal Selesai</Label>
-                            <Input id="edit_end_date" type="date" className="h-11 rounded-2xl border-slate-100 bg-white text-sm shadow-sm focus-visible:ring-emerald-200" value={editForm.data.end_date} onChange={(e) => editForm.setData('end_date', e.target.value)} />
+                            <Input id="edit_end_date" type="date" className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200" value={editForm.data.end_date} onChange={(e) => editForm.setData('end_date', e.target.value)} />
                             <InputError message={editForm.errors.end_date} />
                         </div>
-                        <div className="grid gap-2 rounded-2xl border border-slate-100 bg-slate-50 p-3">
+                        <div className="rounded-2xl border border-slate-200 bg-white p-4">
                             <label className="flex cursor-pointer items-center gap-3">
-                                <Checkbox checked={editForm.data.is_active} onCheckedChange={(c) => editForm.setData('is_active', c === true)} />
-                                <span className="text-xs font-bold text-slate-700">Aktif</span>
+                                <Checkbox checked={editForm.data.is_active} onCheckedChange={(c) => editForm.setData('is_active', c === true)} className="border-slate-300 bg-white data-[state=checked]:border-emerald-600 data-[state=checked]:bg-emerald-600 data-[state=checked]:text-white" />
+                                <span className="text-sm font-bold text-slate-700">Tandai sebagai tahun ajaran aktif</span>
                             </label>
                         </div>
-                        <div className="flex justify-end gap-2">
-                            <Button type="button" variant="outline" onClick={cancelEdit} className="rounded-2xl border-slate-200 text-slate-600">Batal</Button>
+                        <div className="mt-auto flex justify-end gap-2 border-t border-slate-200 pt-5">
+                            <Button type="button" variant="outline" onClick={cancelEdit} className="bg-white rounded-2xl border-slate-300 text-slate-600 hover:bg-slate-100 hover:text-slate-800">Batal</Button>
                             <Button type="submit" disabled={editForm.processing} className="rounded-2xl bg-emerald-600 font-bold text-white hover:bg-emerald-700">Simpan Perubahan</Button>
                         </div>
                     </form>

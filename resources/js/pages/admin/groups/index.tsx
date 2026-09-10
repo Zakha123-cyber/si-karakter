@@ -20,6 +20,7 @@ import type { FormEvent } from 'react';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -123,9 +124,9 @@ function StudentCheckboxList({
         <div className="grid gap-2">
             <Label className="text-xs font-extrabold text-slate-600">Pilih Santri untuk Kelompok Ini</Label>
             <div className="relative">
-                <Search className="absolute top-1/2 left-2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
                 <input
-                    className="h-9 w-full rounded-md border border-input bg-transparent pr-3 pl-8 text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+                    className="h-10 w-full rounded-2xl border border-slate-200 bg-white pr-9 pl-9 text-sm text-slate-700 shadow-sm transition-[color,box-shadow] outline-none placeholder:text-slate-400 focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                     placeholder="Cari santri..."
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
@@ -133,43 +134,46 @@ function StudentCheckboxList({
                 {q && (
                     <button
                         type="button"
-                        className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        className="absolute top-1/2 right-3 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600"
                         onClick={() => setQ('')}
                     >
                         <X className="size-4" />
                     </button>
                 )}
             </div>
-            <div className="max-h-48 overflow-y-auto rounded-md border p-1">
+            <div className="scrollbar-soft max-h-52 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-1.5">
                 {filtered.length === 0 ? (
-                    <p className="p-2 text-xs text-muted-foreground">
+                    <p className="p-3 text-xs font-medium text-slate-400">
                         Tidak ada santri
                     </p>
                 ) : (
                     filtered.map((s) => (
-                        <label
+                        <div
                             key={s.id}
-                            className="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-muted"
+                            onClick={() => toggle(s.id)}
+                            className="flex cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm transition-colors hover:bg-emerald-50/60"
                         >
-                            <input
-                                type="checkbox"
-                                className="size-4 rounded-[4px] border border-input bg-background shadow-xs checked:border-primary checked:bg-primary checked:text-primary-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+                            <Checkbox
                                 checked={selectedIds.includes(s.id)}
-                                onChange={() => toggle(s.id)}
+                                onCheckedChange={() => toggle(s.id)}
+                                onClick={(e) => e.stopPropagation()}
+                                className="border-slate-300 data-[state=checked]:border-emerald-600 data-[state=checked]:bg-emerald-600 data-[state=checked]:text-white"
                             />
-                            <span>{s.user!.name}</span>
-                            <span className="text-xs text-muted-foreground">
+                            <span className="font-semibold text-slate-700">
+                                {s.user!.name}
+                            </span>
+                            <span className="text-xs font-medium text-slate-400">
                                 ({s.student_code})
                             </span>
                             {s.current_group && (
                                 <Badge
                                     variant="outline"
-                                    className="ml-auto text-xs"
+                                    className="ml-auto border-slate-200 bg-slate-50 text-xs text-slate-600"
                                 >
                                     {s.current_group.name}
                                 </Badge>
                             )}
-                        </label>
+                        </div>
                     ))
                 )}
             </div>
@@ -393,9 +397,9 @@ export default function AdminGroupsIndex({
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+                <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
                     {/* Create Form Card */}
-                    <section className="h-fit rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)]">
+                    <section className="order-2 h-fit rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)] sm:p-6">
                         <div className="flex items-center gap-3">
                             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-md">
                                 <Plus className="size-5" />
@@ -407,13 +411,13 @@ export default function AdminGroupsIndex({
                         </div>
                         <form
                             onSubmit={submitCreate}
-                            className="grid gap-4"
+                            className="mt-5 grid gap-4"
                         >
                             <div className="grid gap-2">
                                 <Label htmlFor="name" className="text-xs font-extrabold text-slate-600">Nama Kelompok</Label>
                                 <Input
                                     id="name"
-                                    className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm shadow-sm focus-visible:ring-emerald-200"
+                                    className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                     value={createForm.data.name}
                                     onChange={(e) =>
                                         createForm.setData(
@@ -492,7 +496,7 @@ export default function AdminGroupsIndex({
                                 </Label>
                                 <Input
                                     id="description"
-                                    className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm shadow-sm focus-visible:ring-emerald-200"
+                                    className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                     value={createForm.data.description}
                                     onChange={(e) =>
                                         createForm.setData(
@@ -517,7 +521,7 @@ export default function AdminGroupsIndex({
                     </section>
 
                     {/* List Card */}
-                    <main className="min-w-0 space-y-6">
+                    <main className="order-1 min-w-0 space-y-6">
                         <section className="rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)] sm:p-6">
                             <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
                                 <div className="flex items-center gap-3">
@@ -542,7 +546,7 @@ export default function AdminGroupsIndex({
                                 <div className="relative flex-1">
                                     <Search className="pointer-events-none absolute top-2.5 left-3 size-4 text-slate-400" />
                                     <Input
-                                        className="h-10 rounded-2xl border-slate-100 bg-white pl-9 text-sm shadow-sm focus-visible:ring-emerald-200"
+                                        className="h-10 rounded-2xl border-slate-100 bg-white pl-9 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                         value={search}
                                         onChange={(e) => setSearch(e.target.value)}
                                         placeholder="Cari nama kelompok"
@@ -558,15 +562,15 @@ export default function AdminGroupsIndex({
                                         <option key={ay.id} value={ay.id}>{ay.name}{ay.is_active ? ' (Aktif)' : ''}</option>
                                     ))}
                                 </select>
-                                <Button type="submit" className="rounded-2xl bg-emerald-600 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700">
+                                <Button type="submit" className="h-10 rounded-2xl bg-emerald-600 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700">
                                     <Search className="mr-1.5 size-3.5" /> Filter
                                 </Button>
-                                <Button type="button" variant="ghost" onClick={resetFilters} className="rounded-2xl text-xs font-bold text-slate-500 hover:bg-white">
+                                <Button type="button" variant="outline" onClick={resetFilters} className="h-10 rounded-2xl border-slate-200 bg-white text-xs font-bold text-slate-600 shadow-sm hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700">
                                     Reset
                                 </Button>
                             </form>
 
-                            <div className="overflow-x-auto rounded-[24px] border border-slate-100">
+                            <div className="scrollbar-soft overflow-x-auto rounded-[24px] border border-slate-100">
                                 <table className="w-full min-w-[760px] text-sm">
                                     <thead className="bg-slate-50 text-left">
                                         <tr>
@@ -582,7 +586,7 @@ export default function AdminGroupsIndex({
                                             <th className="px-4 py-3 text-xs font-extrabold text-slate-600">
                                                 Jumlah Santri
                                             </th>
-                                            <th className="px-4 py-3 text-right font-medium">
+                                            <th className="px-4 py-3 text-right text-xs font-extrabold text-slate-600">
                                                 Aksi
                                             </th>
                                         </tr>
@@ -609,16 +613,16 @@ export default function AdminGroupsIndex({
                                                 </td>
                                                 <td className="px-4 py-3">
                                                     <div className="flex justify-end gap-2">
-                                                        <Button type="button" size="sm" variant="outline" onClick={() => startView(group)} className="rounded-2xl border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700">
+                                                        <Button type="button" size="sm" variant="outline" onClick={() => startView(group)} className="bg-white rounded-2xl border-slate-200 text-slate-600 shadow-sm hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800">
                                                             <Eye className="size-4" />
                                                         </Button>
-                                                        <Button type="button" size="sm" variant="outline" onClick={() => startAssign(group)} className="rounded-2xl border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700">
+                                                        <Button type="button" size="sm" variant="outline" onClick={() => startAssign(group)} className="bg-white rounded-2xl border-slate-200 text-slate-600 shadow-sm hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800">
                                                             + Santri
                                                         </Button>
-                                                        <Button type="button" size="sm" variant="outline" onClick={() => startEdit(group)} className="rounded-2xl border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700">
+                                                        <Button type="button" size="sm" variant="outline" onClick={() => startEdit(group)} className="bg-white rounded-2xl border-slate-200 text-slate-600 shadow-sm hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800">
                                                             <Pencil className="size-4" />
                                                         </Button>
-                                                        <Button type="button" size="sm" variant="outline" onClick={() => deleteGroup(group)} className="rounded-2xl border-slate-200 text-slate-600 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700">
+                                                        <Button type="button" size="sm" variant="outline" onClick={() => deleteGroup(group)} className="bg-white rounded-2xl border-slate-200 text-slate-600 shadow-sm hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700">
                                                             <Trash2 className="size-4" />
                                                         </Button>
                                                     </div>
@@ -638,7 +642,7 @@ export default function AdminGroupsIndex({
                                         size="sm"
                                         variant={link.active ? 'default' : 'outline'}
                                         disabled={!link.url}
-                                        className={link.active ? 'rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700' : 'rounded-2xl border-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'}
+                                        className={link.active ? 'rounded-2xl bg-emerald-600 text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700' : 'bg-white rounded-2xl border-slate-200 text-slate-600 shadow-sm hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700'}
                                         onClick={() => {
                                             if (link.url) {
                                                 router.get(link.url, {}, { preserveState: true });
@@ -686,12 +690,12 @@ export default function AdminGroupsIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-xl">
-                    <SheetHeader>
+                <SheetContent className="scrollbar-soft flex w-full flex-col gap-0 overflow-y-auto border-l-slate-200 bg-[#f8fafc] p-0 sm:max-w-lg [&>button]:text-slate-500 [&>button:hover]:text-slate-800">
+                    <SheetHeader className="border-b border-slate-100 bg-white px-6 pt-6 pb-5">
                         <SheetTitle className="text-xl font-extrabold text-slate-800">
                             Santri di {viewGroup?.name}
                         </SheetTitle>
-                        <SheetDescription className="text-slate-500">
+                        <SheetDescription className="text-sm font-medium text-slate-500">
                             {
                                 students.filter(
                                     (s) => s.current_group_id === viewGroup?.id,
@@ -700,7 +704,7 @@ export default function AdminGroupsIndex({
                             santri terdaftar
                         </SheetDescription>
                     </SheetHeader>
-                    <div className="grid gap-2 px-4 pb-4">
+                    <div className="grid gap-2.5 px-6 py-6">
                         {students
                             .filter((s) => s.current_group_id === viewGroup?.id)
                             .map((s) => (
@@ -760,27 +764,27 @@ export default function AdminGroupsIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-xl">
-                    <SheetHeader>
+                <SheetContent className="scrollbar-soft flex w-full flex-col gap-0 overflow-y-auto border-l-slate-200 bg-[#f8fafc] p-0 sm:max-w-lg [&>button]:text-slate-500 [&>button:hover]:text-slate-800">
+                    <SheetHeader className="border-b border-slate-100 bg-white px-6 pt-6 pb-5">
                         <div className="flex items-center gap-2 pr-8">
-                            <Pencil className="size-5 text-slate-400" />
+                            <Pencil className="size-5 text-emerald-500" />
                             <SheetTitle className="text-xl font-extrabold text-slate-800">
                                 Edit Kelompok
                             </SheetTitle>
                         </div>
-                        <SheetDescription className="text-slate-500">
+                        <SheetDescription className="text-sm font-medium text-slate-500">
                             {editingGroup?.name}
                         </SheetDescription>
                     </SheetHeader>
                     <form
                         onSubmit={submitEdit}
-                        className="grid gap-4 px-4 pb-4"
+                        className="flex flex-1 flex-col gap-4 px-6 py-6"
                     >
                         <div className="grid gap-2">
                             <Label htmlFor="edit_name" className="text-xs font-extrabold text-slate-600">Nama Kelompok</Label>
                             <Input
                                 id="edit_name"
-                                className="h-11 rounded-2xl border-slate-100 bg-white text-sm shadow-sm focus-visible:ring-emerald-200"
+                                className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 value={editForm.data.name}
                                 onChange={(e) =>
                                     editForm.setData('name', e.target.value)
@@ -794,7 +798,7 @@ export default function AdminGroupsIndex({
                             </Label>
                             <select
                                 id="edit_academic_year_id"
-                                className="h-11 rounded-2xl border border-slate-100 bg-slate-50 px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
+                                className="h-11 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={editForm.data.academic_year_id}
                                 onChange={(e) =>
                                     editForm.setData(
@@ -819,7 +823,7 @@ export default function AdminGroupsIndex({
                             <Label htmlFor="edit_teacher_id" className="text-xs font-extrabold text-slate-600">Ustadz</Label>
                             <select
                                 id="edit_teacher_id"
-                                className="h-11 rounded-2xl border border-slate-100 bg-slate-50 px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
+                                className="h-11 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={editForm.data.teacher_id}
                                 onChange={(e) =>
                                     editForm.setData(
@@ -845,7 +849,7 @@ export default function AdminGroupsIndex({
                             </Label>
                             <Input
                                 id="edit_description"
-                                className="h-11 rounded-2xl border-slate-100 bg-white text-sm shadow-sm focus-visible:ring-emerald-200"
+                                className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 value={editForm.data.description}
                                 onChange={(e) =>
                                     editForm.setData(
@@ -862,8 +866,8 @@ export default function AdminGroupsIndex({
                                 editForm.setData('student_ids', ids)
                             }
                         />
-                        <div className="flex justify-end gap-2">
-                            <Button type="button" variant="outline" onClick={cancelEdit} className="rounded-2xl border-slate-200 text-slate-600">Batal</Button>
+                        <div className="mt-auto flex justify-end gap-2 border-t border-slate-200 pt-5">
+                            <Button type="button" variant="outline" onClick={cancelEdit} className="bg-white rounded-2xl border-slate-300 text-slate-600 hover:bg-slate-100 hover:text-slate-800">Batal</Button>
                             <Button type="submit" disabled={editForm.processing} className="rounded-2xl bg-emerald-600 font-bold text-white hover:bg-emerald-700">Simpan Perubahan</Button>
                         </div>
                     </form>
@@ -879,18 +883,18 @@ export default function AdminGroupsIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-xl">
-                    <SheetHeader>
+                <SheetContent className="scrollbar-soft flex w-full flex-col gap-0 overflow-y-auto border-l-slate-200 bg-[#f8fafc] p-0 sm:max-w-lg [&>button]:text-slate-500 [&>button:hover]:text-slate-800">
+                    <SheetHeader className="border-b border-slate-100 bg-white px-6 pt-6 pb-5">
                         <SheetTitle className="text-xl font-extrabold text-slate-800">
                             Atur Santri
                         </SheetTitle>
-                        <SheetDescription className="text-slate-500">
+                        <SheetDescription className="text-sm font-medium text-slate-500">
                             {assignGroup?.name}
                         </SheetDescription>
                     </SheetHeader>
                     <form
                         onSubmit={submitAssign}
-                        className="grid gap-4 px-4 pb-4"
+                        className="flex flex-1 flex-col gap-4 px-6 py-6"
                     >
                         <StudentCheckboxList
                             students={students}
@@ -899,8 +903,8 @@ export default function AdminGroupsIndex({
                                 assignForm.setData('student_ids', ids)
                             }
                         />
-                        <div className="flex justify-end gap-2">
-                            <Button type="button" variant="outline" onClick={cancelAssign} className="rounded-2xl border-slate-200 text-slate-600">Batal</Button>
+                        <div className="mt-auto flex justify-end gap-2 border-t border-slate-200 pt-5">
+                            <Button type="button" variant="outline" onClick={cancelAssign} className="bg-white rounded-2xl border-slate-300 text-slate-600 hover:bg-slate-100 hover:text-slate-800">Batal</Button>
                             <Button type="submit" disabled={assignForm.processing} className="rounded-2xl bg-emerald-600 font-bold text-white hover:bg-emerald-700">Simpan</Button>
                         </div>
                     </form>

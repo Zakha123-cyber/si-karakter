@@ -306,7 +306,7 @@ export default function AdminAcademicYearsIndex({
                             </form>
 
                             {/* Table */}
-                            <div className="overflow-x-auto rounded-[24px] border border-slate-100">
+                            <div className="scrollbar-soft overflow-x-auto rounded-[24px] border border-slate-100">
                                 <table className="w-full min-w-[660px] text-sm">
                                     <thead className="bg-slate-50 text-left">
                                         <tr>
@@ -440,7 +440,7 @@ export default function AdminAcademicYearsIndex({
                     }
                 }}
             >
-                <SheetContent className="flex w-full flex-col gap-0 overflow-y-auto border-l-slate-200 bg-[#f8fafc] p-0 sm:max-w-lg [&>button]:text-slate-500 [&>button:hover]:text-slate-800">
+                <SheetContent className="scrollbar-soft flex w-full flex-col gap-0 overflow-y-auto border-l-slate-200 bg-[#f8fafc] p-0 sm:max-w-lg [&>button]:text-slate-500 [&>button:hover]:text-slate-800">
                     <SheetHeader className="border-b border-slate-100 bg-white px-6 pt-6 pb-5">
                         <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-md">
                             <Pencil className="size-6" />

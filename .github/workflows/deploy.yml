@@ -152,12 +152,15 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          APP_PATH: ${{ secrets.PRODUCTION_PATH }}
           PUBLIC_PATH: /home/telx1836/public_html
         run: |
           scp -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -P "$DEPLOY_PORT" frontend-build.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:/tmp/sikarakter-production-build.tar.gz"
-          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" bash -s -- "$PUBLIC_PATH" <<'REMOTE'
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" bash -s -- "$APP_PATH" "$PUBLIC_PATH" <<'REMOTE'
           set -e
-          PUBLIC_PATH="$1"
+          APP_PATH="$1"
+          PUBLIC_PATH="$2"
+          tar -xzf /tmp/sikarakter-production-build.tar.gz -C "$APP_PATH/public"
           tar -xzf /tmp/sikarakter-production-build.tar.gz -C "$PUBLIC_PATH"
           rm -f /tmp/sikarakter-production-build.tar.gz
           REMOTE

@@ -14,6 +14,7 @@ use App\Http\Controllers\Teacher\ObservationController;
 use App\Http\Controllers\Teacher\ReportController;
 use App\Http\Controllers\Teacher\ReviewController;
 use App\Http\Controllers\Teacher\ScoringConfigurationController;
+use App\Http\Controllers\Teacher\SimulationReviewController;
 use App\Http\Controllers\Teacher\SimulationScenarioController;
 use App\Http\Controllers\Teacher\TestPackageController;
 use App\Http\Controllers\Teacher\WarningController;
@@ -118,6 +119,12 @@ Route::middleware(['auth', 'active', 'role:teacher,admin'])->prefix('teacher')->
     Route::post('reviews/{answer}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
     Route::post('reviews/{answer}/override', [ReviewController::class, 'override'])->name('reviews.override');
     Route::post('reviews/{answer}/retry-transcription', [ReviewController::class, 'retryTranscription'])->name('reviews.retry-transcription');
+
+    // Simulation Review
+    Route::get('simulation-reviews', [SimulationReviewController::class, 'index'])->name('simulation-reviews.index');
+    Route::get('simulation-reviews/{attempt}', [SimulationReviewController::class, 'show'])->name('simulation-reviews.show');
+    Route::post('simulation-reviews/{attempt}/review', [SimulationReviewController::class, 'review'])->name('simulation-reviews.review');
+    Route::delete('simulation-reviews/{attempt}/review', [SimulationReviewController::class, 'unreview'])->name('simulation-reviews.unreview');
 
     // Daily Observation
     Route::get('observations', [ObservationController::class, 'index'])->name('observations.index');

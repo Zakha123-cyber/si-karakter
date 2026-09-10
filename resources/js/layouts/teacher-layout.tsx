@@ -80,6 +80,11 @@ const getNavItems = (role?: string) => {
             label: 'Simulasi Berani Menolak',
             href: '/teacher/simulation-scenarios',
         },
+        {
+            emoji: '🧾',
+            label: 'Review Simulasi',
+            href: '/teacher/simulation-reviews',
+        },
         { emoji: '⚙️', label: 'Pengaturan', href: '/settings/profile' },
     ];
 };

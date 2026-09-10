@@ -538,8 +538,8 @@ export default function TeacherCharacterIndicatorsIndex({
                                             disabled={!link.url}
                                             className={
                                                 link.active
-                                                    ? 'rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700'
-                                                    : 'rounded-2xl border-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'
+                                                    ? 'h-9 min-w-9 rounded-xl bg-emerald-600 px-3 text-xs font-bold text-white shadow-sm hover:bg-emerald-700'
+                                                    : 'h-9 min-w-9 rounded-xl border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 shadow-sm hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700'
                                             }
                                             onClick={() => {
                                                 if (link.url) {
@@ -766,21 +766,21 @@ export default function TeacherCharacterIndicatorsIndex({
                             </div>
                         </section>
 
-                        <section className="rounded-[28px] bg-gradient-to-br from-slate-800 to-slate-900 p-5 text-white shadow-[0_8px_30px_rgba(15,23,42,0.15)]">
+                        <section className="rounded-[28px] border border-emerald-100 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 text-slate-700 shadow-[0_8px_30px_rgba(16,58,58,0.08)]">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-xl backdrop-blur-sm">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
                                     🕌
                                 </div>
                                 <div>
-                                    <p className="text-xs font-medium text-slate-400">
+                                    <p className="text-xs font-bold text-emerald-600">
                                         Prinsip Halaman Ini
                                     </p>
-                                    <p className="text-sm font-extrabold text-white">
+                                    <p className="text-sm font-extrabold text-slate-800">
                                         Ukur perilaku, bukan melabeli
                                     </p>
                                 </div>
                             </div>
-                            <p className="mt-3 text-xs leading-relaxed text-slate-300">
+                            <p className="mt-3 text-xs leading-relaxed text-slate-600">
                                 Indikator membantu kita melihat kebiasaan yang
                                 perlu ditumbuhkan, bukan untuk menghakimi
                                 karakter santri.
@@ -799,21 +799,26 @@ export default function TeacherCharacterIndicatorsIndex({
                 }}
             >
                 <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-xl">
-                    <SheetHeader>
-                        <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-md">
-                            <Pencil className="size-6" />
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
+                        <div className="flex items-center gap-2 pr-8">
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <Pencil className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
+                                Edit Indikator Karakter
+                            </SheetTitle>
                         </div>
-                        <SheetTitle className="text-xl font-extrabold text-slate-800">
-                            Edit Indikator Karakter
-                        </SheetTitle>
-                        <SheetDescription className="text-slate-500">
+                        <SheetDescription className="text-sm text-slate-500">
                             {editingIndicator
                                 ? `${editingIndicator.name} (${editingIndicator.code})`
                                 : 'Perbarui data indikator.'}
                         </SheetDescription>
                     </SheetHeader>
 
-                    <form onSubmit={submitEdit} className="mt-6 grid gap-5">
+                    <form
+                        onSubmit={submitEdit}
+                        className="grid gap-5 px-4 py-5"
+                    >
                         <div className="grid gap-2">
                             <Label
                                 htmlFor="edit_code"
@@ -930,19 +935,19 @@ export default function TeacherCharacterIndicatorsIndex({
                             </label>
                         </div>
 
-                        <div className="flex justify-end gap-2">
+                        <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
                             <Button
                                 type="button"
                                 variant="outline"
                                 onClick={cancelEdit}
-                                className="rounded-2xl border-slate-200 text-slate-600"
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>
                             <Button
                                 type="submit"
                                 disabled={editForm.processing}
-                                className="rounded-2xl bg-emerald-600 font-bold text-white hover:bg-emerald-700"
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
                             >
                                 Simpan Perubahan
                             </Button>

@@ -10,7 +10,7 @@ import SettingsLayout from '@/layouts/settings/layout';
 import StudentLayout from '@/layouts/student-layout';
 import TeacherLayout from '@/layouts/teacher-layout';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'TeladanKu';
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),

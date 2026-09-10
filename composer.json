@@ -55,6 +55,10 @@
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fdba74,#34d399\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"npm run dev\" \"services\\tts\\dev.cmd\" --names='server,queue,vite,tts'"
         ],
+        "dev:public": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#34d399\" \"php artisan serve --host=0.0.0.0 --port=8000\" \"php artisan queue:listen --tries=1\" \"services\\tts\\dev.cmd\" --names='server,queue,tts'"
+        ],
         "lint": [
             "pint --parallel"
         ],

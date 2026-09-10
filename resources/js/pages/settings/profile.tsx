@@ -52,7 +52,12 @@ export default function Profile({
                     {({ processing, errors }) => (
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="name" className="text-xs font-extrabold text-slate-600">Nama</Label>
+                                <Label
+                                    htmlFor="name"
+                                    className="text-xs font-extrabold text-slate-600"
+                                >
+                                    Nama
+                                </Label>
 
                                 <Input
                                     id="name"
@@ -71,7 +76,12 @@ export default function Profile({
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="email" className="text-xs font-extrabold text-slate-600">Alamat Email</Label>
+                                <Label
+                                    htmlFor="email"
+                                    className="text-xs font-extrabold text-slate-600"
+                                >
+                                    Alamat Email
+                                </Label>
 
                                 <Input
                                     id="email"
@@ -94,7 +104,8 @@ export default function Profile({
                                 user.email_verified_at === null && (
                                     <div>
                                         <p className="-mt-4 text-sm text-muted-foreground">
-                                            Alamat email Anda belum diverifikasi.{' '}
+                                            Alamat email Anda belum
+                                            diverifikasi.{' '}
                                             <Link
                                                 href={send()}
                                                 as="button"
@@ -119,6 +130,7 @@ export default function Profile({
                                 <Button
                                     disabled={processing}
                                     data-test="update-profile-button"
+                                    className="rounded-2xl bg-emerald-600 px-5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
                                 >
                                     Simpan
                                 </Button>

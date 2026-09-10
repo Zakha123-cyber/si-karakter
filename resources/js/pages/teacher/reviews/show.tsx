@@ -692,13 +692,13 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                 <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                                     <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
                                         <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
-                                            <Bot className="size-4 text-teal-600 dark:text-teal-400" />
+                                            <Bot className="size-4 text-emerald-600" />
                                             Rekomendasi AI Assessment
                                         </div>
                                         {review.ai_assessment && (
                                             <Badge
                                                 variant="outline"
-                                                className="border-teal-200 text-teal-600 dark:border-teal-900 dark:text-teal-400"
+                                                className="border-teal-200 bg-teal-50 text-teal-700"
                                             >
                                                 AI Assessment
                                             </Badge>
@@ -712,7 +712,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                     Rekomendasi Tingkat Moral
                                                     (Kohlberg):
                                                 </span>
-                                                <div className="mt-1.5 rounded-lg bg-emerald-600 p-3 text-center text-white shadow-sm">
+                                                <div className="mt-1.5 rounded-2xl bg-emerald-600 p-3 text-center text-white shadow-sm">
                                                     <span className="block text-xs opacity-90">
                                                         Tingkat Penilaian LLM
                                                     </span>
@@ -731,7 +731,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                         Tingkat Keyakinan
                                                         (Confidence)
                                                     </span>
-                                                    <span className="text-teal-600 dark:text-teal-400">
+                                                    <span className="text-teal-700">
                                                         {formatPercent(
                                                             review.ai_assessment
                                                                 .confidence,
@@ -767,7 +767,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                         Saran Intervensi
                                                         Pedagogis:
                                                     </span>
-                                                    <p className="mt-1 rounded-md border border-emerald-200 bg-emerald-50/70 p-3 text-xs text-emerald-950 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200">
+                                                    <p className="mt-1 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-3 text-xs text-emerald-950">
                                                         {
                                                             review.ai_assessment
                                                                 .suggested_intervention
@@ -817,7 +817,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                 review.ai_assessment.indicators
                                                     .length > 0 && (
                                                     <div>
-                                                        <span className="text-xs font-medium text-muted-foreground">
+                                                        <span className="text-xs font-medium text-slate-500">
                                                             Skor Indikator
                                                             Karakter
                                                             Teridentifikasi:
@@ -832,7 +832,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                                         key={
                                                                             idx
                                                                         }
-                                                                        className="flex items-center justify-between rounded-md border bg-background px-3 py-1.5 text-xs"
+                                                                        className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700"
                                                                     >
                                                                         <span>
                                                                             {ind.indicator_name ||
@@ -855,33 +855,9 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                     </div>
                                                 )}
 
-                                            <div className="pt-1">
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        setShowRawResponseJson(
-                                                            !showRawResponseJson,
-                                                        )
-                                                    }
-                                                    className="text-xs font-semibold text-teal-600 hover:underline dark:text-teal-400"
-                                                >
-                                                    {showRawResponseJson
-                                                        ? 'Sembunyikan Raw JSON AI'
-                                                        : 'Lihat Raw JSON AI Response'}
-                                                </button>
-                                                {showRawResponseJson && (
-                                                    <pre className="mt-2 max-h-48 overflow-auto rounded bg-slate-950 p-3 font-mono text-[10px] text-emerald-400">
-                                                        {JSON.stringify(
-                                                            review.ai_assessment,
-                                                            null,
-                                                            2,
-                                                        )}
-                                                    </pre>
-                                                )}
-                                            </div>
                                         </div>
                                     ) : (
-                                        <p className="mt-3 rounded-md bg-muted/40 p-3 text-sm text-muted-foreground">
+                                        <p className="mt-3 rounded-2xl bg-slate-50 p-3 text-sm text-slate-500">
                                             Belum ada rekomendasi penilaian AI.
                                         </p>
                                     )}
@@ -895,7 +871,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
 
                                     {review.validation.decision && (
                                         <div
-                                            className={`rounded-md p-3 text-xs ${
+                                            className={`rounded-2xl p-3 text-xs ${
                                                 review.validation.decision ===
                                                 'approved'
                                                     ? 'border border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200'
@@ -994,7 +970,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                             </p>
 
                                             <div>
-                                                <label className="text-xs font-medium">
+                                                <label className="text-xs font-semibold text-slate-700">
                                                     Catatan Ustadz (Opsional):
                                                 </label>
                                                 <textarea
@@ -1036,7 +1012,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                             className="space-y-3 pt-1"
                                         >
                                             <div>
-                                                <label className="text-xs font-medium">
+                                                <label className="text-xs font-semibold text-slate-700">
                                                     Pilih Tingkat Moral Akhir
                                                     (Kohlberg):
                                                 </label>
@@ -1090,7 +1066,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                             </div>
 
                                             <div>
-                                                <label className="text-xs font-medium text-amber-700 dark:text-amber-300">
+                                                <label className="text-xs font-semibold text-amber-700">
                                                     Alasan Override (Wajib
                                                     Diisi):{' '}
                                                     <span className="text-destructive">

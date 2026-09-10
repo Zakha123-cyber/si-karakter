@@ -3,6 +3,7 @@ import {
     BookOpenCheck,
     ChevronLeft,
     ChevronRight,
+    CircleCheck,
     FileAudio,
     Filter,
     ImageUp,
@@ -898,6 +899,7 @@ export default function TeacherMoralCasesIndex({
                                 type="button"
                                 variant="outline"
                                 onClick={startCreateOption}
+                                className="h-10 rounded-2xl border-emerald-200 bg-white px-4 text-xs font-bold text-emerald-700 shadow-sm hover:bg-emerald-50"
                             >
                                 <Plus className="size-4" />
                                 Tambah Pilihan
@@ -920,10 +922,11 @@ export default function TeacherMoralCasesIndex({
                                                     {option.label}
                                                 </Badge>
                                                 <Badge
-                                                    variant={
+                                                    variant="outline"
+                                                    className={
                                                         option.is_active
-                                                            ? 'secondary'
-                                                            : 'destructive'
+                                                            ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                                                            : 'border-slate-200 bg-slate-100 text-slate-500'
                                                     }
                                                 >
                                                     {option.is_active
@@ -949,8 +952,9 @@ export default function TeacherMoralCasesIndex({
                                                 onClick={() =>
                                                     startEditOption(option)
                                                 }
+                                                className="h-8 rounded-xl border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 shadow-sm hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
                                             >
-                                                <Pencil className="size-4" />
+                                                <Pencil className="size-3.5" />
                                                 Edit
                                             </Button>
                                             <Button
@@ -960,8 +964,9 @@ export default function TeacherMoralCasesIndex({
                                                 onClick={() =>
                                                     deleteOption(option)
                                                 }
+                                                className="h-8 rounded-xl border border-rose-100 bg-white px-2.5 text-xs font-bold text-rose-600 shadow-sm hover:border-rose-200 hover:bg-rose-50"
                                             >
-                                                <Trash2 className="size-4" />
+                                                <Trash2 className="size-3.5" />
                                                 Hapus
                                             </Button>
                                         </div>
@@ -1459,7 +1464,7 @@ function renderStatusBadge(active: boolean) {
     if (active) {
         return (
             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-                <ToggleLeft className="size-3 text-emerald-600" />
+                <CircleCheck className="size-3 text-emerald-600" />
                 Aktif
             </span>
         );

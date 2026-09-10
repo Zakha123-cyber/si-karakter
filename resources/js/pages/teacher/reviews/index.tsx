@@ -188,7 +188,7 @@ export default function ReviewQueueIndex({
                         </div>
                     </div>
 
-                    <div className="mb-5 flex flex-wrap gap-2">
+                    <div className="mb-5 flex gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                         {[
                             { id: 'pending', label: 'Belum Direview' },
                             { id: 'approved', label: 'Disetujui' },
@@ -202,7 +202,7 @@ export default function ReviewQueueIndex({
                                     setStatus(tab.id);
                                     applyFilters({ status: tab.id });
                                 }}
-                                className={`rounded-2xl px-4 py-2 text-xs font-bold transition-all ${
+                                className={`shrink-0 rounded-2xl px-4 py-2 text-xs font-bold whitespace-nowrap transition-all ${
                                     status === tab.id
                                         ? 'bg-emerald-600 text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)]'
                                         : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -215,35 +215,19 @@ export default function ReviewQueueIndex({
 
                     <form
                         onSubmit={handleSearchSubmit}
-                        className="mb-5 grid gap-3 rounded-[24px] border border-slate-100 bg-slate-50/60 p-3 lg:grid-cols-6"
+                        className="mb-5 grid grid-cols-1 gap-3 rounded-[24px] border border-slate-100 bg-slate-50/60 p-3 sm:grid-cols-2 xl:grid-cols-12"
                     >
-                        <div className="relative lg:col-span-3">
-                            <Search className="pointer-events-none absolute top-2.5 left-3 size-4 text-slate-400" />
+                        <div className="relative sm:col-span-2 xl:col-span-3">
+                            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
                             <input
                                 type="text"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 placeholder="Cari nama santri"
-                                className="h-10 w-full rounded-2xl border border-slate-100 bg-white pl-9 text-sm text-slate-700 shadow-sm outline-none transition focus:border-emerald-300 focus:ring-[3px] focus:ring-emerald-100"
+                                className="h-10 w-full rounded-2xl border border-slate-100 bg-white pr-3 pl-9 text-sm text-slate-700 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-emerald-300 focus:ring-[3px] focus:ring-emerald-100"
                             />
                         </div>
-                        <div className="relative lg:col-span-1">
-                            <select
-                                value={status}
-                                onChange={(e) => {
-                                    const next = e.target.value;
-                                    setStatus(next);
-                                    applyFilters({ status: next });
-                                }}
-                                className="h-10 w-full rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus:border-emerald-300 focus:ring-[3px] focus:ring-emerald-100"
-                            >
-                                <option value="pending">Belum Direview</option>
-                                <option value="approved">Disetujui</option>
-                                <option value="overridden">Dioverride</option>
-                                <option value="all">Semua</option>
-                            </select>
-                        </div>
-                        <div className="relative lg:col-span-1">
+                        <div className="relative sm:col-span-1 xl:col-span-3">
                             <select
                                 value={groupId}
                                 onChange={(e) => {
@@ -261,7 +245,7 @@ export default function ReviewQueueIndex({
                                 ))}
                             </select>
                         </div>
-                        <div className="relative lg:col-span-1">
+                        <div className="relative sm:col-span-1 xl:col-span-3">
                             <select
                                 value={packageId}
                                 onChange={(e) => {
@@ -281,10 +265,10 @@ export default function ReviewQueueIndex({
                                 ))}
                             </select>
                         </div>
-                        <div className="flex gap-2 lg:col-span-2">
+                        <div className="flex gap-2 sm:col-span-2 xl:col-span-3">
                             <button
                                 type="submit"
-                                className="flex-1 rounded-2xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] transition hover:bg-emerald-700"
+                                className="h-10 flex-1 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] transition hover:bg-emerald-700"
                             >
                                 Filter
                             </button>
@@ -297,7 +281,7 @@ export default function ReviewQueueIndex({
                                     setPackageId('');
                                     router.get('/teacher/reviews', {}, { preserveState: true });
                                 }}
-                                className="rounded-2xl px-4 py-2.5 text-xs font-bold text-slate-500 transition hover:bg-white"
+                                className="h-10 rounded-2xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-500 shadow-sm transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
                             >
                                 Reset
                             </button>

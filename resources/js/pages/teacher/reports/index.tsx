@@ -130,7 +130,10 @@ function scoreBadge(value: number | null, suffix: string): string {
 }
 
 function PaginationLabel({ label }: { label: string }) {
-    if (label === '&laquo; Previous' || label.toLowerCase().includes('previous')) {
+    if (
+        label === '&laquo; Previous' ||
+        label.toLowerCase().includes('previous')
+    ) {
         return (
             <>
                 <ChevronLeft className="size-4" />
@@ -213,7 +216,9 @@ export default function TeacherReportsIndex({
         generateForm.post('/teacher/reports/generate', {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success('Draft laporan berhasil dibuat.', { id: toastId });
+                toast.success('Draft laporan berhasil dibuat.', {
+                    id: toastId,
+                });
                 setGenerateOpen(false);
             },
             onError: () => {
@@ -238,7 +243,9 @@ export default function TeacherReportsIndex({
                     });
                 },
                 onError: () => {
-                    toast.error('Draft narasi AI gagal dibuat.', { id: toastId });
+                    toast.error('Draft narasi AI gagal dibuat.', {
+                        id: toastId,
+                    });
                 },
             },
         );
@@ -258,7 +265,9 @@ export default function TeacherReportsIndex({
                     });
                 },
                 onError: () => {
-                    toast.error('Laporan belum bisa diterbitkan.', { id: toastId });
+                    toast.error('Laporan belum bisa diterbitkan.', {
+                        id: toastId,
+                    });
                 },
             },
         );
@@ -394,23 +403,28 @@ export default function TeacherReportsIndex({
                                                     {report.student.name ??
                                                         'Santri'}
                                                 </h3>
-                                                {report.student.student_code && (
+                                                {report.student
+                                                    .student_code && (
                                                     <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">
-                                                        {report.student.student_code}
+                                                        {
+                                                            report.student
+                                                                .student_code
+                                                        }
                                                     </span>
                                                 )}
                                                 {report.student.group_name && (
                                                     <span className="rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-bold text-teal-600">
-                                                        {report.student.group_name}
+                                                        {
+                                                            report.student
+                                                                .group_name
+                                                        }
                                                     </span>
                                                 )}
                                                 <Badge
                                                     variant="outline"
-                                                    className={
-                                                        statusClasses(
-                                                            report.status,
-                                                        )
-                                                    }
+                                                    className={statusClasses(
+                                                        report.status,
+                                                    )}
                                                 >
                                                     {statusLabel(report.status)}
                                                 </Badge>
@@ -480,7 +494,8 @@ export default function TeacherReportsIndex({
                                                 </Button>
                                             )}
                                             {(report.has_pdf ||
-                                                report.status === 'published') && (
+                                                report.status ===
+                                                    'published') && (
                                                 <Button
                                                     type="button"
                                                     variant="outline"
@@ -530,24 +545,36 @@ export default function TeacherReportsIndex({
             </div>
 
             <Sheet open={generateOpen} onOpenChange={setGenerateOpen}>
-                <SheetContent className="sm:max-w-md">
-                    <SheetHeader>
-                        <SheetTitle>Buat Laporan Karakter</SheetTitle>
-                        <SheetDescription>
-                            Pilih santri dan rentang periode untuk membuat
-                            draft laporan.
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-md">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
+                        <div className="flex items-center gap-2 pr-8">
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <FileText className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
+                                Buat Laporan Karakter
+                            </SheetTitle>
+                        </div>
+                        <SheetDescription className="text-sm text-slate-500">
+                            Pilih santri dan rentang periode untuk membuat draft
+                            laporan.
                         </SheetDescription>
                     </SheetHeader>
 
                     <form
                         onSubmit={submitGenerate}
-                        className="mt-6 space-y-5"
+                        className="grid gap-5 px-4 py-5"
                     >
                         <div className="space-y-2">
-                            <Label htmlFor="student_id">Santri</Label>
+                            <Label
+                                htmlFor="student_id"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                Santri
+                            </Label>
                             <select
                                 id="student_id"
-                                className="h-10 w-full rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
+                                className="h-10 w-full rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={generateForm.data.student_id}
                                 onChange={(event) =>
                                     generateForm.setData(
@@ -574,7 +601,10 @@ export default function TeacherReportsIndex({
 
                         <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-2">
-                                <Label htmlFor="period_start">
+                                <Label
+                                    htmlFor="period_start"
+                                    className="text-sm font-medium text-slate-700"
+                                >
                                     Periode Mulai
                                 </Label>
                                 <Input
@@ -587,16 +617,20 @@ export default function TeacherReportsIndex({
                                             event.target.value,
                                         )
                                     }
+                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm focus-visible:ring-emerald-200"
                                 />
                                 <InputError
-                                    message={
-                                        generateForm.errors.period_start
-                                    }
+                                    message={generateForm.errors.period_start}
                                     className="mt-1"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="period_end">Periode Selesai</Label>
+                                <Label
+                                    htmlFor="period_end"
+                                    className="text-sm font-medium text-slate-700"
+                                >
+                                    Periode Selesai
+                                </Label>
                                 <Input
                                     id="period_end"
                                     type="date"
@@ -607,6 +641,7 @@ export default function TeacherReportsIndex({
                                             event.target.value,
                                         )
                                     }
+                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={generateForm.errors.period_end}
@@ -620,19 +655,19 @@ export default function TeacherReportsIndex({
                             className="mt-1"
                         />
 
-                        <div className="flex justify-end gap-2 pt-2">
+                        <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
                             <Button
                                 type="button"
                                 variant="ghost"
                                 onClick={() => setGenerateOpen(false)}
-                                className="rounded-2xl text-xs font-bold text-slate-500"
+                                className="h-10 rounded-2xl px-4 text-xs font-bold text-slate-500 hover:bg-slate-100"
                             >
                                 Batal
                             </Button>
                             <Button
                                 type="submit"
                                 disabled={generateForm.processing}
-                                className="rounded-2xl bg-emerald-600 text-xs font-bold text-white hover:bg-emerald-700"
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
                             >
                                 Buat Draft
                             </Button>

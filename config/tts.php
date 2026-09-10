@@ -4,6 +4,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | TTS Enabled
+    |--------------------------------------------------------------------------
+    |
+    | Set to false when the server does not host a TTS provider. The student
+    | frontend will then use the browser's built-in speech synthesis fallback.
+    |
+    */
+
+    'enabled' => filter_var(env('TTS_ENABLED', true), FILTER_VALIDATE_BOOL),
+
+    /*
+    |--------------------------------------------------------------------------
     | Text-to-Speech Provider
     |--------------------------------------------------------------------------
     |

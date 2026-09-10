@@ -1,0 +1,163 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, bcmath, pdo, pdo_mysql
+          tools: composer
+          coverage: none
+
+      - name: Install backend dependencies
+        run: composer install --no-dev --prefer-dist --no-progress --optimize-autoloader
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Package frontend build
+        run: tar -czf frontend-build.tar.gz -C public build
+
+      - name: Upload frontend build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend-build.tar.gz
+          retention-days: 3
+
+  deploy-staging:
+    name: Deploy staging
+    if: github.ref == 'refs/heads/develop'
+    needs: build
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Download frontend build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+
+      - name: Configure SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' '${{ secrets.DEPLOY_SSH_KEY }}' > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p '${{ secrets.DEPLOY_PORT }}' '${{ secrets.DEPLOY_HOST }}' >> ~/.ssh/known_hosts
+
+      - name: Update staging application
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          APP_PATH: ${{ secrets.STAGING_PATH }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" bash -s -- "$APP_PATH" develop <<'REMOTE'
+          set -e
+          APP_PATH="$1"
+          BRANCH="$2"
+          cd "$APP_PATH"
+          git fetch origin "$BRANCH"
+          git reset --hard "origin/$BRANCH"
+          /opt/cpanel/ea-php83/root/usr/bin/php "$HOME/bin/composer" install --no-dev --optimize-autoloader --no-scripts
+          rm -f bootstrap/cache/*.php
+          /opt/cpanel/ea-php83/root/usr/bin/php artisan migrate --force
+          /opt/cpanel/ea-php83/root/usr/bin/php artisan optimize:clear
+          REMOTE
+
+      - name: Upload staging frontend build
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          APP_PATH: ${{ secrets.STAGING_PATH }}
+        run: |
+          scp -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -P "$DEPLOY_PORT" frontend-build.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:/tmp/sikarakter-staging-build.tar.gz"
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" bash -s -- "$APP_PATH" <<'REMOTE'
+          set -e
+          APP_PATH="$1"
+          tar -xzf /tmp/sikarakter-staging-build.tar.gz -C "$APP_PATH/public"
+          rm -f /tmp/sikarakter-staging-build.tar.gz
+          REMOTE
+
+  deploy-production:
+    name: Deploy production
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Download frontend build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+
+      - name: Configure SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' '${{ secrets.DEPLOY_SSH_KEY }}' > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p '${{ secrets.DEPLOY_PORT }}' '${{ secrets.DEPLOY_HOST }}' >> ~/.ssh/known_hosts
+
+      - name: Update production application
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          APP_PATH: ${{ secrets.PRODUCTION_PATH }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" bash -s -- "$APP_PATH" main <<'REMOTE'
+          set -e
+          APP_PATH="$1"
+          BRANCH="$2"
+          cd "$APP_PATH"
+          git fetch origin "$BRANCH"
+          git reset --hard "origin/$BRANCH"
+          /opt/cpanel/ea-php83/root/usr/bin/php "$HOME/bin/composer" install --no-dev --optimize-autoloader --no-scripts
+          rm -f bootstrap/cache/*.php
+          /opt/cpanel/ea-php83/root/usr/bin/php artisan migrate --force
+          /opt/cpanel/ea-php83/root/usr/bin/php artisan optimize:clear
+          REMOTE
+
+      - name: Upload production frontend build
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          PUBLIC_PATH: /home/telx1836/public_html
+        run: |
+          scp -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -P "$DEPLOY_PORT" frontend-build.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:/tmp/sikarakter-production-build.tar.gz"
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" bash -s -- "$PUBLIC_PATH" <<'REMOTE'
+          set -e
+          PUBLIC_PATH="$1"
+          tar -xzf /tmp/sikarakter-production-build.tar.gz -C "$PUBLIC_PATH"
+          rm -f /tmp/sikarakter-production-build.tar.gz
+          REMOTE

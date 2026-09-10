@@ -23,7 +23,7 @@ class ResetCredentialRequest extends BaseApiRequest
             'value' => [
                 'required',
                 'string',
-                Rule::when($this->input('type') === 'pin', ['digits_between:4,8'], [Password::defaults()]),
+                Rule::when($this->input('type') === 'pin', ['digits_between:4,8'], [Password::min(8)]),
             ],
         ];
     }

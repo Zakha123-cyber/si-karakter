@@ -39,22 +39,16 @@ export default function AuthSimpleLayout({
 
             <div className="relative w-full max-w-md">
                 {/* Playful Header Logo */}
-                <div className="mb-6 flex flex-col items-center justify-center gap-2">
+                <div className="mb-6 flex flex-col items-center justify-center">
                     <Link
                         href={home()}
-                        className="group flex items-center gap-3 transition-transform hover:scale-105"
+                        className="transition-transform hover:scale-105"
                     >
-                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-sky-400 text-2xl shadow-[0_6px_20px_rgba(16,185,129,0.25)] shadow-inner">
-                            🌱
-                        </div>
-                        <div className="text-left">
-                            <span className="block text-2xl font-black tracking-tight text-slate-800">
-                                TeladanKu
-                            </span>
-                            <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">
-                                Belajar Baik, Hati Makin Baik
-                            </span>
-                        </div>
+                        <img
+                            src="/images/logo-teladanku.png"
+                            alt="TeladanKu — Belajar Baik, Hati Makin Baik"
+                            className="h-44 w-auto object-contain drop-shadow-[0_8px_24px_rgba(16,185,129,0.25)] sm:h-52"
+                        />
                     </Link>
                 </div>
 

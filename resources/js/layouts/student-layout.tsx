@@ -102,7 +102,11 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
                     <Menu className="size-5" />
                 </button>
                 <div className="flex items-center gap-2">
-                    <span className="text-xl">🌱</span>
+                    <img
+                        src="/images/logo-teladanku.png"
+                        alt="TeladanKu"
+                        className="size-8 object-contain"
+                    />
                     <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-lg font-extrabold text-transparent">
                         TeladanKu
                     </span>
@@ -142,9 +146,11 @@ function SidebarContent() {
         <>
             {/* Logo */}
             <div className="mb-7 flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-400 text-2xl shadow-md shadow-emerald-200">
-                    🌱
-                </div>
+                <img
+                    src="/images/logo-teladanku.png"
+                    alt="TeladanKu"
+                    className="h-12 w-12 shrink-0 object-contain"
+                />
                 <div>
                     <div className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-lg font-extrabold text-transparent">
                         TeladanKu
@@ -156,7 +162,7 @@ function SidebarContent() {
             </div>
 
             {/* Nav */}
-            <nav className="flex flex-1 flex-col gap-1 overflow-y-auto pr-1">
+            <nav className="flex flex-1 [scrollbar-color:rgb(148_163_184)_transparent] flex-col gap-1 overflow-y-auto overscroll-y-contain [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-track]:bg-transparent">
                 {NAV_ITEMS.map((item) => {
                     const isActive =
                         url === item.href ||

@@ -136,8 +136,8 @@ export default function TeacherScoringConfigurationsIndex({
             test_weight: config.test_weight.toString(),
             observation_weight: config.observation_weight.toString(),
             is_active: config.is_active,
-            effective_from: config.effective_from,
-            effective_until: config.effective_until || '',
+            effective_from: dateInputValue(config.effective_from),
+            effective_until: dateInputValue(config.effective_until),
         });
         editForm.clearErrors();
     };
@@ -567,16 +567,16 @@ export default function TeacherScoringConfigurationsIndex({
                                                         </td>
                                                         <td className="px-4 py-3 text-xs text-slate-500">
                                                             <div>
-                                                                {
-                                                                    config.effective_from
-                                                                }
+                                                                {formatDate(
+                                                                    config.effective_from,
+                                                                )}
                                                             </div>
                                                             {config.effective_until && (
                                                                 <div className="mt-0.5">
                                                                     s.d.{' '}
-                                                                    {
-                                                                        config.effective_until
-                                                                    }
+                                                                    {formatDate(
+                                                                        config.effective_until,
+                                                                    )}
                                                                 </div>
                                                             )}
                                                         </td>
@@ -654,13 +654,17 @@ export default function TeacherScoringConfigurationsIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
-                    <SheetHeader>
+                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-lg">
+                    <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
-                            <Pencil className="size-5 text-muted-foreground" />
-                            <SheetTitle>Edit Konfigurasi Bobot</SheetTitle>
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                <Pencil className="size-4" />
+                            </div>
+                            <SheetTitle className="text-lg font-extrabold text-slate-800">
+                                Edit Konfigurasi Bobot
+                            </SheetTitle>
                         </div>
-                        <SheetDescription>
+                        <SheetDescription className="text-sm text-slate-500">
                             {editingConfig
                                 ? editingConfig.name
                                 : 'Perbarui data konfigurasi.'}
@@ -669,24 +673,32 @@ export default function TeacherScoringConfigurationsIndex({
 
                     <form
                         onSubmit={submitEdit}
-                        className="grid gap-4 px-4 pb-4"
+                        className="grid gap-5 px-4 py-5"
                     >
                         <div className="grid gap-2">
-                            <Label htmlFor="edit_name">Nama Konfigurasi</Label>
+                            <Label
+                                htmlFor="edit_name"
+                                className="text-sm font-medium text-slate-700"
+                            >
+                                Nama Konfigurasi
+                            </Label>
                             <Input
                                 id="edit_name"
                                 value={editForm.data.name}
                                 onChange={(event) =>
                                     editForm.setData('name', event.target.value)
                                 }
-                                className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
+                                className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                             />
                             <InputError message={editForm.errors.name} />
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
                             <div className="grid gap-2">
-                                <Label htmlFor="edit_test_weight">
+                                <Label
+                                    htmlFor="edit_test_weight"
+                                    className="text-sm font-medium text-slate-700"
+                                >
                                     Bobot Tes (%)
                                 </Label>
                                 <Input
@@ -701,14 +713,17 @@ export default function TeacherScoringConfigurationsIndex({
                                             event.target.value,
                                         )
                                     }
-                                    className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
+                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={editForm.errors.test_weight}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="edit_observation_weight">
+                                <Label
+                                    htmlFor="edit_observation_weight"
+                                    className="text-sm font-medium text-slate-700"
+                                >
                                     Bobot Observasi (%)
                                 </Label>
                                 <Input
@@ -723,7 +738,7 @@ export default function TeacherScoringConfigurationsIndex({
                                             event.target.value,
                                         )
                                     }
-                                    className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
+                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={editForm.errors.observation_weight}
@@ -733,7 +748,10 @@ export default function TeacherScoringConfigurationsIndex({
 
                         <div className="grid grid-cols-2 gap-3">
                             <div className="grid gap-2">
-                                <Label htmlFor="edit_effective_from">
+                                <Label
+                                    htmlFor="edit_effective_from"
+                                    className="text-sm font-medium text-slate-700"
+                                >
                                     Tanggal Mulai
                                 </Label>
                                 <Input
@@ -746,14 +764,17 @@ export default function TeacherScoringConfigurationsIndex({
                                             event.target.value,
                                         )
                                     }
-                                    className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
+                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={editForm.errors.effective_from}
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="edit_effective_until">
+                                <Label
+                                    htmlFor="edit_effective_until"
+                                    className="text-sm font-medium text-slate-700"
+                                >
                                     Tanggal Akhir
                                 </Label>
                                 <Input
@@ -766,7 +787,7 @@ export default function TeacherScoringConfigurationsIndex({
                                             event.target.value,
                                         )
                                     }
-                                    className="h-10 rounded-2xl border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
+                                    className="h-10 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 />
                                 <InputError
                                     message={editForm.errors.effective_until}
@@ -774,10 +795,11 @@ export default function TeacherScoringConfigurationsIndex({
                             </div>
                         </div>
 
-                        <div className="flex gap-2 pt-2">
+                        <div className="flex gap-2 border-t border-slate-100 pt-4">
                             <Button
                                 type="submit"
                                 disabled={editForm.processing}
+                                className="h-10 rounded-2xl bg-emerald-600 px-4 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"
                             >
                                 Simpan Perubahan
                             </Button>
@@ -785,6 +807,7 @@ export default function TeacherScoringConfigurationsIndex({
                                 type="button"
                                 variant="outline"
                                 onClick={cancelEdit}
+                                className="h-10 rounded-2xl border-slate-200 bg-white px-4 text-xs font-bold text-slate-600 hover:bg-slate-50"
                             >
                                 Batal
                             </Button>
@@ -863,4 +886,29 @@ function PaginationLabel({ label }: { label: string }) {
     }
 
     return <span>{label}</span>;
+}
+
+function dateInputValue(value: string | null) {
+    return value ? value.split('T')[0] : '';
+}
+
+function formatDate(value: string | null) {
+    const dateValue = dateInputValue(value);
+
+    if (!dateValue) {
+        return '-';
+    }
+
+    const [year, month, day] = dateValue.split('-').map(Number);
+
+    if (!year || !month || !day) {
+        return dateValue;
+    }
+
+    return new Intl.DateTimeFormat('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC',
+    }).format(new Date(Date.UTC(year, month - 1, day)));
 }

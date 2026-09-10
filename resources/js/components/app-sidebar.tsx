@@ -49,7 +49,7 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent>
+            <SidebarContent className="scrollbar-sidebar">
                 <NavMain items={mainNavItems} />
             </SidebarContent>
 

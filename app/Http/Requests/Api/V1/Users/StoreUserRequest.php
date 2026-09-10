@@ -24,7 +24,7 @@ class StoreUserRequest extends BaseApiRequest
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', Rule::unique(User::class)],
             'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique(User::class)],
-            'password' => ['required', 'confirmed', Password::defaults()],
+            'password' => ['required', 'confirmed', Password::min(8)],
             'role' => ['required', Rule::in(UserRole::values())],
             'is_active' => ['sometimes', 'boolean'],
             'pin_enabled' => ['sometimes', 'boolean'],

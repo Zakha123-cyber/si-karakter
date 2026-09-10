@@ -619,8 +619,8 @@ export default function TeacherSimulationsIndex({
                                             disabled={!link.url}
                                             className={
                                                 link.active
-                                                    ? 'rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700'
-                                                    : 'rounded-2xl border-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'
+                                                    ? 'h-9 min-w-9 rounded-xl bg-emerald-600 px-3 text-xs font-bold text-white shadow-sm hover:bg-emerald-700'
+                                                    : 'h-9 min-w-9 rounded-xl border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 shadow-sm hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700'
                                             }
                                             onClick={() => {
                                                 if (link.url) {
@@ -706,21 +706,21 @@ export default function TeacherSimulationsIndex({
                             </div>
                         </section>
 
-                        <section className="rounded-[28px] bg-gradient-to-br from-slate-800 to-slate-900 p-5 text-white shadow-[0_8px_30px_rgba(15,23,42,0.15)]">
+                        <section className="rounded-[28px] border border-emerald-100 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 text-slate-700 shadow-[0_8px_30px_rgba(16,58,58,0.08)]">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-xl backdrop-blur-sm">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
                                     🕌
                                 </div>
                                 <div>
-                                    <p className="text-xs font-medium text-slate-400">
+                                    <p className="text-xs font-bold text-emerald-600">
                                         Prinsip Halaman Ini
                                     </p>
-                                    <p className="text-sm font-extrabold text-white">
+                                    <p className="text-sm font-extrabold text-slate-800">
                                         Latihan, bukan pelabelan
                                     </p>
                                 </div>
                             </div>
-                            <p className="mt-3 text-xs leading-relaxed text-slate-300">
+                            <p className="mt-3 text-xs leading-relaxed text-slate-600">
                                 Skor dan poin membantu santri belajar, bukan
                                 untuk menilai siapa yang paling baik. Fokus pada
                                 proses berlatih setiap hari.

@@ -27,7 +27,7 @@ class UpdateUserRequest extends BaseApiRequest
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'username' => ['sometimes', 'required', 'string', 'max:255', Rule::unique(User::class)->ignore($userId)],
             'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique(User::class)->ignore($userId)],
-            'password' => ['nullable', 'confirmed', Password::defaults()],
+            'password' => ['nullable', 'confirmed', Password::min(8)],
             'role' => ['sometimes', 'required', Rule::in(UserRole::values())],
             'is_active' => ['sometimes', 'boolean'],
             'pin_enabled' => ['sometimes', 'boolean'],

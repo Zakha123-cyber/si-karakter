@@ -59,7 +59,7 @@ class UserManagementController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', Rule::unique(User::class)],
             'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique(User::class)],
-            'password' => ['required', 'confirmed', Password::defaults()],
+            'password' => ['required', 'confirmed', Password::min(8)],
             'role' => ['required', Rule::in(UserRole::values())],
             'pin_enabled' => ['sometimes', 'boolean'],
             'pin' => ['nullable', 'string', 'digits_between:4,8', 'required_if:pin_enabled,true'],
@@ -110,7 +110,7 @@ class UserManagementController extends Controller
             'value' => [
                 'required',
                 'string',
-                Rule::when($request->input('type') === 'pin', ['digits_between:4,8'], [Password::defaults()]),
+                Rule::when($request->input('type') === 'pin', ['digits_between:4,8'], [Password::min(8)]),
             ],
         ]);
 

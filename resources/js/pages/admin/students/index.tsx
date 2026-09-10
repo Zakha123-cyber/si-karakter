@@ -79,16 +79,6 @@ const statusColors: Record<string, string> = {
     transferred: 'bg-amber-100 text-amber-700',
 };
 
-const statusVariant: Record<
-    string,
-    'secondary' | 'outline' | 'destructive' | 'default'
-> = {
-    active: 'secondary',
-    inactive: 'destructive',
-    graduated: 'default',
-    transferred: 'outline',
-};
-
 export default function AdminStudentsIndex({
     students,
     groups,
@@ -275,9 +265,9 @@ export default function AdminStudentsIndex({
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+                <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
                     {/* Create Form Card */}
-                    <section className="h-fit rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)] sm:p-6">
+                    <section className="order-2 h-fit rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)] sm:p-6">
                         <div className="flex items-center gap-3">
                             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-md">
                                 <Plus className="size-5" />
@@ -289,7 +279,7 @@ export default function AdminStudentsIndex({
                         </div>
                         <form
                             onSubmit={submitCreate}
-                            className="grid gap-4"
+                            className="mt-5 grid gap-4"
                         >
                             <div className="grid gap-2">
                                 <Label htmlFor="user_id" className="text-xs font-extrabold text-slate-600">Akun Santri</Label>
@@ -323,7 +313,7 @@ export default function AdminStudentsIndex({
                                 </Label>
                                 <Input
                                     id="student_code"
-                                    className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm shadow-sm focus-visible:ring-emerald-200"
+                                    className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                     value={createForm.data.student_code}
                                     onChange={(e) =>
                                         createForm.setData(
@@ -371,7 +361,7 @@ export default function AdminStudentsIndex({
                                 <Input
                                     id="birth_date"
                                     type="date"
-                                    className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm shadow-sm focus-visible:ring-emerald-200"
+                                    className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                     value={createForm.data.birth_date}
                                     onChange={(e) =>
                                         createForm.setData(
@@ -391,7 +381,7 @@ export default function AdminStudentsIndex({
                     </section>
 
                     {/* List Card */}
-                    <main className="min-w-0 space-y-6">
+                    <main className="order-1 min-w-0 space-y-6">
                         <section className="rounded-[28px] bg-white p-5 shadow-[0_8px_30px_rgba(16,58,58,0.08)] sm:p-6">
                             <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
                                 <div className="flex items-center gap-3">
@@ -412,7 +402,7 @@ export default function AdminStudentsIndex({
                             <form onSubmit={submitFilters} className="mb-5 flex flex-wrap items-center gap-3 rounded-[24px] border border-slate-100 bg-slate-50/60 p-3">
                                 <div className="relative flex-1">
                                     <Search className="pointer-events-none absolute top-2.5 left-3 size-4 text-slate-400" />
-                                    <Input className="h-10 rounded-2xl border-slate-100 bg-white pl-9 text-sm shadow-sm focus-visible:ring-emerald-200" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari santri..." />
+                                    <Input className="h-10 rounded-2xl border-slate-100 bg-white pl-9 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari santri..." />
                                 </div>
                                 <select className="h-10 rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100" value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}>
                                     <option value="">Semua kelompok</option>
@@ -427,11 +417,11 @@ export default function AdminStudentsIndex({
                                     <option value="graduated">Lulus</option>
                                     <option value="transferred">Pindah</option>
                                 </select>
-                                <Button type="submit" className="rounded-2xl bg-emerald-600 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"><Search className="mr-1.5 size-3.5" /> Filter</Button>
-                                <Button type="button" variant="ghost" onClick={resetFilters} className="rounded-2xl text-xs font-bold text-slate-500 hover:bg-white">Reset</Button>
+                                <Button type="submit" className="h-10 rounded-2xl bg-emerald-600 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700"><Search className="mr-1.5 size-3.5" /> Filter</Button>
+                                <Button type="button" variant="outline" onClick={resetFilters} className="h-10 rounded-2xl border-slate-200 bg-white text-xs font-bold text-slate-600 shadow-sm hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700">Reset</Button>
                             </form>
 
-                            <div className="overflow-x-auto rounded-[24px] border border-slate-100">
+                            <div className="scrollbar-soft overflow-x-auto rounded-[24px] border border-slate-100">
                                 <table className="w-full min-w-[760px] text-sm">
                                     <thead className="bg-slate-50 text-left">
                                         <tr>
@@ -447,7 +437,7 @@ export default function AdminStudentsIndex({
                                             <th className="px-4 py-3 text-xs font-extrabold text-slate-600">
                                                 Status
                                             </th>
-                                            <th className="px-4 py-3 text-right font-medium">
+                                            <th className="px-4 py-3 text-right text-xs font-extrabold text-slate-600">
                                                 Aksi
                                             </th>
                                         </tr>
@@ -460,7 +450,7 @@ export default function AdminStudentsIndex({
                                             >
                                                 <td className="px-4 py-3">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-blue-500 text-xs font-bold text-white">
+                                                        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-xs font-bold text-white">
                                                             {student.user
                                                                 ?.name.charAt(
                                                                     0,
@@ -506,13 +496,13 @@ export default function AdminStudentsIndex({
                                                 </td>
                                                 <td className="px-4 py-3">
                                                     <div className="flex justify-end gap-2">
-                                                        <Button type="button" size="sm" variant="outline" onClick={() => startEdit(student)} className="rounded-2xl border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700">
+                                                        <Button type="button" size="sm" variant="outline" onClick={() => startEdit(student)} className="bg-white rounded-2xl border-slate-200 text-slate-600 shadow-sm hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800">
                                                             <Pencil className="size-4" />
                                                         </Button>
-                                                        <Button type="button" size="sm" variant="outline" onClick={() => toggleStatus(student)} className="rounded-2xl border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700">
+                                                        <Button type="button" size="sm" variant="outline" onClick={() => toggleStatus(student)} className="bg-white rounded-2xl border-slate-200 text-slate-600 shadow-sm hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800">
                                                             {student.status === 'active' ? 'Nonaktifkan' : 'Aktifkan'}
                                                         </Button>
-                                                        <Button type="button" size="sm" variant="outline" onClick={() => deleteStudent(student)} className="rounded-2xl border-slate-200 text-slate-600 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700">
+                                                        <Button type="button" size="sm" variant="outline" onClick={() => deleteStudent(student)} className="bg-white rounded-2xl border-slate-200 text-slate-600 shadow-sm hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700">
                                                             <Trash2 className="size-4" />
                                                         </Button>
                                                     </div>
@@ -532,7 +522,7 @@ export default function AdminStudentsIndex({
                                         size="sm"
                                         variant={link.active ? 'default' : 'outline'}
                                         disabled={!link.url}
-                                        className={link.active ? 'rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700' : 'rounded-2xl border-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'}
+                                        className={link.active ? 'rounded-2xl bg-emerald-600 text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] hover:bg-emerald-700' : 'bg-white rounded-2xl border-slate-200 text-slate-600 shadow-sm hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700'}
                                         onClick={() => {
                                             if (link.url) {
                                                 router.get(link.url, {}, { preserveState: true });
@@ -579,22 +569,22 @@ export default function AdminStudentsIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-xl">
-                    <SheetHeader>
+                <SheetContent className="scrollbar-soft flex w-full flex-col gap-0 overflow-y-auto border-l-slate-200 bg-[#f8fafc] p-0 sm:max-w-lg [&>button]:text-slate-500 [&>button:hover]:text-slate-800">
+                    <SheetHeader className="border-b border-slate-100 bg-white px-6 pt-6 pb-5">
                         <div className="flex items-center gap-2 pr-8">
-                            <Pencil className="size-5 text-slate-400" />
+                            <Pencil className="size-5 text-emerald-500" />
                             <SheetTitle className="text-xl font-extrabold text-slate-800">
                                 Edit Santri
                             </SheetTitle>
                         </div>
-                        <SheetDescription className="text-slate-500">
+                        <SheetDescription className="text-sm font-medium text-slate-500">
                             {editingStudent?.user?.name} (
                             {editingStudent?.student_code})
                         </SheetDescription>
                     </SheetHeader>
                     <form
                         onSubmit={submitEdit}
-                        className="grid gap-4 px-4 pb-4"
+                        className="flex flex-1 flex-col gap-4 px-6 py-6"
                     >
                         <div className="grid gap-2">
                             <Label htmlFor="edit_student_code" className="text-xs font-extrabold text-slate-600">
@@ -602,7 +592,7 @@ export default function AdminStudentsIndex({
                             </Label>
                             <Input
                                 id="edit_student_code"
-                                className="h-11 rounded-2xl border-slate-100 bg-white text-sm shadow-sm focus-visible:ring-emerald-200"
+                                className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 value={editForm.data.student_code}
                                 onChange={(e) =>
                                     editForm.setData(
@@ -619,7 +609,7 @@ export default function AdminStudentsIndex({
                             <Label htmlFor="edit_gender" className="text-xs font-extrabold text-slate-600">Jenis Kelamin</Label>
                             <select
                                 id="edit_gender"
-                                className="h-11 rounded-2xl border border-slate-100 bg-slate-50 px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
+                                className="h-11 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={editForm.data.gender}
                                 onChange={(e) =>
                                     editForm.setData('gender', e.target.value)
@@ -638,7 +628,7 @@ export default function AdminStudentsIndex({
                             <Input
                                 id="edit_birth_date"
                                 type="date"
-                                className="h-11 rounded-2xl border-slate-100 bg-white text-sm shadow-sm focus-visible:ring-emerald-200"
+                                className="h-11 rounded-2xl border-slate-200 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 value={editForm.data.birth_date}
                                 onChange={(e) =>
                                     editForm.setData(
@@ -653,7 +643,7 @@ export default function AdminStudentsIndex({
                             <Label htmlFor="edit_status" className="text-xs font-extrabold text-slate-600">Status</Label>
                             <select
                                 id="edit_status"
-                                className="h-11 rounded-2xl border border-slate-100 bg-slate-50 px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
+                                className="h-11 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={editForm.data.status}
                                 onChange={(e) =>
                                     editForm.setData('status', e.target.value)
@@ -666,15 +656,15 @@ export default function AdminStudentsIndex({
                             </select>
                             <InputError message={editForm.errors.status} />
                         </div>
-                        <div className="flex gap-2 pt-2">
+                        <div className="mt-auto flex justify-end gap-2 border-t border-slate-200 pt-5">
+                            <Button type="button" variant="outline" onClick={cancelEdit} className="bg-white rounded-2xl border-slate-300 text-slate-600 hover:bg-slate-100 hover:text-slate-800">Batal</Button>
                             <Button
                                 type="submit"
                                 disabled={editForm.processing}
                                 className="rounded-2xl bg-emerald-600 font-bold text-white hover:bg-emerald-700"
-                                >
+                            >
                                 Simpan Perubahan
                             </Button>
-                            <Button type="button" variant="outline" onClick={cancelEdit} className="rounded-2xl border-slate-200 text-slate-600">Batal</Button>
                         </div>
                     </form>
                 </SheetContent>

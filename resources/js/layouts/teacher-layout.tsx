@@ -152,9 +152,11 @@ function SidebarContent() {
         <>
             {/* Logo */}
             <div className="mb-6 flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-xl text-white shadow-sm">
-                    🌱
-                </div>
+                <img
+                    src="/images/logo-teladanku.png"
+                    alt="TeladanKu"
+                    className="h-11 w-11 shrink-0 object-contain"
+                />
                 <div>
                     <div className="text-lg font-extrabold text-slate-800">
                         TeladanKu

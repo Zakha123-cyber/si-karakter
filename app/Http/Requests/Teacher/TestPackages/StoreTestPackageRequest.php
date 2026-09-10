@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Teacher\TestPackages;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 
 class StoreTestPackageRequest extends FormRequest
 {
@@ -15,8 +16,8 @@ class StoreTestPackageRequest extends FormRequest
     {
         $this->merge([
             'description' => $this->input('description') ?: null,
-            'start_at' => $this->input('start_at') ?: null,
-            'end_at' => $this->input('end_at') ?: null,
+            'start_at' => $this->normalizeDateTime($this->input('start_at')),
+            'end_at' => $this->normalizeDateTime($this->input('end_at')),
         ]);
     }
 
@@ -32,5 +33,20 @@ class StoreTestPackageRequest extends FormRequest
             'end_at' => ['nullable', 'date', 'after_or_equal:start_at'],
             'attempt_limit' => ['required', 'integer', 'min:1', 'max:99'],
         ];
+    }
+
+    private function normalizeDateTime(mixed $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        try {
+            return Carbon::parse($value, config('app.display_timezone'))
+                ->utc()
+                ->toDateTimeString();
+        } catch (\Throwable) {
+            return (string) $value;
+        }
     }
 }

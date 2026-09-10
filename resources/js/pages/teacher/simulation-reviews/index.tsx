@@ -1,63 +1,51 @@
 import { Head, Link, router } from '@inertiajs/react';
 import {
-    AudioLines,
-    Bot,
     CheckCircle2,
     Clock,
     Eye,
     Filter,
     Search,
-    ShieldAlert,
+    ShieldCheck,
+    Star,
+    Trophy,
     User,
 } from 'lucide-react';
 import { useState } from 'react';
 
-interface ReviewItem {
+interface AttemptItem {
     id: number;
-    test_attempt_id: number;
-    answer_status: string;
-    submitted_at: string | null;
+    completed_at: string | null;
+    score: number;
+    reward_points: number;
+    is_best: boolean;
     student: {
         id: number;
         name: string;
-        student_code: string;
-    };
+        student_code: string | null;
+    } | null;
     group: {
         id: number;
         name: string;
-    };
-    test_package: {
+    } | null;
+    scenario: {
         id: number;
         title: string;
-    };
-    moral_case: {
+    } | null;
+    selected_option: {
         id: number;
-        title: string;
-    };
-    audio: {
-        has_audio: boolean;
-        file_count: number;
-    };
-    transcription: {
+        text: string;
+    } | null;
+    review: {
         status: string;
-        confidence: number | null;
-    };
-    ai_assessment: {
-        moral_level: string | null;
-        confidence: number | null;
-        status: string;
-    };
-    validation: {
-        status: string;
-        decision: string | null;
-        final_moral_level: string | null;
-        validated_at: string | null;
+        teacher_note: string | null;
+        teacher_name: string | null;
+        reviewed_at: string | null;
     };
 }
 
 interface IndexProps {
-    reviews: {
-        data: ReviewItem[];
+    attempts: {
+        data: AttemptItem[];
         links: any[];
         meta: {
             current_page: number;
@@ -68,41 +56,52 @@ interface IndexProps {
     filters: {
         search: string;
         status: string;
+        scenario_id: number | null;
         group_id: number | null;
-        test_package_id: number | null;
     };
+    scenarios: Array<{ id: number; title: string }>;
     groups: Array<{ id: number; name: string }>;
-    testPackages: Array<{ id: number; title: string }>;
 }
 
-export default function ReviewQueueIndex({
-    reviews,
+function formatDateTime(value: string | null) {
+    if (!value) {
+        return '-';
+    }
+
+    return new Intl.DateTimeFormat('id-ID', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+    }).format(new Date(value));
+}
+
+export default function SimulationReviewIndex({
+    attempts,
     filters,
+    scenarios,
     groups,
-    testPackages,
 }: IndexProps) {
     const [search, setSearch] = useState(filters.search || '');
-    const [status, setStatus] = useState(filters.status || 'pending');
+    const [status, setStatus] = useState(filters.status || 'all');
+    const [scenarioId, setScenarioId] = useState<string>(
+        filters.scenario_id?.toString() || '',
+    );
     const [groupId, setGroupId] = useState<string>(
         filters.group_id?.toString() || '',
-    );
-    const [packageId, setPackageId] = useState<string>(
-        filters.test_package_id?.toString() || '',
     );
 
     const applyFilters = (newFilters: {
         search?: string;
         status?: string;
+        scenario_id?: string;
         group_id?: string;
-        test_package_id?: string;
     }) => {
         router.get(
-            '/teacher/reviews',
+            '/teacher/simulation-reviews',
             {
                 search: newFilters.search ?? search,
                 status: newFilters.status ?? status,
+                scenario_id: newFilters.scenario_id ?? scenarioId,
                 group_id: newFilters.group_id ?? groupId,
-                test_package_id: newFilters.test_package_id ?? packageId,
             },
             { preserveState: true, replace: true },
         );
@@ -113,36 +112,9 @@ export default function ReviewQueueIndex({
         applyFilters({ search });
     };
 
-    const renderStatusBadge = (validationStatus: string) => {
-        if (validationStatus === 'approved') {
-            return (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                    <CheckCircle2 className="h-3.5 w-3.5" />
-                    Disetujui
-                </span>
-            );
-        }
-
-        if (validationStatus === 'overridden') {
-            return (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-600 dark:text-amber-400">
-                    <ShieldAlert className="h-3.5 w-3.5" />
-                    Dioverride
-                </span>
-            );
-        }
-
-        return (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400">
-                <Clock className="h-3.5 w-3.5" />
-                Belum Direview
-            </span>
-        );
-    };
-
     return (
         <>
-            <Head title="Review Asesmen" />
+            <Head title="Review Simulasi" />
 
             <div className="min-h-full space-y-6 pb-8">
                 <section className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-teal-600 via-emerald-600 to-teal-700 p-6 text-white shadow-[0_12px_40px_rgba(13,148,136,0.35)] sm:p-8">
@@ -150,18 +122,18 @@ export default function ReviewQueueIndex({
                     <div className="relative flex flex-wrap items-center justify-between gap-6">
                         <div className="max-w-3xl min-w-0">
                             <div className="mb-2 flex items-center gap-2 text-emerald-100">
-                                <ShieldAlert className="size-4" />
+                                <ShieldCheck className="size-4" />
                                 <span className="text-xs font-bold tracking-wider uppercase">
-                                    Review Asesmen
+                                    Simulasi Berani Menolak
                                 </span>
                             </div>
                             <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
-                                Antrean Validasi Penilaian Santri
+                                Review Latihan Keberanian Santri
                             </h1>
                             <p className="mt-2 max-w-xl text-sm leading-relaxed text-emerald-50/90">
-                                Tinjau hasil transkripsi dan penilaian otomatis dari
-                                AI atas tes penalaran moral santri untuk memberikan
-                                validasi atau penyesuaian secara cepat dan konsisten.
+                                Tinjau pilihan respons santri pada setiap
+                                skenario dan berikan catatan pembinaan agar
+                                latihan berani menolak semakin bermakna.
                             </p>
                         </div>
                     </div>
@@ -171,28 +143,27 @@ export default function ReviewQueueIndex({
                     <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-xl">
-                                📋
+                                🛡️
                             </span>
                             <div>
                                 <h2 className="text-lg font-extrabold text-slate-800">
-                                    Daftar Antrean Review
+                                    Daftar Hasil Simulasi
                                 </h2>
                                 <p className="text-xs font-medium text-slate-400">
-                                    {reviews.meta.total} item perlu diperiksa
+                                    {attempts.meta.total} hasil latihan tercatat
                                 </p>
                             </div>
                         </div>
                         <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3.5 py-1.5 text-xs font-bold text-emerald-700">
                             <Filter className="size-4" />
-                            Filter ramah ustadz
+                            Filter hasil simulasi
                         </div>
                     </div>
 
-                    <div className="mb-5 flex gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    <div className="mb-5 flex [scrollbar-width:none] gap-2 overflow-x-auto pb-0.5 [&::-webkit-scrollbar]:hidden">
                         {[
                             { id: 'pending', label: 'Belum Direview' },
-                            { id: 'approved', label: 'Disetujui' },
-                            { id: 'overridden', label: 'Dioverride' },
+                            { id: 'reviewed', label: 'Sudah Direview' },
                             { id: 'all', label: 'Semua' },
                         ].map((tab) => (
                             <button
@@ -224,8 +195,26 @@ export default function ReviewQueueIndex({
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 placeholder="Cari nama santri"
-                                className="h-10 w-full rounded-2xl border border-slate-100 bg-white pr-3 pl-9 text-sm text-slate-700 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-emerald-300 focus:ring-[3px] focus:ring-emerald-100"
+                                className="h-10 w-full rounded-2xl border border-slate-100 bg-white pr-3 pl-9 text-sm text-slate-700 shadow-sm transition outline-none placeholder:text-slate-400 focus:border-emerald-300 focus:ring-[3px] focus:ring-emerald-100"
                             />
+                        </div>
+                        <div className="relative sm:col-span-1 xl:col-span-3">
+                            <select
+                                value={scenarioId}
+                                onChange={(e) => {
+                                    const next = e.target.value;
+                                    setScenarioId(next);
+                                    applyFilters({ scenario_id: next });
+                                }}
+                                className="h-10 w-full rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus:border-emerald-300 focus:ring-[3px] focus:ring-emerald-100"
+                            >
+                                <option value="">Semua Skenario</option>
+                                {scenarios.map((s) => (
+                                    <option key={s.id} value={s.id}>
+                                        {s.title}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <div className="relative sm:col-span-1 xl:col-span-3">
                             <select
@@ -245,26 +234,6 @@ export default function ReviewQueueIndex({
                                 ))}
                             </select>
                         </div>
-                        <div className="relative sm:col-span-1 xl:col-span-3">
-                            <select
-                                value={packageId}
-                                onChange={(e) => {
-                                    const next = e.target.value;
-                                    setPackageId(next);
-                                    applyFilters({
-                                        test_package_id: next,
-                                    });
-                                }}
-                                className="h-10 w-full rounded-2xl border border-slate-100 bg-white px-3 text-sm font-medium text-slate-600 shadow-sm outline-none focus:border-emerald-300 focus:ring-[3px] focus:ring-emerald-100"
-                            >
-                                <option value="">Semua Paket</option>
-                                {testPackages.map((p) => (
-                                    <option key={p.id} value={p.id}>
-                                        {p.title}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
                         <div className="flex gap-2 sm:col-span-2 xl:col-span-3">
                             <button
                                 type="submit"
@@ -276,10 +245,14 @@ export default function ReviewQueueIndex({
                                 type="button"
                                 onClick={() => {
                                     setSearch('');
-                                    setStatus('pending');
+                                    setStatus('all');
+                                    setScenarioId('');
                                     setGroupId('');
-                                    setPackageId('');
-                                    router.get('/teacher/reviews', {}, { preserveState: true });
+                                    router.get(
+                                        '/teacher/simulation-reviews',
+                                        {},
+                                        { preserveState: true },
+                                    );
                                 }}
                                 className="h-10 rounded-2xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-500 shadow-sm transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
                             >
@@ -288,22 +261,22 @@ export default function ReviewQueueIndex({
                         </div>
                     </form>
 
-                    {reviews.data.length === 0 ? (
+                    {attempts.data.length === 0 ? (
                         <div className="rounded-[24px] border border-dashed border-slate-200 bg-slate-50/60 p-10 text-center">
                             <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-3xl shadow-sm">
-                                📄
+                                🛡️
                             </div>
                             <h3 className="text-sm font-extrabold text-slate-700">
-                                Tidak ada antrean review
+                                Belum ada hasil simulasi
                             </h3>
                             <p className="mx-auto mt-1 max-w-sm text-xs leading-relaxed text-slate-400">
-                                Belum ada jawaban tes yang membutuhkan validasi
-                                berdasarkan filter saat ini.
+                                Belum ada latihan berani menolak yang sesuai
+                                dengan filter saat ini.
                             </p>
                         </div>
                     ) : (
                         <div className="space-y-3">
-                            {reviews.data.map((item) => (
+                            {attempts.data.map((item) => (
                                 <article
                                     key={item.id}
                                     className="rounded-[24px] border border-slate-100 bg-white p-4 shadow-sm transition hover:border-emerald-100 hover:shadow-md sm:p-5"
@@ -316,52 +289,78 @@ export default function ReviewQueueIndex({
                                             <div className="min-w-0">
                                                 <div className="flex flex-wrap items-center gap-2">
                                                     <h3 className="text-sm font-extrabold text-slate-800">
-                                                        {item.student.name}
+                                                        {item.student?.name ??
+                                                            'Santri'}
                                                     </h3>
-                                                    {item.student.student_code && (
+                                                    {item.student
+                                                        ?.student_code && (
                                                         <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">
-                                                            {item.student.student_code}
+                                                            {
+                                                                item.student
+                                                                    .student_code
+                                                            }
                                                         </span>
                                                     )}
-                                                    <span className="rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-bold text-teal-600">
-                                                        {item.group.name}
-                                                    </span>
+                                                    {item.group && (
+                                                        <span className="rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-bold text-teal-600">
+                                                            {item.group.name}
+                                                        </span>
+                                                    )}
                                                 </div>
-                                                <p className="mt-1 text-xs font-medium text-slate-500">
-                                                    {item.moral_case.title}
+                                                <p className="mt-1 text-xs font-semibold text-slate-500">
+                                                    {item.scenario?.title ??
+                                                        'Skenario'}
                                                 </p>
-                                                <p className="text-[11px] text-slate-400">
-                                                    {item.test_package.title}
+                                                <p className="line-clamp-1 text-[11px] text-slate-400">
+                                                    {item.selected_option
+                                                        ?.text ??
+                                                        'Belum ada respons'}
                                                 </p>
                                                 <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-bold">
-                                                    {item.audio.has_audio && (
-                                                        <span className="rounded-xl bg-indigo-50 px-2.5 py-1 text-indigo-700">
-                                                            <span className="inline-flex items-center gap-1">
-                                                                <AudioLines className="size-3.5" />
-                                                                Audio
-                                                            </span>
+                                                    <span className="inline-flex items-center gap-1 rounded-xl bg-emerald-50 px-2.5 py-1 text-emerald-700">
+                                                        <Trophy className="size-3.5" />
+                                                        Skor {item.score}
+                                                    </span>
+                                                    <span className="inline-flex items-center gap-1 rounded-xl bg-amber-50 px-2.5 py-1 text-amber-700">
+                                                        <Star className="size-3.5" />
+                                                        +{item.reward_points}{' '}
+                                                        poin
+                                                    </span>
+                                                    {item.is_best && (
+                                                        <span className="inline-flex items-center gap-1 rounded-xl bg-teal-50 px-2.5 py-1 text-teal-700">
+                                                            <ShieldCheck className="size-3.5" />
+                                                            Pilihan Terbaik
                                                         </span>
                                                     )}
-                                                    {item.ai_assessment.moral_level && (
-                                                        <span className="rounded-xl bg-teal-50 px-2.5 py-1 text-teal-700">
-                                                            <span className="inline-flex items-center gap-1">
-                                                                <Bot className="size-3.5" />
-                                                                AI: {item.ai_assessment.moral_level}
-                                                            </span>
-                                                        </span>
-                                                    )}
+                                                    <span className="inline-flex items-center gap-1 rounded-xl bg-slate-100 px-2.5 py-1 text-slate-500">
+                                                        <Clock className="size-3.5" />
+                                                        {formatDateTime(
+                                                            item.completed_at,
+                                                        )}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="flex flex-wrap items-center gap-2">
-                                            {renderStatusBadge(item.validation.status)}
+                                            {item.review.status ===
+                                            'reviewed' ? (
+                                                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600">
+                                                    <CheckCircle2 className="h-3.5 w-3.5" />
+                                                    Sudah Direview
+                                                </span>
+                                            ) : (
+                                                <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-600">
+                                                    <Clock className="h-3.5 w-3.5" />
+                                                    Belum Direview
+                                                </span>
+                                            )}
                                             <Link
-                                                href={`/teacher/reviews/${item.id}`}
+                                                href={`/teacher/simulation-reviews/${item.id}`}
                                                 className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-3.5 py-2 text-xs font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.25)] transition hover:bg-emerald-700"
                                             >
                                                 <Eye className="size-3.5" />
-                                                Tinjau Detail
+                                                Lihat Detail
                                             </Link>
                                         </div>
                                     </div>

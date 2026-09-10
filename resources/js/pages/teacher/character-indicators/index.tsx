@@ -442,7 +442,7 @@ export default function TeacherCharacterIndicatorsIndex({
                                 <div className="relative lg:col-span-2">
                                     <Search className="pointer-events-none absolute top-2.5 left-3 size-4 text-slate-400" />
                                     <Input
-                                        className="h-10 rounded-2xl border-slate-100 bg-white pl-9 text-sm shadow-sm focus-visible:ring-emerald-200"
+                                        className="h-10 rounded-2xl border-slate-100 bg-white pl-9 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                         value={search}
                                         onChange={(event) =>
                                             setSearch(event.target.value)
@@ -490,7 +490,7 @@ export default function TeacherCharacterIndicatorsIndex({
                                         type="button"
                                         variant="ghost"
                                         onClick={resetFilters}
-                                        className="rounded-2xl text-xs font-bold text-slate-500 hover:bg-white"
+                                        className="rounded-2xl text-xs font-bold text-slate-500 hover:bg-slate-100"
                                     >
                                         Reset
                                     </Button>
@@ -593,7 +593,7 @@ export default function TeacherCharacterIndicatorsIndex({
                                     </Label>
                                     <Input
                                         id="code"
-                                        className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm shadow-sm focus-visible:ring-emerald-200"
+                                        className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                         value={createForm.data.code}
                                         onChange={(event) =>
                                             createForm.setData(
@@ -617,7 +617,7 @@ export default function TeacherCharacterIndicatorsIndex({
                                     </Label>
                                     <Input
                                         id="name"
-                                        className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm shadow-sm focus-visible:ring-emerald-200"
+                                        className="h-11 rounded-2xl border-slate-100 bg-slate-50 text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                         value={createForm.data.name}
                                         onChange={(event) =>
                                             createForm.setData(
@@ -674,7 +674,7 @@ export default function TeacherCharacterIndicatorsIndex({
                                     <textarea
                                         id="description"
                                         rows={3}
-                                        className="rounded-[22px] border border-slate-100 bg-slate-50 p-3 text-sm shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
+                                        className="rounded-[22px] border border-slate-100 bg-slate-50 p-3 text-sm text-slate-700 shadow-sm outline-none placeholder:text-slate-400 focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                         value={createForm.data.description}
                                         onChange={(event) =>
                                             createForm.setData(
@@ -798,7 +798,7 @@ export default function TeacherCharacterIndicatorsIndex({
                     }
                 }}
             >
-                <SheetContent className="w-full overflow-y-auto bg-[#f8fafc] sm:max-w-xl">
+                <SheetContent className="scrollbar-soft w-full overflow-y-auto border-l-slate-200 bg-[#f8fafc] sm:max-w-xl [&>button]:text-slate-500 [&>button:hover]:text-slate-800">
                     <SheetHeader className="border-b border-slate-100 px-4 pb-4">
                         <div className="flex items-center gap-2 pr-8">
                             <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
@@ -828,7 +828,7 @@ export default function TeacherCharacterIndicatorsIndex({
                             </Label>
                             <Input
                                 id="edit_code"
-                                className="h-11 rounded-2xl border-slate-100 bg-white text-sm shadow-sm focus-visible:ring-emerald-200"
+                                className="h-11 rounded-2xl border-slate-100 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 value={editForm.data.code}
                                 onChange={(event) =>
                                     editForm.setData('code', event.target.value)
@@ -846,7 +846,7 @@ export default function TeacherCharacterIndicatorsIndex({
                             </Label>
                             <Input
                                 id="edit_name"
-                                className="h-11 rounded-2xl border-slate-100 bg-white text-sm shadow-sm focus-visible:ring-emerald-200"
+                                className="h-11 rounded-2xl border-slate-100 bg-white text-sm text-slate-700 shadow-sm placeholder:text-slate-400 focus-visible:ring-emerald-200"
                                 value={editForm.data.name}
                                 onChange={(event) =>
                                     editForm.setData('name', event.target.value)
@@ -892,7 +892,7 @@ export default function TeacherCharacterIndicatorsIndex({
                             <textarea
                                 id="edit_description"
                                 rows={3}
-                                className="rounded-[22px] border border-slate-100 bg-white p-3 text-sm shadow-sm outline-none focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
+                                className="rounded-[22px] border border-slate-100 bg-white p-3 text-sm text-slate-700 shadow-sm outline-none placeholder:text-slate-400 focus-visible:border-emerald-300 focus-visible:ring-[3px] focus-visible:ring-emerald-100"
                                 value={editForm.data.description}
                                 onChange={(event) =>
                                     editForm.setData(
@@ -1055,7 +1055,7 @@ function IndicatorCard({
     onDelete: () => void;
 }) {
     return (
-        <article className="group rounded-[24px] border border-slate-100 bg-slate-50/60 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:bg-white hover:shadow-lg">
+        <article className="group rounded-[24px] border border-slate-100 bg-slate-50/60 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50 hover:shadow-lg">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div className="flex min-w-0 gap-3.5">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-lg font-extrabold text-white shadow-sm transition-transform group-hover:scale-105">
@@ -1110,7 +1110,7 @@ function IndicatorCard({
                         size="sm"
                         variant="outline"
                         onClick={onEdit}
-                        className="rounded-2xl border-slate-200 bg-white text-xs font-extrabold text-slate-600 hover:bg-slate-50"
+                        className="rounded-2xl border-slate-200 bg-white text-xs font-extrabold text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800"
                     >
                         <Pencil className="size-3.5" />
                         Edit
@@ -1122,8 +1122,8 @@ function IndicatorCard({
                         onClick={onToggle}
                         className={
                             indicator.is_active
-                                ? 'rounded-2xl border-slate-200 bg-white text-xs font-extrabold text-slate-600 hover:bg-slate-50'
-                                : 'rounded-2xl border-emerald-100 bg-white text-xs font-extrabold text-emerald-700 hover:bg-emerald-50'
+                                ? 'rounded-2xl border-slate-200 bg-white text-xs font-extrabold text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800'
+                                : 'rounded-2xl border-emerald-200 bg-white text-xs font-extrabold text-emerald-700 hover:border-emerald-300 hover:bg-emerald-100'
                         }
                     >
                         <ShieldCheck className="size-3.5" />
@@ -1134,7 +1134,7 @@ function IndicatorCard({
                         size="sm"
                         variant="outline"
                         onClick={onDelete}
-                        className="rounded-2xl border-rose-100 bg-white text-xs font-extrabold text-rose-600 hover:bg-rose-50"
+                        className="rounded-2xl border-rose-200 bg-white text-xs font-extrabold text-rose-600 hover:border-rose-500 hover:bg-rose-500 hover:text-white"
                     >
                         <Trash2 className="size-3.5" />
                         Hapus

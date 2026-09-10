@@ -145,6 +145,25 @@
     body {
         @apply bg-background text-foreground;
     }
+
+    /* Make the native date-picker button visible and on-brand */
+    input[type='date']::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        border-radius: 6px;
+        opacity: 0.9;
+        filter: invert(48%) sepia(61%) saturate(560%) hue-rotate(126deg)
+            brightness(94%) contrast(87%);
+        transition: opacity 0.2s ease;
+    }
+
+    input[type='date']:hover::-webkit-calendar-picker-indicator,
+    input[type='date']:focus::-webkit-calendar-picker-indicator {
+        opacity: 1;
+    }
+
+    input[type='date']:disabled::-webkit-calendar-picker-indicator {
+        opacity: 0.4;
+    }
 }
 
 /* Hide scrollbar for horizontal scrolling areas */
@@ -179,5 +198,31 @@
 
     &::-webkit-scrollbar-thumb:hover {
         background-color: var(--sidebar-ring);
+    }
+}
+
+/* Slim, soft scrollbar for panels, sheets, and scrollable lists */
+@utility scrollbar-soft {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(203 213 225) transparent;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border: 2px solid transparent;
+        border-radius: 9999px;
+        background-color: rgb(203 213 225);
+        background-clip: content-box;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: rgb(16 185 129);
     }
 }

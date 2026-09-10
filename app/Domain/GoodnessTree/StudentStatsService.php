@@ -34,13 +34,13 @@ class StudentStatsService
             ->values();
 
         $cursor = $validDays->contains($today->format('Y-m-d'))
-            ? $today->copy()
-            : $today->copy()->subDay();
+            ? $today
+            : $today->subDay();
 
         $streak = 0;
         while ($validDays->contains($cursor->format('Y-m-d'))) {
             $streak++;
-            $cursor->subDay();
+            $cursor = $cursor->subDay();
         }
 
         return $streak;

@@ -145,7 +145,7 @@ function transcriptionBadge(status: string | null) {
         return {
             label: 'Transkripsi selesai',
             className:
-                'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+                'bg-emerald-100 text-emerald-700',
             icon: CheckCircle2,
         };
     }
@@ -154,7 +154,7 @@ function transcriptionBadge(status: string | null) {
         return {
             label: 'Transkripsi gagal',
             className:
-                'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300',
+                'bg-red-100 text-red-700',
             icon: ShieldAlert,
         };
     }
@@ -163,7 +163,7 @@ function transcriptionBadge(status: string | null) {
         return {
             label: 'Sedang diproses',
             className:
-                'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300',
+                'bg-blue-100 text-blue-700',
             icon: Clock,
         };
     }
@@ -172,7 +172,7 @@ function transcriptionBadge(status: string | null) {
         return {
             label: 'Menunggu antrean',
             className:
-                'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
+                'bg-amber-100 text-amber-700',
             icon: Clock,
         };
     }
@@ -180,7 +180,7 @@ function transcriptionBadge(status: string | null) {
     return {
         label: 'Belum ada transkrip',
         className:
-            'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300',
+            'bg-slate-100 text-slate-600',
         icon: AudioLines,
     };
 }
@@ -314,18 +314,40 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                 Data Santri
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-2 px-5 py-4 text-sm">
-                            <div className="font-semibold text-slate-800">
-                                {review.student.name}
+                        <CardContent className="grid gap-3 px-5 py-4 text-sm sm:grid-cols-2">
+                            <div>
+                                <div className="text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+                                    Nama
+                                </div>
+                                <div className="font-semibold text-slate-800">
+                                    {review.student.name}
+                                </div>
                             </div>
-                            <div className="text-slate-500">
-                                NIS: {review.student.student_code} • Kelompok:{' '}
-                                {review.group.name}
+                            <div>
+                                <div className="text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+                                    NIS
+                                </div>
+                                <div className="font-medium text-slate-700">
+                                    {review.student.student_code}
+                                </div>
                             </div>
-                            <div className="text-slate-500">
-                                Username: @
-                                {review.student.username ??
-                                    review.student.student_code?.toLowerCase()}
+                            <div>
+                                <div className="text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+                                    Kelompok
+                                </div>
+                                <div className="font-medium text-slate-700">
+                                    {review.group.name}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+                                    Username
+                                </div>
+                                <div className="font-medium text-slate-700">
+                                    @
+                                    {review.student.username ??
+                                        review.student.student_code?.toLowerCase()}
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -394,64 +416,69 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                             </div>
                         </CardHeader>
 
-                        <CardContent className="grid gap-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-                            {/* Left Column (1.4fr) */}
+                        <CardContent className="grid items-start gap-5 lg:grid-cols-2">
+                            {/* Left Column: Jawaban Santri */}
                             <div className="space-y-5">
                                 <div className="rounded-[24px] border border-slate-100 bg-slate-50 p-4 text-sm leading-6 text-slate-600">
                                     {review.moral_case.story}
                                 </div>
 
-                                <div className="space-y-2">
-                                    <div className="text-sm font-bold text-slate-700">
-                                        Pilihan Santri
+                                {/* Jawaban Santri (disorot) */}
+                                <div className="space-y-4 rounded-[24px] border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50/60 p-4">
+                                    <div className="flex items-center gap-2 text-sm font-extrabold text-emerald-800">
+                                        <CheckCircle2 className="size-4" />
+                                        Jawaban Santri
                                     </div>
-                                    {review.moral_case.options.map((opt) => {
-                                        const isSelected =
-                                            review.selected_option?.id ===
-                                            opt.id;
 
-                                        return (
-                                            <div
-                                                key={opt.id}
-                                                className={`rounded-2xl border p-3 text-sm ${
-                                                    isSelected
-                                                        ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-                                                        : 'border-slate-200 bg-white text-slate-600'
-                                                }`}
-                                            >
-                                                <div className="flex gap-2">
-                                                    <span className="font-semibold">
-                                                        {opt.label}.
-                                                    </span>
-                                                    <span>{opt.text}</span>
-                                                    {isSelected ? (
-                                                        <Badge className="ml-auto">
-                                                            Dipilih Santri
-                                                        </Badge>
-                                                    ) : null}
+                                    <div className="space-y-2">
+                                        <div className="text-xs font-bold tracking-wide text-emerald-700 uppercase">
+                                            Pilihan
+                                        </div>
+                                        {review.moral_case.options.map((opt) => {
+                                            const isSelected =
+                                                review.selected_option?.id ===
+                                                opt.id;
+
+                                            return (
+                                                <div
+                                                    key={opt.id}
+                                                    className={`rounded-2xl border p-3 text-sm ${
+                                                        isSelected
+                                                            ? 'border-emerald-400 bg-white text-emerald-900 shadow-sm ring-1 ring-emerald-200'
+                                                            : 'border-emerald-100 bg-white/70 text-slate-600'
+                                                    }`}
+                                                >
+                                                    <div className="flex gap-2">
+                                                        <span className="font-semibold">
+                                                            {opt.label}.
+                                                        </span>
+                                                        <span>{opt.text}</span>
+                                                        {isSelected ? (
+                                                            <Badge className="ml-auto bg-emerald-600 text-white hover:bg-emerald-600">
+                                                                Dipilih Santri
+                                                            </Badge>
+                                                        ) : null}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-
-                                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                                    <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
-                                        <MessageSquareText className="size-4 text-emerald-600" />
-                                        Alasan Teks Santri
+                                            );
+                                        })}
                                     </div>
-                                    <p className="mt-2 text-sm leading-6 text-slate-600">
-                                        {review.typed_reason || (
-                                            <span className="italic">
-                                                Tidak ada alasan teks.
-                                            </span>
-                                        )}
-                                    </p>
-                                </div>
-                            </div>
 
-                            {/* Right Column (1fr) */}
-                            <div className="space-y-5">
+                                    <div className="rounded-2xl border border-emerald-100 bg-white/70 p-3">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-emerald-700">
+                                            <MessageSquareText className="size-4" />
+                                            Alasan Teks
+                                        </div>
+                                        <p className="mt-2 text-sm leading-6 text-slate-700">
+                                            {review.typed_reason || (
+                                                <span className="text-slate-400 italic">
+                                                    Tidak ada alasan teks.
+                                                </span>
+                                            )}
+                                        </p>
+                                    </div>
+                                </div>
+
                                 {/* Audio Jawaban */}
                                 <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                                     <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
@@ -489,7 +516,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                         {review.transcription ? (
                                             <Badge
                                                 variant="outline"
-                                                className="border-teal-200 bg-teal-50 text-teal-700"
+                                                className="border-emerald-200 bg-emerald-50 text-emerald-700"
                                             >
                                                 {review.transcription.provider}{' '}
                                                 • {review.transcription.model}
@@ -665,12 +692,12 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
 
                                             {review.transcription.edited_text &&
                                                 !isEditingTranscript && (
-                                                    <div className="rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-900 dark:bg-amber-950/20">
-                                                        <div className="text-xs font-semibold text-amber-700 dark:text-amber-300">
+                                                    <div className="rounded-md border border-amber-200 bg-amber-50 p-3">
+                                                        <div className="text-xs font-semibold text-amber-700">
                                                             Transkrip hasil edit
                                                             ustadz
                                                         </div>
-                                                        <p className="mt-1 text-sm leading-6 text-amber-900 dark:text-amber-100">
+                                                        <p className="mt-1 text-sm leading-6 text-amber-900">
                                                             {
                                                                 review
                                                                     .transcription
@@ -687,7 +714,10 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                         </p>
                                     )}
                                 </div>
+                            </div>
 
+                            {/* Right Column: Hasil Review */}
+                            <div className="space-y-5">
                                 {/* Rekomendasi AI Assessment */}
                                 <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                                     <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
@@ -698,7 +728,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                         {review.ai_assessment && (
                                             <Badge
                                                 variant="outline"
-                                                className="border-teal-200 bg-teal-50 text-teal-700"
+                                                className="border-emerald-200 bg-emerald-50 text-emerald-700"
                                             >
                                                 AI Assessment
                                             </Badge>
@@ -712,11 +742,11 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                     Rekomendasi Tingkat Moral
                                                     (Kohlberg):
                                                 </span>
-                                                <div className="mt-1.5 rounded-2xl bg-emerald-600 p-3 text-center text-white shadow-sm">
-                                                    <span className="block text-xs opacity-90">
+                                                <div className="mt-1.5 rounded-2xl border border-emerald-200 bg-emerald-50 p-3 text-center">
+                                                    <span className="block text-xs font-semibold text-emerald-600">
                                                         Tingkat Penilaian LLM
                                                     </span>
-                                                    <span className="block text-base font-extrabold">
+                                                    <span className="mt-0.5 block text-base font-extrabold text-emerald-800">
                                                         {
                                                             review.ai_assessment
                                                                 .moral_level
@@ -731,7 +761,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                         Tingkat Keyakinan
                                                         (Confidence)
                                                     </span>
-                                                    <span className="text-teal-700">
+                                                    <span className="text-emerald-700">
                                                         {formatPercent(
                                                             review.ai_assessment
                                                                 .confidence,
@@ -740,7 +770,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                 </div>
                                                 <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
                                                     <div
-                                                        className="h-full rounded-full bg-teal-500 transition-all duration-500"
+                                                        className="h-full rounded-full bg-emerald-500 transition-all duration-500"
                                                         style={{
                                                             width: `${Math.min(100, Math.max(0, review.ai_assessment.confidence * 100))}%`,
                                                         }}
@@ -763,7 +793,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                             {review.ai_assessment
                                                 .suggested_intervention && (
                                                 <div>
-                                                    <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                                                    <span className="text-xs font-medium text-emerald-700">
                                                         Saran Intervensi
                                                         Pedagogis:
                                                     </span>
@@ -782,7 +812,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                     .warning_signals.length >
                                                     0 && (
                                                     <div>
-                                                        <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
+                                                        <span className="text-xs font-medium text-amber-700">
                                                             Sinyal Peringatan
                                                             (Warning Signals):
                                                         </span>
@@ -797,7 +827,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                                             idx
                                                                         }
                                                                         variant="outline"
-                                                                        className="border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200"
+                                                                        className="border-amber-300 bg-amber-50 text-amber-900"
                                                                     >
                                                                         <ShieldAlert className="mr-1 size-3 text-amber-600" />
                                                                         {typeof signal ===
@@ -842,7 +872,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                                                     ? `Indikator #${ind.indicator_id}`
                                                                                     : `Indikator ${idx + 1}`)}
                                                                         </span>
-                                                                        <span className="font-bold text-teal-600 dark:text-teal-400">
+                                                                        <span className="font-bold text-emerald-600">
                                                                             Skor:{' '}
                                                                             {
                                                                                 ind.score
@@ -874,8 +904,8 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                             className={`rounded-2xl p-3 text-xs ${
                                                 review.validation.decision ===
                                                 'approved'
-                                                    ? 'border border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200'
-                                                    : 'border border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200'
+                                                    ? 'border border-emerald-200 bg-emerald-50 text-emerald-900'
+                                                    : 'border border-amber-200 bg-amber-50 text-amber-900'
                                             }`}
                                         >
                                             <div className="flex items-center justify-between font-bold">
@@ -1086,7 +1116,7 @@ export default function ReviewDetail({ review }: ReviewDetailProps) {
                                                         )
                                                     }
                                                     placeholder="Jelaskan alasan Anda mengubah hasil penilaian AI..."
-                                                    className="mt-1 w-full rounded-md border border-amber-300 bg-amber-50/50 p-2 text-xs outline-none focus:ring-1 focus:ring-amber-500 dark:border-amber-900 dark:bg-amber-950/20"
+                                                    className="mt-1 w-full rounded-md border border-amber-300 bg-amber-50/50 p-2 text-xs text-slate-700 outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-amber-500"
                                                 />
                                                 {overrideForm.errors
                                                     .override_reason && (

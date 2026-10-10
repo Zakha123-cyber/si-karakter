@@ -272,6 +272,8 @@ Status:
 
 ## Phase 18 — Finalization
 
+- [x] Perbarui company profile TeladanKu: desain hijau terang, halaman terpisah, dan penjelasan integrasi AI.
+
 - [ ] End-to-end testing.
 - [ ] UAT dengan dosen.
 - [ ] UAT dengan ustadz.

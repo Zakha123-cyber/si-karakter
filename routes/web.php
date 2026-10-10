@@ -24,6 +24,12 @@ require __DIR__.'/student.php';
 
 Route::redirect('/', '/login')->name('home');
 
+Route::inertia('about', 'about')->name('about');
+
+foreach (['fitur', 'peran', 'alur', 'visi-misi', 'ai'] as $section) {
+    Route::inertia('about/'.$section, 'about', ['section' => $section])->name('about.'.$section);
+}
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 });

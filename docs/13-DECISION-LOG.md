@@ -261,6 +261,18 @@ Gunakan dokumen ini untuk mencatat keputusan produk dan teknis.
   - Tests ditambahkan untuk permission, generate, narasi AI, review, publish, PDF download, dan unit domain service.
 - Approved By: Implementation
 
+## D-026 — Company Profile TeladanKu
+
+- Date: 2026-10-10
+- Status: Accepted
+- Context: Profil publik membutuhkan desain modern profesional dengan warna hijau terang dan informasi yang lebih rinci.
+- Decision:
+  - `/about` menjadi halaman Informasi; Fitur, Peran, Alur Pembinaan, Visi & Misi, serta Teknologi AI memiliki URL publik tersendiri di bawah `/about`.
+  - Halaman memakai komponen Inertia `about` dengan prop `section`, layout publik bersama, navigasi aktif, dan menu seluler yang mendukung keyboard.
+  - Konten AI menjelaskan integrasi analisis moral, transkripsi, TTS, dan draf laporan berdasarkan layanan dalam proyek; hasil akhir tetap ditinjau ustadz.
+- Consequences: Tidak ada perubahan database, hak akses portal, atau perilaku penilaian. Setiap URL profil dapat dibuka langsung oleh tamu.
+- Approved By: User request (desain modern profesional, hijau dan terang).
+
 ## Template Decision Baru
 
 ```md

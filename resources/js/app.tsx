@@ -6,6 +6,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { initializeTheme } from '@/hooks/use-appearance';
 import AuthLayout from '@/layouts/auth-layout';
 import DynamicLayout from '@/layouts/dynamic-layout';
+import PublicLayout from '@/layouts/public-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import StudentLayout from '@/layouts/student-layout';
 import TeacherLayout from '@/layouts/teacher-layout';
@@ -29,6 +30,8 @@ createInertiaApp({
                 return [DynamicLayout, SettingsLayout];
             case name.startsWith('student/'):
                 return StudentLayout;
+            case name === 'about':
+                return PublicLayout;
             case name === 'dashboard' ||
                 name.startsWith('teacher/') ||
                 name.startsWith('admin/'):

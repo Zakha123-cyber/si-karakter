@@ -1,4 +1,4 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form, Head, Link } from '@inertiajs/react';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
@@ -44,7 +44,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                     tabIndex={1}
                                     autoComplete="username"
                                     placeholder="Masukkan nama penggunamu"
-                                    className="h-11 rounded-2xl border-slate-200/80 px-4 bg-white dark:bg-white text-slate-800 dark:text-slate-800 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/30 focus-visible:ring-[3px]"
+                                    className="h-11 rounded-2xl border-slate-200/80 bg-white px-4 text-slate-800 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-[3px] focus-visible:ring-emerald-500/30 dark:bg-white dark:text-slate-800"
                                 />
                                 <InputError message={errors.username} />
                             </div>
@@ -74,7 +74,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                     tabIndex={2}
                                     autoComplete="current-password"
                                     placeholder="Masukkan kata sandi/PIN"
-                                    className="h-11 rounded-2xl border-slate-200/80 px-4 bg-white dark:bg-white text-slate-800 dark:text-slate-800 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/30 focus-visible:ring-[3px]"
+                                    className="h-11 rounded-2xl border-slate-200/80 bg-white px-4 text-slate-800 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-[3px] focus-visible:ring-emerald-500/30 dark:bg-white dark:text-slate-800"
                                 />
                                 <InputError message={errors.password} />
                             </div>
@@ -84,11 +84,11 @@ export default function Login({ status, canResetPassword }: Props) {
                                     id="remember"
                                     name="remember"
                                     tabIndex={3}
-                                    className="rounded-md border-slate-200/80 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 focus-visible:ring-emerald-500/30"
+                                    className="rounded-md border-slate-200/80 focus-visible:ring-emerald-500/30 data-[state=checked]:border-emerald-500 data-[state=checked]:bg-emerald-500"
                                 />
                                 <Label
                                     htmlFor="remember"
-                                    className="text-xs font-semibold text-slate-500 dark:text-slate-500 select-none cursor-pointer"
+                                    className="cursor-pointer text-xs font-semibold text-slate-500 select-none dark:text-slate-500"
                                 >
                                     Ingat saya di perangkat ini
                                 </Label>
@@ -96,7 +96,7 @@ export default function Login({ status, canResetPassword }: Props) {
 
                             <Button
                                 type="submit"
-                                className="h-12 w-full mt-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-base font-black text-white hover:from-emerald-600 hover:to-teal-600 shadow-[0_6px_20px_rgba(16,185,129,0.25)] hover:shadow-lg transition-all disabled:opacity-50"
+                                className="mt-2 h-12 w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-base font-black text-white shadow-[0_6px_20px_rgba(16,185,129,0.25)] transition-all hover:from-emerald-600 hover:to-teal-600 hover:shadow-lg disabled:opacity-50"
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
@@ -116,6 +116,15 @@ export default function Login({ status, canResetPassword }: Props) {
                     {status}
                 </div>
             )}
+
+            <div className="mt-6 text-center">
+                <Link
+                    href="/about"
+                    className="text-xs font-bold text-slate-400 transition-colors hover:text-emerald-600"
+                >
+                    Tentang TeladanKu
+                </Link>
+            </div>
         </>
     );
 }
